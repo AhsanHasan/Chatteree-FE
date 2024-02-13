@@ -1,0 +1,17 @@
+.help_text {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
+    color: #79838B;
+}
+
+.resend {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
+    color: #101C26;
+}
+
+.bgF7F7F7 {
+    background-color: #F7F7F7;
+}

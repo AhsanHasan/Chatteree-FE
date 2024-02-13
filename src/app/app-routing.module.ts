@@ -5,6 +5,15 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('../app/auth/login/login.module').then(m => m.LoginModule),
+  },
+  {
+    path: 'onboarding',
+    children: [
+      {
+        path: 'verify-account',
+        loadChildren: () => import('../app/pages/onboarding/verify-account/verify-account.module').then(m => m.VerifyAccountModule)
+      }
+    ]
   }
 ];
 
