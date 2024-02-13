@@ -1,0 +1,49 @@
+<div class="h-screen flex flex-col md:flex-row">
+    <div class="w-full md:w-1/4 border-r border-[#F1F1F1] p-4">
+        <div class="flex items-center space-x-1">
+            <img src="https://via.placeholder.com/150" alt="User Avatar" class="w-10 h-10 rounded-full">
+            <div class="relative inline-block text-left flex-grow">
+                <div>
+                    <button type="button"
+                        class="inline-flex justify-center px-4 py-2 bg-white text-sm font-medium focus:outline-none"
+                        id="options-menu" (click)="toggleMenu()">
+                        <span class="text-[15px] font-normal leading-6 text-[#101C26]">Sample Name</span>
+                        <img src="assets/images/icons/chevron-down.png" alt="Expand Arrow"
+                            class="w-[24px] h-[24px] ml-2">
+                    </button>
+                </div>
+                <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                    *ngIf="openMenu">
+                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            role="menuitem">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
+                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather">
+            </button>
+        </div>
+        <div class="max-w-sm mt-6">
+            <div class="relative md:static">
+                <div class="relative">
+                    <input type="text" id="username" class="h-[48px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full pl-10 pr-10 p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
+                                                focus:border-yellow-400" placeholder="Search for chatter or messages" required>
+                    <img src="assets/images/icons/search.png" alt="search icon"
+                        class="absolute left-2 top-1/2 transform -translate-y-1/2 h-6 w-6">
+                    <!-- <span
+                        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-[14px] text-[#B5BDC5]">9</span> -->
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-center items-center">
+            <div>
+                <img src="assets/images/icons/chat.png" alt="Image Description">
+                <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">Your Chatteree conversations live here</p>
+            </div>
+        </div>
+    </div>
+    <div class="w-full md:w-3/4">
+        <!-- Right section content -->
+    </div>
+</div>

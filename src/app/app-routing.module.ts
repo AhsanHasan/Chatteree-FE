@@ -22,6 +22,10 @@ const routes: Routes = [
         loadChildren: () => import('../app/pages/onboarding/image-upload/image-upload.module').then(m => m.ImageUploadModule)
       }
     ]
+  },
+  {
+    path: 'chat',
+    loadChildren: () => import('../app/pages/chat/chat.module').then(m => m.ChatModule),
   }
 ];
 
