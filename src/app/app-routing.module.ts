@@ -12,6 +12,10 @@ const routes: Routes = [
       {
         path: 'verify-account',
         loadChildren: () => import('../app/pages/onboarding/verify-account/verify-account.module').then(m => m.VerifyAccountModule)
+      },
+      {
+        path: 'set-username',
+        loadChildren: () => import('../app/pages/onboarding/set-username/set-username.module').then(m => m.SetUsernameModule)
       }
     ]
   }
