@@ -16,6 +16,10 @@ const routes: Routes = [
       {
         path: 'set-username',
         loadChildren: () => import('../app/pages/onboarding/set-username/set-username.module').then(m => m.SetUsernameModule)
+      },
+      {
+        path: 'image-upload',
+        loadChildren: () => import('../app/pages/onboarding/image-upload/image-upload.module').then(m => m.ImageUploadModule)
       }
     ]
   }
