@@ -35,7 +35,8 @@
                                 class="px-4 py-2 absolute right-[-13px] bottom-[-4px] md:hidden md:static">
 
                             <!-- Second Image -->
-                            <img src="assets/images/icons/arrow-right.png" alt="arrow-right" class="absolute top-[-36px] right-[11px]">
+                            <img src="assets/images/icons/arrow-right.png" alt="arrow-right"
+                                class="absolute top-[-36px] right-[11px]">
                         </div>
                     </div>
                 </div>
@@ -48,10 +49,10 @@
                 <hr class="divider">
             </div>
             <div class="max-w-sm mt-4">
-                <button class="px-4 py-2 w-auto custom-social-button flex items-center justify-center mx-auto">
+                <div class="px-4 py-2 w-auto custom-social-button flex items-center justify-center mx-auto cursor-pointer" (click)="onGoogleSignIn()">
                     <img src="assets/images/icons/googleIcon.png" alt="Google" class="h-5 w-5 mr-2">
                     Continue with Google
-                </button>
+                </div>
             </div>
 
         </div>

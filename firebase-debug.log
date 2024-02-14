@@ -1,0 +1,23 @@
+[debug] [2024-02-14T00:33:38.118Z] ----------------------------------------------------------------------
+[debug] [2024-02-14T00:33:38.135Z] Command:       /Users/user/.nvm/versions/node/v20.10.0/bin/node /Users/user/.nvm/versions/node/v20.10.0/bin/firebase auth:import
+[debug] [2024-02-14T00:33:38.136Z] CLI Version:   13.2.1
+[debug] [2024-02-14T00:33:38.136Z] Platform:      darwin
+[debug] [2024-02-14T00:33:38.136Z] Node Version:  v20.10.0
+[debug] [2024-02-14T00:33:38.136Z] Time:          Wed Feb 14 2024 00:33:38 GMT+0000 (Greenwich Mean Time)
+[debug] [2024-02-14T00:33:38.137Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-02-14T00:33:38.210Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-02-14T00:33:38.210Z] > authorizing via signed-in user (syed.khan7007@gmail.com)
+[debug] [2024-02-14T00:33:38.210Z] [iam] checking project chatteree-414221 for permissions ["firebase.projects.get","firebaseauth.users.create","firebaseauth.users.update"]
+[debug] [2024-02-14T00:33:38.212Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatteree-414221:testIamPermissions [none]
+[debug] [2024-02-14T00:33:38.212Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatteree-414221:testIamPermissions x-goog-quota-user=projects/chatteree-414221
+[debug] [2024-02-14T00:33:38.212Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatteree-414221:testIamPermissions {"permissions":["firebase.projects.get","firebaseauth.users.create","firebaseauth.users.update"]}
+[debug] [2024-02-14T00:33:38.931Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatteree-414221:testIamPermissions 200
+[debug] [2024-02-14T00:33:38.931Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chatteree-414221:testIamPermissions {"permissions":["firebase.projects.get","firebaseauth.users.create","firebaseauth.users.update"]}
+[warn] ⚠  No hash algorithm specified. Password users cannot be imported. 
+[debug] [2024-02-14T00:33:38.936Z] TypeError: Cannot read properties of undefined (reading 'endsWith')
+    at Command.actionFn (/Users/user/.nvm/versions/node/v20.10.0/lib/node_modules/firebase-tools/lib/commands/auth-import.js:37:19)
+    at /Users/user/.nvm/versions/node/v20.10.0/lib/node_modules/firebase-tools/lib/command.js:228:25
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: An unexpected error has occurred.
