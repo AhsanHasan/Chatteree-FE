@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { GuestGuard } from './guards/guest.guard';
 
 const routes: Routes = [
   {
     path: '',
+    canActivate: [GuestGuard],
     loadChildren: () => import('../app/auth/login/login.module').then(m => m.LoginModule),
   },
   {
     path: 'onboarding',
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'verify-account',
@@ -25,7 +29,16 @@ const routes: Routes = [
   },
   {
     path: 'chat',
+    canActivate: [AuthGuard],
     loadChildren: () => import('../app/pages/chat/chat.module').then(m => m.ChatModule),
+  },
+  {
+    path: '404',
+    loadChildren: () => import('../app/pages/error-page/error-page.module').then(m => m.ErrorPageModule),
+  },
+  {
+    path: '**',
+    redirectTo: '404'
   }
 ];
 

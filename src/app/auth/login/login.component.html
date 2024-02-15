@@ -22,22 +22,23 @@
         <div class="flex-grow p-4">
             <h1 class="text-center md:text-left">Howdy chatter! Your peeps are waiting</h1>
             <p class="help_text mt-6 md:block hidden">Enter your email address to start chatting</p>
-            <form class="max-w-sm">
+            <form class="max-w-sm" #emailSignInForm="ngForm" (submit)="onEmailSignIn(emailSignInForm)">
                 <div class="mb-5 mt-5">
                     <label for="email" class="mb-2 mt-4 md:block hidden">Email Address</label>
                     <div class="relative md:static">
-                        <input type="email" id="email" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
-                            focus:border-yellow-400" placeholder="someone@example.com" required>
+                        <input type="email" id="email" name="email" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
+                                                    focus:border-yellow-400" placeholder="someone@example.com" required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" ngModel #email="ngModel">
 
                         <!-- Button -->
-                        <div class="relative md:static">
+                        <button class="relative md:static" type="submit">
                             <img src="assets/images/shapes/Ellipse1.png" alt="Email"
                                 class="px-4 py-2 absolute right-[-13px] bottom-[-4px] md:hidden md:static">
 
                             <!-- Second Image -->
                             <img src="assets/images/icons/arrow-right.png" alt="arrow-right"
                                 class="absolute top-[-36px] right-[11px]">
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div class="flex justify-end">
@@ -49,7 +50,8 @@
                 <hr class="divider">
             </div>
             <div class="max-w-sm mt-4">
-                <div class="px-4 py-2 w-auto custom-social-button flex items-center justify-center mx-auto cursor-pointer" (click)="onGoogleSignIn()">
+                <div class="px-4 py-2 w-auto custom-social-button flex items-center justify-center mx-auto cursor-pointer"
+                    (click)="onGoogleSignIn()">
                     <img src="assets/images/icons/googleIcon.png" alt="Google" class="h-5 w-5 mr-2">
                     Continue with Google
                 </div>

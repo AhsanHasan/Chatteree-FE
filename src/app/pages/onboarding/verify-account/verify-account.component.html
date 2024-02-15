@@ -14,15 +14,15 @@
                 <img src="assets/images/logo.png" alt="Logo" class="mb-4 w-[140px] md:block hidden">
                 <h1>Check your mail</h1>
                 <p class="help_text mt-4">Enter the confirmation code sent to </p>
-                <p>kwesiokyere@gmail.com <span class="help_text">to verify that it is you.</span></p>
+                <p>{{authenticationService.auth?.user?.email}} <span class="help_text">to verify that it is you.</span></p>
 
                 <div id="otp" class="flex flex-row justify-between text-left mt-5">
-                    <input class="m-2 ml-0 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" id="first" maxlength="1" />
-                    <input class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" id="second" maxlength="1" />
-                    <input class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" id="third" maxlength="1" />
-                    <input class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" id="fourth" maxlength="1" />
-                    <input class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" id="fifth" maxlength="1" />
-                    <input class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" id="sixth" maxlength="1" />
+                    <input #first class="m-2 ml-0 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(first, second)" />
+                    <input #second class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(second, third)" />
+                    <input #third class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(third, fourth)" />
+                    <input #fourth class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(fourth, fifth)" />
+                    <input #fifth class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(fifth, sixth)" />
+                    <input #sixth class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" />
                 </div>
 
                 <div class="flex justify-between text-left mt-5">
