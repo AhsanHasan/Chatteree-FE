@@ -3,7 +3,9 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GoogleAuthProvider } from 'firebase/auth';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService, UserEmail } from 'src/app/services/authentication.service';
+import { LoaderService } from 'src/app/services/loader.service';
 import { Utils } from 'src/app/utils';
 @Component({
   selector: 'app-login',
@@ -15,11 +17,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
   constructor(
     private angularAuth: AngularFireAuth,
     private authenticationService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private ngxSpinner: NgxSpinnerService,
+    private loaderService: LoaderService
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
   }
@@ -40,6 +43,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
       const body: UserEmail = {
         email: emailSignInForm.value.email,
       };
+      this.loaderService.updateValue('Signing in...');
+      this.ngxSpinner.show();
       const response = await this.authenticationService.authenticateWithEmail(body);
       if (response && response.success) {
         // Store session in cookie
@@ -68,6 +73,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     } catch (error) {
       Utils.showErrorMessage('Error signing in with email', error);
     }
+    this.ngxSpinner.hide();
   }
 
 }

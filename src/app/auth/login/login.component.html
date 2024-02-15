@@ -24,11 +24,18 @@
             <p class="help_text mt-6 md:block hidden">Enter your email address to start chatting</p>
             <form class="max-w-sm" #emailSignInForm="ngForm" (submit)="onEmailSignIn(emailSignInForm)">
                 <div class="mb-5 mt-5">
-                    <label for="email" class="mb-2 mt-4 md:block hidden">Email Address</label>
+                    <div class="flex items-center">
+                        <label for="email" class="mb-2 mt-4 md:block hidden">Email Address</label>
+                        <span *ngIf="emailSignInForm.submitted && emailSignInForm.controls['email'].errors?.['required']" class="mb-2 mt-4 text-sm text-red-300 ml-2">Required *</span>
+                        <span *ngIf="emailSignInForm.submitted && emailSignInForm.controls['email'].errors?.['pattern']" class="mb-2 mt-4 text-sm text-red-300">Invalid email address</span>
+                    </div>
                     <div class="relative md:static">
                         <input type="email" id="email" name="email" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
                                                     focus:border-yellow-400" placeholder="someone@example.com" required
-                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" ngModel #email="ngModel">
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" ngModel #email="ngModel" [ngClass]="{
+                                'border-red-300': emailSignInForm.submitted && (emailSignInForm.controls['email'].errors?.['required'] || emailSignInForm.controls['email'].errors?.['pattern']),
+                                'border-gray-300': !emailSignInForm.submitted || (!emailSignInForm.controls['email'].errors?.['required'] && !emailSignInForm.controls['email'].errors?.['pattern'])
+                            }">
 
                         <!-- Button -->
                         <button class="relative md:static" type="submit">
