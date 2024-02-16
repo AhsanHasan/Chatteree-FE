@@ -144,7 +144,7 @@ export class AuthenticationService {
                 email: this.auth?.user.email,
                 name: this.auth?.user.name,
                 profilePicture: this.auth?.user.profilePicture,
-                isActive: this.auth?.user.isActive,
+                isActive: true,
                 onlineStatus: this.auth?.user.onlineStatus
             }
         });

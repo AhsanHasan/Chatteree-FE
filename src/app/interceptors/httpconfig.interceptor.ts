@@ -15,9 +15,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log('intercepted request ... ');
         const apiBase = environment.apiBase;
-        console.log(apiBase);
         if (this.authenticationService.auth && this.authenticationService.auth.token) {
             if (request.url.includes(apiBase)) {
                 request = request.clone({

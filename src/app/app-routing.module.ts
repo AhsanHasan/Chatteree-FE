@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
+import { IsActiveGuard } from './guards/isActive.guard';
 
 const routes: Routes = [
   {
@@ -19,17 +20,19 @@ const routes: Routes = [
       },
       {
         path: 'set-username',
+        canActivate: [IsActiveGuard],
         loadChildren: () => import('../app/pages/onboarding/set-username/set-username.module').then(m => m.SetUsernameModule)
       },
       {
         path: 'basic-information',
+        canActivate: [IsActiveGuard],
         loadChildren: () => import('../app/pages/onboarding/image-upload/image-upload.module').then(m => m.ImageUploadModule)
       }
     ]
   },
   {
     path: 'chat',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, IsActiveGuard],
     loadChildren: () => import('../app/pages/chat/chat.module').then(m => m.ChatModule),
   },
   {
