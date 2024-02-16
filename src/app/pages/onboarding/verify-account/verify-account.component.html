@@ -1,9 +1,12 @@
 <div class="h-screen py-20 px-3 text-left">
     <div class="container mx-auto">
         <div class="relative hidden md:block">
-            <a href="#" class="absolute top-[30%] transform -translate-y-[19%] text-gray-400 hover:text-gray-600 cursor-pointer">
+            <a href="#"
+                class="absolute top-[30%] transform -translate-y-[19%] text-gray-400 hover:text-gray-600 cursor-pointer"
+                (click)="signOut($event)">
                 <img src="assets/images/shapes/Ellipse2.png" alt="white-ellipse">
-                <img src="assets/images/icons/arrow-left.png" alt="arrow-left" class="absolute top-[46%] left-[48%] transform -translate-x-1/2 -translate-y-1/2">
+                <img src="assets/images/icons/arrow-left.png" alt="arrow-left"
+                    class="absolute top-[46%] left-[48%] transform -translate-x-1/2 -translate-y-1/2">
             </a>
         </div>
         <div class="max-w-sm mx-auto md:max-w-lg">
@@ -14,24 +17,55 @@
                 <img src="assets/images/logo.png" alt="Logo" class="mb-4 w-[140px] md:block hidden">
                 <h1>Check your mail</h1>
                 <p class="help_text mt-4">Enter the confirmation code sent to </p>
-                <p>{{authenticationService.auth?.user?.email}} <span class="help_text">to verify that it is you.</span></p>
-
-                <div id="otp" class="flex flex-row justify-between text-left mt-5">
-                    <input #first class="m-2 ml-0 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(first, second)" />
-                    <input #second class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(second, third)" />
-                    <input #third class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(third, fourth)" />
-                    <input #fourth class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(fourth, fifth)" />
-                    <input #fifth class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" (input)="moveToNext(fifth, sixth)" />
-                    <input #sixth class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md bgF7F7F7" type="text" maxlength="1" />
-                </div>
-
-                <div class="flex justify-between text-left mt-5">
-                    <a class="flex items-center text-gray-400 cursor-pointer">
-                        <span class="resend">Resend OTP</span>
-                    </a>
-                    <!-- Button -->
-                    <button class="custom-button">Verify</button>
-                </div>
+                <p>{{authenticationService.auth?.user?.email}} <span class="help_text">to verify that it is you.</span>
+                </p>
+                <form #otpForm="ngForm" (submit)="verifyOTP(otpForm)">
+                    <div id="otp" class="flex flex-row justify-between text-left mt-5">
+                        <input #otpInput1 #input1="ngModel" ngModel name="otpInput1" required
+                            class="m-2 ml-0 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md " type="text"
+                            maxlength="1" (input)="moveToNext(otpInput1, otpInput2)" [ngClass]="{
+                                'bg-red-50':otpForm.submitted && otpForm.controls['otpInput1'].errors?.['required'],
+                                'bgF7F7F7': !otpForm.submitted || !otpForm.controls['otpInput1'].errors?.['required']
+                            }" />
+                        <input #otpInput2 #input2="ngModel" ngModel name="otpInput2" required
+                            class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md " type="text"
+                            maxlength="1" (input)="moveToNext(otpInput2, otpInput3)" [ngClass]="{
+                                'bg-red-50': otpForm.submitted && otpForm.controls['otpInput2'].errors?.['required'],
+                                'bgF7F7F7': !otpForm.submitted || !otpForm.controls['otpInput2'].errors?.['required']
+                            }" />
+                        <input #otpInput3 #input3="ngModel" ngModel name="otpInput3" required
+                            class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md " type="text"
+                            maxlength="1" (input)="moveToNext(otpInput3, otpInput4)" [ngClass]="{
+                                'bg-red-50': otpForm.submitted && otpForm.controls['otpInput3'].errors?.['required'],
+                                'bgF7F7F7': !otpForm.submitted || !otpForm.controls['otpInput3'].errors?.['required']
+                            }" />
+                        <input #otpInput4 #input4="ngModel" ngModel name="otpInput4" required
+                            class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md " type="text"
+                            maxlength="1" (input)="moveToNext(otpInput4, otpInput5)" [ngClass]="{
+                                'bg-red-50': otpForm.submitted && otpForm.controls['otpInput4'].errors?.['required'],
+                                'bgF7F7F7': !otpForm.submitted || !otpForm.controls['otpInput4'].errors?.['required']
+                            }" />
+                        <input #otpInput5 #input5="ngModel" ngModel name="otpInput5" required
+                            class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md " type="text"
+                            maxlength="1" (input)="moveToNext(otpInput5, otpInput6)" [ngClass]="{
+                                'bg-red-50': otpForm.submitted && otpForm.controls['otpInput5'].errors?.['required'],
+                                'bgF7F7F7': !otpForm.submitted || !otpForm.controls['otpInput5'].errors?.['required'] 
+                            }" />
+                        <input #otpInput6 #input6="ngModel" ngModel name="otpInput6" required
+                            class="m-2 w-10 h-12 md:w-14 md:h-16 text-center form-control rounded-md " type="text"
+                            maxlength="1" [ngClass]="{
+                                'bg-red-50': otpForm.submitted && otpForm.controls['otpInput6'].errors?.['required'],
+                                'bgF7F7F7': !otpForm.submitted || !otpForm.controls['otpInput6'].errors?.['required'] 
+                            }" />
+                    </div>
+                    <div class="flex justify-between text-left mt-5">
+                        <a class="flex items-center text-gray-400 cursor-pointer" href="#" (click)="resendOTP($event)">
+                            <span class="resend">Resend OTP</span>
+                        </a>
+                        <!-- Button -->
+                        <button class="custom-button" type="submit">Verify</button>
+                    </div>
+                </form>
 
                 <!-- Image at the bottom -->
                 <img src="assets/images/illust.png" alt="Bottom" class="mt-6 mx-auto w-[272px] md:w-[382px]">

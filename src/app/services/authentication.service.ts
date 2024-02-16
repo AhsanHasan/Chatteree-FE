@@ -21,7 +21,7 @@ export class AuthenticationService {
         private cookieService: SsrCookieService
     ) { }
 
-    public auth: Session | undefined = {
+    /* public auth: Session | undefined = {
         token: '',
         user: {
             _id: '',
@@ -31,7 +31,15 @@ export class AuthenticationService {
             isActive: false,
             onlineStatus: false
         }
-    };
+    }; */
+
+    get auth() {
+        return this.authFromCookie;
+    }
+
+    set auth(data: Session | undefined) {
+        this.auth = data;
+    }
 
     get authFromCookie(): Session | undefined {
         try {
@@ -120,11 +128,34 @@ export class AuthenticationService {
                 environment.cookieDomain,
                 true
             )
-            this.auth = this.authFromCookie;
-            console.log(this.auth);
         } else {
             this.logout();
         }
+    }
+
+    async setToken(token: string): Promise<void> {
+        // Add token to the cookies
+        const encodeString = JSON.stringify({
+            token: token,
+            user: {
+                _id: this.auth?.user._id,
+                email: this.auth?.user.email,
+                name: this.auth?.user.name,
+                profilePicture: this.auth?.user.profilePicture,
+                isActive: this.auth?.user.isActive,
+                onlineStatus: this.auth?.user.onlineStatus
+            }
+        });
+        const currentDate = new Date();
+        const expDate = currentDate.setTime(currentDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+        this.cookieService.set(
+            `${environment.versionControl.env}${environment.versionControl.v}SessionAuth`,
+            encodeString.toString(),
+            expDate,
+            '/',
+            environment.cookieDomain,
+            true
+        )
     }
 
     logout(): void {

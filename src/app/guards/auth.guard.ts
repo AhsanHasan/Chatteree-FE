@@ -12,7 +12,6 @@ export class AuthGuard {
     ) { }
 
     async canActivate(): Promise<any> {
-        debugger;
         if (this.authenticationService.isUserLoggedIn()) {
             return true;
         } else {

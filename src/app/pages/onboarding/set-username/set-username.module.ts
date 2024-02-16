@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SetUsernameComponent } from './set-username.component';
 import { SetUsernameRoutingModule } from './set-username-routing.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -11,7 +12,8 @@ import { SetUsernameRoutingModule } from './set-username-routing.module';
   ],
   imports: [
     CommonModule,
-    SetUsernameRoutingModule
+    SetUsernameRoutingModule,
+    FormsModule
   ]
 })
 export class SetUsernameModule { }

@@ -25,6 +25,7 @@
     "@angular/platform-server": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@nguniversal/express-engine": "^16.2.0",
+    "angular-notifier": "^14.0.0",
     "express": "^4.15.2",
     "ngx-cookie-service-ssr": "^16.1.0",
     "ngx-spinner": "^16.0.2",

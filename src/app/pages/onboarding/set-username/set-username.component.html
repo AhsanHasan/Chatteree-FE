@@ -6,13 +6,16 @@
                 <h1>A Chatteree ID cos <br> you’re special.</h1>
                 <p class="help_text mt-4">People will be able to find you with your unique ID</p>
 
-                <form class="max-w-sm">
+                <form class="max-w-sm" #usernameForm="ngForm" (submit)="saveUsername(usernameForm)">
                     <div class="mb-5 mt-5">
                         <label for="username" class="mb-2 mt-4">Chatteree ID</label>
                         <div class="relative md:static">
                             <div class="relative">
-                                <input type="text" id="username" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full pl-10 pr-10 p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
-                                                            focus:border-yellow-400" required>
+                                <input type="text" id="username" name="username" #username="ngModel" ngModel class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full pl-10 pr-10 p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
+                                                            focus:border-yellow-400" [ngClass]="{
+                                                                'bg-red-50': usernameForm.submitted && usernameForm.controls['username'].errors?.['required'],
+                                                                'bgF7F7F7': !usernameForm.submitted || !usernameForm.controls['username'].errors?.['required']
+                                                            }" required>
                                 <img src="assets/images/icons/@.png" alt="@icon"
                                     class="absolute left-2 top-1/2 transform -translate-y-1/2 h-6 w-6">
                                 <span
