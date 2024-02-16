@@ -7,7 +7,7 @@
                 <div class="relative w-[240px] h-[240px] mx-auto">
                     <img src="assets/images/shapes/Ellipse3.png" alt="uploadEllipse"
                         class="w-[240px] h-[240px] rounded-full absolute">
-                    <img src="assets/images/shapes/MaskGroup.png" alt="uploadMast"
+                    <img [src]="imageUrl && imageUrl !== '' ? imageUrl : 'assets/images/shapes/MaskGroup.png'" alt="uploadMast"
                         class="w-[208px] h-[208px] rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     <label for="file-upload"
                         class="absolute bottom-[7px] left-1/2 transform -translate-x-1/2 py-2 px-4 bg-[#F1F1F1] w-[165px] rounded-full flex items-center shadow cursor-pointer text-sm text-[#101C26] font-normal">
@@ -15,8 +15,7 @@
                         <span>Upload photo</span>
                     </label>
                     <input type="file" id="file-upload" class="hidden" (change)="triggerCropper($event)"
-                        (click)="resetFileInput($event)"
-                        accept="image/png, image/jpeg, image/*">
+                        (click)="resetFileInput($event)" accept="image/png, image/jpeg, image/*">
                 </div>
 
                 <form class="max-w-sm w-full sm:w-auto hidden sm:block">
