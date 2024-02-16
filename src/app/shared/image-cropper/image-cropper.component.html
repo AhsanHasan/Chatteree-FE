@@ -1,0 +1,4 @@
+<image-cropper *ngIf="IS_BROWSER" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+    [containWithinAspectRatio]="true" [aspectRatio]=aspectRatio format="png" (imageCropped)="imageCropped($event)"
+    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()"
+    [roundCropper]="true" [cropperMaxWidth]="1000"></image-cropper>

@@ -14,7 +14,9 @@
                         <img src="assets/images/icons/uploadIcon.png" alt="uploadIcon" class="w-6 h-6 mr-2">
                         <span>Upload photo</span>
                     </label>
-                    <input type="file" id="file-upload" class="hidden" accept="image/*">
+                    <input type="file" id="file-upload" class="hidden" (change)="triggerCropper($event)"
+                        (click)="resetFileInput($event)"
+                        accept="image/png, image/jpeg, image/*">
                 </div>
 
                 <form class="max-w-sm w-full sm:w-auto hidden sm:block">
@@ -53,3 +55,5 @@
         </div>
     </div>
 </div>
+
+<app-cropper-modal #cropperModal [uploadedFileName]="'abracadabra'" (fileEmitter)="getFile($event)"></app-cropper-modal>
