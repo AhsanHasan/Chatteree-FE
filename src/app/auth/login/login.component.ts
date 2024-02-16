@@ -52,14 +52,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
         // Check if user is verified
         if (this.authenticationService.auth?.user?.isActive) {
           // Check if user has name
-          if (this.authenticationService.auth?.user?.name) {
+          if (this.authenticationService.auth?.user?.username) {
             // Check if user has profile picture
             if (this.authenticationService.auth?.user?.profilePicture) {
               // Redirect to chat
               this.router.navigate(['/chat']);
             } else {
               // Redirect to image upload
-              this.router.navigate(['/onboarding/image-upload']);
+              this.router.navigate(['/onboarding/basic-information']);
             }
           } else {
             // Redirect to onboarding

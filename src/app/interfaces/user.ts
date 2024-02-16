@@ -6,5 +6,5 @@ export interface User {
     profilePicture?: string;
     token?: string;
     isActive?: boolean;
-    onlineStatus?: boolean;
+    onlineStatus?: 'online' | 'offline' | 'away';
 }

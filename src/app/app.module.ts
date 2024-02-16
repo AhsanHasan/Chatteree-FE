@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { environment } from 'src/environments/environments';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -63,6 +64,7 @@ const customNotifierOptions: NotifierOptions = {
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    AngularFireStorageModule,
     HttpClientModule,
     NgxSpinnerModule,
     NotifierModule.withConfig(customNotifierOptions),

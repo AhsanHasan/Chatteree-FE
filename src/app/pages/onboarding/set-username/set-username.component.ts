@@ -61,12 +61,13 @@ export class SetUsernameComponent implements AfterViewInit {
       if (response.success) {
         this.showStatusIcon = true;
         await this.authenticationService.setUserData({
+          _id: this.authenticationService.auth?.user._id,
           username,
           name: this.authenticationService.auth?.user.name,
           email: this.authenticationService.auth?.user.email ?? '',
           profilePicture: this.authenticationService.auth?.user.profilePicture ?? '',
           isActive: this.authenticationService.auth?.user.isActive ?? true,
-          onlineStatus: this.authenticationService.auth?.user.onlineStatus ?? false,
+          onlineStatus: 'offline',
         });
         this.usernameFormError = {
           isValid: true,

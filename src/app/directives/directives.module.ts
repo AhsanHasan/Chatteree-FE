@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { UsernameInputDirective } from './username-validation-input.directive';
+import { NameInputDirective } from './name-validation-input.directive';
 
 @NgModule({
     imports: [CommonModule],
     declarations: [
-        UsernameInputDirective
+        UsernameInputDirective,
+        NameInputDirective
     ],
     exports: [
-        UsernameInputDirective
+        UsernameInputDirective,
+        NameInputDirective
     ]
 })
 export class DirectivesModule { }
