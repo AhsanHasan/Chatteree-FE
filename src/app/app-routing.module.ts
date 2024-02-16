@@ -22,7 +22,7 @@ const routes: Routes = [
         loadChildren: () => import('../app/pages/onboarding/set-username/set-username.module').then(m => m.SetUsernameModule)
       },
       {
-        path: 'image-upload',
+        path: 'basic-information',
         loadChildren: () => import('../app/pages/onboarding/image-upload/image-upload.module').then(m => m.ImageUploadModule)
       }
     ]

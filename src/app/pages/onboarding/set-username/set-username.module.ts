@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { SetUsernameComponent } from './set-username.component';
 import { SetUsernameRoutingModule } from './set-username-routing.module';
 import { FormsModule } from '@angular/forms';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { DirectivesModule } from 'src/app/directives/directives.module';
 
 
 
@@ -13,7 +15,9 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     SetUsernameRoutingModule,
-    FormsModule
+    FormsModule,
+    NgxSpinnerModule,
+    DirectivesModule
   ]
 })
 export class SetUsernameModule { }

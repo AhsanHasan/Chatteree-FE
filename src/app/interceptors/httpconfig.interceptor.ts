@@ -15,12 +15,17 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (this.authenticationService.auth && this.authenticationService.auth.token && request.url.indexOf(environment.apiBase) !== -1) {
-            request = request.clone({ 
-                setHeaders: { 
-                    Authorization: `Bearer ${this.authenticationService.auth.token}` 
-                } 
-            });
+        console.log('intercepted request ... ');
+        const apiBase = environment.apiBase;
+        console.log(apiBase);
+        if (this.authenticationService.auth && this.authenticationService.auth.token) {
+            if (request.url.includes(apiBase)) {
+                request = request.clone({
+                    setHeaders: {
+                        Authorization: `${this.authenticationService.auth.token}`
+                    }
+                });
+            }
         }
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {

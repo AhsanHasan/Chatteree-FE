@@ -53,6 +53,7 @@ export class AuthenticationService {
                             _id: cookie.user._id,
                             email: cookie.user.email,
                             name: cookie.user.name,
+                            username: cookie.user.username,
                             profilePicture: cookie.user.profilePicture,
                             isActive: cookie.user.isActive,
                             onlineStatus: cookie.user.onlineStatus
@@ -113,6 +114,7 @@ export class AuthenticationService {
                     _id: data.user._id,
                     email: data.user.email,
                     name: data.user.name,
+                    username: data.user.username,
                     profilePicture: data.user.profilePicture,
                     isActive: data.user.isActive,
                     onlineStatus: data.user.onlineStatus
@@ -144,6 +146,32 @@ export class AuthenticationService {
                 profilePicture: this.auth?.user.profilePicture,
                 isActive: this.auth?.user.isActive,
                 onlineStatus: this.auth?.user.onlineStatus
+            }
+        });
+        const currentDate = new Date();
+        const expDate = currentDate.setTime(currentDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+        this.cookieService.set(
+            `${environment.versionControl.env}${environment.versionControl.v}SessionAuth`,
+            encodeString.toString(),
+            expDate,
+            '/',
+            environment.cookieDomain,
+            true
+        )
+    }
+
+    async setUserData(user: User): Promise<void> {
+        // Add user data to the cookies
+        const encodeString = JSON.stringify({
+            token: this.auth?.token,
+            user: {
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                username: user.username,
+                profilePicture: user.profilePicture,
+                isActive: user.isActive,
+                onlineStatus: user.onlineStatus
             }
         });
         const currentDate = new Date();
