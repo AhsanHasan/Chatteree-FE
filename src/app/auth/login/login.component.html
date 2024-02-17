@@ -33,7 +33,7 @@
                             class="mb-2 mt-4 text-sm text-red-300">Invalid email address</span>
                     </div>
                     <div class="relative">
-                        <input type="email" id="email" name="email" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
+                        <input type="email" id="email" name="email" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 custom-border-radius-43 focus:ring-1 focus:outline-none focus:ring-yellow-400
                                                                     focus:border-yellow-400" placeholder="someone@example.com" required
                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" ngModel #email="ngModel" [ngClass]="{
                                 'border-red-300': emailSignInForm.submitted && (emailSignInForm.controls['email'].errors?.['required'] || emailSignInForm.controls['email'].errors?.['pattern']),
