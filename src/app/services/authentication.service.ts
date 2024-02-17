@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environments';
 export class AuthenticationService {
     private AUTHENTICATE_WITH_EMAIL_ENDPOINT = '/authenticate';
     private AUTHENTICATE_WITH_GOOGLE_ENDPOINT = '/authenticate/google';
-    private VERIFY_GOOGLE_TOKEN_ENDPOINT = '/authenticate/google/verify';
+    private VERIFY_GOOGLE_TOKEN_ENDPOINT = '/authenticate/google/token/verify';
     private GET_USER_ENDPOINT = '/user';
 
     constructor(
@@ -20,18 +20,6 @@ export class AuthenticationService {
         private router: Router,
         private cookieService: SsrCookieService
     ) { }
-
-    /* public auth: Session | undefined = {
-        token: '',
-        user: {
-            _id: '',
-            email: '',
-            name: '',
-            profilePicture: '',
-            isActive: false,
-            onlineStatus: false
-        }
-    }; */
 
     get auth() {
         return this.authFromCookie;
@@ -94,7 +82,7 @@ export class AuthenticationService {
         return await lastValueFrom(this.http.post<any>(environment.apiBase + this.AUTHENTICATE_WITH_GOOGLE_ENDPOINT, body));
     }
 
-    async verifyGoogleToken(body: GoogleToken): Promise<any> {
+    async validateGoogleToken(body: GoogleToken): Promise<any> {
         return await lastValueFrom(this.http.post<any>(environment.apiBase + this.VERIFY_GOOGLE_TOKEN_ENDPOINT, body));
     }
 
@@ -205,7 +193,7 @@ export interface GoogleUser {
     email: string;
     name: string;
     profilePicture: string;
-    verified_email: boolean;
+    verifiedEmail: boolean;
 }
 
 export interface GoogleToken {

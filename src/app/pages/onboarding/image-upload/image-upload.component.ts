@@ -17,10 +17,10 @@ import { Router } from '@angular/router';
 export class ImageUploadComponent implements OnInit, AfterViewInit {
   @ViewChild('cropperModal') cropperModal: CropperModalComponent | undefined;
   uploadedFileName: string = '';
-  imageUrl: string = '';
+  imageUrl: string = this.authenticationService.auth?.user.profilePicture || '';
   uploadedFile: File | undefined;
   maxNameLength = 18;
-  enteredName = '';
+  enteredName = this.authenticationService.auth?.user.name || '';
   currentNameLength = this.maxNameLength;
   userInformation: UserInformation = {
     name: '',
@@ -35,10 +35,13 @@ export class ImageUploadComponent implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private generalInformationService: GeneralInformationService,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
+    this.updateNameLength();
+    if (this.authenticationService.auth?.user.profilePicture) {
+      this.imageUrl = this.authenticationService.auth?.user.profilePicture;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -50,7 +53,7 @@ export class ImageUploadComponent implements OnInit, AfterViewInit {
         return;
       }
       // Check if the user has uploaded a file
-      if (!this.uploadedFile) {
+      if (!this.uploadedFile && (!this.imageUrl || this.imageUrl === '')) {
         throw new Error('Please upload a file');
       }
       this.loaderService.updateValue('Uploading profile picture...')

@@ -26,25 +26,29 @@
                 <div class="mb-5 mt-5">
                     <div class="flex items-center">
                         <label for="email" class="mb-2 mt-4 md:block hidden">Email Address</label>
-                        <span *ngIf="emailSignInForm.submitted && emailSignInForm.controls['email'].errors?.['required']" class="mb-2 mt-4 text-sm text-red-300 ml-2">Required *</span>
-                        <span *ngIf="emailSignInForm.submitted && emailSignInForm.controls['email'].errors?.['pattern']" class="mb-2 mt-4 text-sm text-red-300">Invalid email address</span>
+                        <span
+                            *ngIf="emailSignInForm.submitted && emailSignInForm.controls['email'].errors?.['required']"
+                            class="mb-2 mt-4 text-sm text-red-300 ml-2">Required *</span>
+                        <span *ngIf="emailSignInForm.submitted && emailSignInForm.controls['email'].errors?.['pattern']"
+                            class="mb-2 mt-4 text-sm text-red-300">Invalid email address</span>
                     </div>
-                    <div class="relative md:static">
+                    <div class="relative">
                         <input type="email" id="email" name="email" class="h-[64px] bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 custom-border-radius-43 focus:ring-2 focus:outline-none focus:ring-yellow-400
-                                                    focus:border-yellow-400" placeholder="someone@example.com" required
+                                                                    focus:border-yellow-400" placeholder="someone@example.com" required
                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" ngModel #email="ngModel" [ngClass]="{
                                 'border-red-300': emailSignInForm.submitted && (emailSignInForm.controls['email'].errors?.['required'] || emailSignInForm.controls['email'].errors?.['pattern']),
                                 'border-gray-300': !emailSignInForm.submitted || (!emailSignInForm.controls['email'].errors?.['required'] && !emailSignInForm.controls['email'].errors?.['pattern'])
                             }">
 
                         <!-- Button -->
-                        <button class="relative md:static" type="submit">
-                            <img src="assets/images/shapes/Ellipse1.png" alt="Email"
-                                class="px-4 py-2 absolute right-[-13px] bottom-[-4px] md:hidden md:static">
+                        <button class="absolute -right-[19px] top-0 h-full px-2 md:hidden" type="submit">
+                            <div class="relative">
+                                <img src="assets/images/shapes/Ellipse1.png" alt="Email" class="px-4 py-2">
 
-                            <!-- Second Image -->
-                            <img src="assets/images/icons/arrow-right.png" alt="arrow-right"
-                                class="absolute top-[-36px] right-[11px]">
+                                <!-- Second Image -->
+                                <img src="assets/images/icons/arrow-right.png" alt="arrow-right"
+                                    class="absolute top-[16px] left-[24px]">
+                            </div>
                         </button>
                     </div>
                 </div>

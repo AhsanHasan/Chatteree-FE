@@ -27,12 +27,46 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
   }
 
-  onGoogleSignIn(): void {
-    this.angularAuth.signInWithPopup(new GoogleAuthProvider()).then((userCredential) => {
+  async onGoogleSignIn(): Promise<void> {
+    try {
+      const userCredential = await this.angularAuth.signInWithPopup(new GoogleAuthProvider()) as any;
       console.log(userCredential);
-    }).catch((error) => {
+      const body = {
+        idToken: userCredential.credential?.idToken
+      };
+      this.loaderService.updateValue('Validating your details...');
+      this.ngxSpinner.show();
+      const validateToken = await this.authenticationService.validateGoogleToken(body);
+      if (validateToken && validateToken.success) {
+        const authBody = {
+          email: userCredential.additionalUserInfo?.profile?.email,
+          name: userCredential.additionalUserInfo?.profile?.name,
+          profilePicture: userCredential.additionalUserInfo?.profile?.picture,
+          verifiedEmail: userCredential.additionalUserInfo?.profile?.verified_email,
+        };
+        this.loaderService.updateValue('Signing in...');
+        const response = await this.authenticationService.authenticateWithGoogle(authBody);
+        if (response && response.success) {
+          await this.authenticationService.storeSession(response.data);
+          if (this.authenticationService.auth?.user?.isActive) {
+            if (this.authenticationService.auth?.user?.username) {
+              if (this.authenticationService.auth?.user?.profilePicture) {
+                this.router.navigate(['/chat']);
+              } else {
+                this.router.navigate(['/onboarding/basic-information']);
+              }
+            } else {
+              this.router.navigate(['/onboarding/set-username']);
+            }
+          } else {
+            this.router.navigate(['/onboarding/verify-account']);
+          }
+        }
+      }
+    } catch (error) {
       console.error(error);
-    });
+    }
+    this.ngxSpinner.hide();
   }
 
   async onEmailSignIn(emailSignInForm: NgForm): Promise<void> {
