@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('assets/css/general-sans.css');
+
+body {
+    font-family: 'GeneralSans-Variable';
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
