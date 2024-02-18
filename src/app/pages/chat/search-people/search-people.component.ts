@@ -53,7 +53,6 @@ export class SearchPeopleComponent implements OnInit {
   }
 
   async onScroll(): Promise<void> {
-    console.log('scrolled');
     const query = {
       page: this.pagination.hasNextPage ? parseInt(this.pagination.currentPage, 10) + 1 : 1,
       limit: 6,
@@ -77,7 +76,6 @@ export class SearchPeopleComponent implements OnInit {
   }
 
   onSearch(event: any) {
-    console.log(event.target.value);
     this.searchTermChanged.next(event.target.value);
   }
 }
