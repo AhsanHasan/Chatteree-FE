@@ -7,6 +7,7 @@ import { Chatroom } from '../interfaces/chatroom.interface';
 import { Message } from '../interfaces/message.interface';
 import { MessageService } from '../services/message.service';
 import { Utils } from 'src/app/utils';
+import { NgxPusherService } from 'ngx-pusher';
 
 @Component({
   selector: 'app-chat-window',
@@ -28,7 +29,8 @@ export class ChatWindowComponent implements OnChanges {
     private searchPeopleService: SearchPeopleService,
     public audioService: AudioRecordService,
     public messageService: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private pusherService: NgxPusherService
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
@@ -39,6 +41,10 @@ export class ChatWindowComponent implements OnChanges {
     if (changes['selectedChatroomId'] && changes['selectedChatroomId'].currentValue !== changes['selectedChatroomId'].previousValue) {
       if (this.selectedChatroomId) {
         this.getChatroomMessages(null);
+        const channel = this.pusherService.listen('new-message', `chat-room-${this.selectedChatroomId}`);
+        channel.subscribe((data: any) => {
+          this.getChatroomMessages(null);
+        });
       }
     }
   }

@@ -14,5 +14,9 @@ export const environment = {
         storageBucket: "chatteree-414221.appspot.com",
         messagingSenderId: "864601846719",
         appId: "1:864601846719:web:4f11cfa36313ec72c1670a"
+    },
+    pusher: {
+        key: '1aef33faf3997c780653',
+        cluster: 'eu'
     }
 };
