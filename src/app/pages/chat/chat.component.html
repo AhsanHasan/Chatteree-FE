@@ -35,7 +35,8 @@
 
                     <div class="flex">
                         <div class="ml-4">
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
+                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]"
+                                (click)="openSearchPeopleModal()">
                                 <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
                                     width="24" height="24">
                             </button>
@@ -50,14 +51,24 @@
                     focus:border-yellow-400" placeholder="Search for chatter or message." />
                 </div>
 
+                <p class="py-2 px-4 mt-4 font-normal text-sm leading-5" style="color: #79838B;">Favourite chatters</p>
+
+                <app-fav-contacts-slider> </app-fav-contacts-slider>
+
+
                 <!-- Contacts -->
                 <div class="bg-grey-lighter flex-1 overflow-auto">
                     <!-- Show when contacts are added-->
                     <div id="contact-list">
                         <div class="px-3 flex items-center bg-grey-light cursor-pointer">
                             <div>
-                                <img class="h-12 w-12 rounded-full"
-                                    src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
+                                <div class="relative inline-block">
+                                    <img class="h-12 w-12 rounded-full"
+                                        src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
+                                    <div
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+                                    </div>
+                                </div>
                             </div>
                             <div class="ml-4 flex-1 border-b border-grey-lighter py-4">
                                 <div class="flex items-bottom justify-between">
@@ -75,8 +86,13 @@
                         </div>
                         <div class="bg-white px-3 flex items-center hover:bg-grey-lighter cursor-pointer">
                             <div>
-                                <img class="h-12 w-12 rounded-full"
-                                    src="https://www.famousbirthdays.com/headshots/russell-crowe-6.jpg" />
+                                <div class="relative inline-block">
+                                    <img class="h-12 w-12 rounded-full"
+                                        src="https://www.famousbirthdays.com/headshots/russell-crowe-6.jpg" />
+                                    <div
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
+                                    </div>
+                                </div>
                             </div>
                             <div class="ml-4 flex-1 border-b border-grey-lighter py-4">
                                 <div class="flex items-bottom justify-between">
@@ -190,8 +206,15 @@
                             <input class="w-full border rounded-full px-2 py-2 h-[48px] pl-3 pr-24"
                                 placeholder="Type your message" type="text" />
                             <div class="absolute right-4 top-1/2 transform -translate-y-1/2 flex space-x-2">
-                                <img src="assets/images/icons/smile.svg" alt="Emoji"
-                                    class="w-[24px] h-[24px] cursor-pointer">
+                                <div class="relative">
+                                    <img src="assets/images/icons/smile.svg" alt="Emoji"
+                                        class="w-[24px] h-[24px] cursor-pointer"
+                                        (click)="showEmojiPopup = !showEmojiPopup">
+                                    <div class="absolute left-0 top-[32px] bg-white rounded shadow-lg p-2"
+                                        *ngIf="showEmojiPopup">
+                                        <!-- emojis go here -->
+                                    </div>
+                                </div>
                                 <img src="assets/images/icons/paperclip.svg" alt="Emoji"
                                     class="w-[24px] h-[24px] cursor-pointer">
                                 <img src="assets/images/icons/microphone.svg" alt="Emoji"
@@ -210,7 +233,8 @@
                 <ng-container *ngIf="false">
                     <div class="mt-16 ml-4 text-left">
                         <p class="mt-2 text-[#B5BDC5] text-[15px] font-normal leading-[24px]">Welcome</p>
-                        <p class="text-[36px] font-semibold leading-[46px] text-[#101C26]">{{authenticationService.auth?.user?.name}}</p>
+                        <p class="text-[36px] font-semibold leading-[46px] text-[#101C26]">
+                            {{authenticationService.auth?.user?.name}}</p>
                     </div>
                     <div class="flex flex-col items-center justify-center h-full">
                         <div class="relative w-[296px] h-[296px]">
@@ -222,7 +246,7 @@
                         </div>
                         <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">We hear say
                             your mouth die hmmm</p>
-                        <button class="mx-auto mt-4 custom-button flex items-center">
+                        <button class="mx-auto mt-4 custom-button flex items-center" (click)="openSearchPeopleModal()">
                             <img src="assets/images/icons/white-square-feather.svg" alt="Chat"
                                 class="w-[24px] h-[24px] mr-1" />
                             Start chatting
@@ -234,3 +258,5 @@
         </div>
     </div>
 </div>
+
+<app-search-people></app-search-people>

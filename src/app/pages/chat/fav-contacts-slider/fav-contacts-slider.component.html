@@ -1,0 +1,50 @@
+<div class="py-2 px-2 bg-grey-lightest flex items-center rounded-full">
+    <div id="carousel" class="w-full relative flex items-center overflow-hidden">
+        <button id="prev"
+            class="absolute -left-[8px] top-[33px] w-8 h-8 p-2 rounded-full bg-white flex items-center justify-center overflow-hidden z-10" (click)="scrollLeft()">
+            <img src="assets/images/icons/prev-arrow.svg" alt="Previous">
+        </button>
+        <div id="carousel-items" #carouselItems
+            class="flex w-full space-x-2 lg:space-x-4 transition-all duration-500 overflow-auto scrollbar-hide justify-start pl-4">
+            <div class="relative inline-block min-w-16">
+                <img class="w-16 h-16 rounded-full"
+                    src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" alt="Image 3">
+                <div
+                    class="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-yellow-300 rounded-full flex items-center justify-center text-xs">
+                    3</div>
+            </div>
+            <div class="relative inline-block min-w-16">
+                <img class="w-16 h-16 rounded-full"
+                    src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" alt="Image 3">
+                <div
+                    class="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-yellow-300 rounded-full flex items-center justify-center text-xs">
+                    2</div>
+            </div>
+            <div class="relative inline-block min-w-16">
+                <img class="w-16 h-16 rounded-full"
+                    src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" alt="Image 3">
+                <div
+                    class="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-yellow-300 rounded-full flex items-center justify-center text-xs">
+                    1</div>
+            </div>
+            <div class="relative inline-block min-w-16">
+                <img class="w-16 h-16 rounded-full"
+                    src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" alt="Image 3">
+                <div
+                    class="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-yellow-300 rounded-full flex items-center justify-center text-xs">
+                    1</div>
+            </div>
+            <div class="relative inline-block min-w-16">
+                <img class="w-16 h-16 rounded-full"
+                    src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" alt="Image 3">
+                <div
+                    class="absolute top-[12px] right-0 transform translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-yellow-300 rounded-full flex items-center justify-center text-xs">
+                    1</div>
+            </div>
+        </div>
+        <button id="next"
+            class="absolute right-0 top-[33px] p-2 w-8 h-8 rounded-full bg-white flex items-center justify-center" (click)="scrollRight()">
+            <img src="assets/images/icons/next-arrow.svg" alt="Next">
+        </button>
+    </div>
+</div>
