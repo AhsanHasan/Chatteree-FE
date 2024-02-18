@@ -57,7 +57,7 @@
 
 
                 <!-- Contacts -->
-                <div class="bg-grey-lighter flex-1 overflow-auto">
+                <div class="bg-grey-lighter flex-1 mt-4 overflow-auto">
                     <!-- Show when contacts are added-->
                     <div id="contact-list">
                         <div class="px-3 flex items-center bg-grey-light cursor-pointer">
@@ -204,21 +204,101 @@
                     <div class="bg-grey-lighter px-4 py-4 flex items-center">
                         <div class="relative flex-1 mx-4">
                             <input class="w-full border rounded-full px-2 py-2 h-[48px] pl-3 pr-24"
-                                placeholder="Type your message" type="text" />
+                                placeholder="Type your message" type="text" [(ngModel)]="message" />
                             <div class="absolute right-4 top-1/2 transform -translate-y-1/2 flex space-x-2">
                                 <div class="relative">
                                     <img src="assets/images/icons/smile.svg" alt="Emoji"
                                         class="w-[24px] h-[24px] cursor-pointer"
                                         (click)="showEmojiPopup = !showEmojiPopup">
-                                    <div class="absolute left-0 top-[32px] bg-white rounded shadow-lg p-2"
+                                    <div class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2"
                                         *ngIf="showEmojiPopup">
-                                        <!-- emojis go here -->
+                                        <emoji-mart (emojiClick)="addEmoji($event)" [darkMode]="false"
+                                            [set]="'facebook'" [showPreview]="false"></emoji-mart>
                                     </div>
                                 </div>
-                                <img src="assets/images/icons/paperclip.svg" alt="Emoji"
-                                    class="w-[24px] h-[24px] cursor-pointer">
-                                <img src="assets/images/icons/microphone.svg" alt="Emoji"
-                                    class="w-[24px] h-[24px] cursor-pointer">
+                                <div class="relative">
+                                    <img src="assets/images/icons/paperclip.svg" alt="paperclip"
+                                        class="w-[24px] h-[24px] cursor-pointer"
+                                        (click)="showAttachmentPopup = !showAttachmentPopup">
+                                    <div class="absolute right-[7px] bottom-[32px] bg-white rounded-t-md shadow-lg p-4 flex space-x-2"
+                                        *ngIf="showAttachmentPopup">
+                                        <div class="text-center m-2 px-2 w-max">
+                                            <input type="file" #imageInput hidden (change)="onFileSelected($event)"
+                                                accept="image/*">
+                                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                                (click)="imageInput.click()">
+                                                <img class="w-6 h-6" src="assets/images/icons/image-gallery.svg"
+                                                    alt="gallery">
+                                            </div>
+                                            <p class="text-center text-sm font-normal leading-5">Image</p>
+                                        </div>
+                                        <div class="text-center m-2 px-2 w-max">
+                                            <input type="file" #audioInput hidden (change)="onFileSelected($event)"
+                                                accept="audio/mpeg">
+                                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                                (click)="audioInput.click()">
+                                                <img class="w-[24px] h-[24px] rounded-full"
+                                                    src="assets/images/icons/file-audio.svg" alt="audio file">
+                                            </div>
+                                            <p class="text-center text-sm font-normal leading-5">Audio</p>
+                                        </div>
+                                        <div class="text-center m-2 px-2 w-max">
+                                            <input type="file" #fileInput hidden (change)="onFileSelected($event)"
+                                                accept=".pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain">
+                                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                                (click)="fileInput.click()">
+                                                <img class="w-[24px] h-[24px] rounded-full"
+                                                    src="assets/images/icons/document.svg" alt="document">
+                                            </div>
+                                            <p class="text-center text-sm font-normal leading-5">Doc</p>
+                                        </div>
+                                        <div class="text-center m-2 px-2 w-max">
+                                            <input type="file" #contactInput hidden (change)="onFileSelected($event)"
+                                                accept="text/vcard">
+                                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                                (click)="contactInput.click()">
+                                                <img class="w-[24px] h-[24px] rounded-full"
+                                                    src="assets/images/icons/user.svg" alt="contact">
+                                            </div>
+                                            <p class="text-center text-sm font-normal leading-5">Contact</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="relative">
+                                    <img src="assets/images/icons/microphone.svg" alt="mic"
+                                        class="w-[24px] h-[24px] cursor-pointer" (click)="recordAudio()">
+                                    <div *ngIf="showAudioPopup && audioService.isRecording"
+                                        class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex space-x-2">
+                                        <div class="flex items-center justify-center m-2 px-2 w-max">
+                                            <img src="assets/images/icons/stop-playing.png" alt="mic"
+                                                class="w-[40px] h-[40px] cursor-pointer" (click)="stopRecordingAudio()">
+                                        </div>
+                                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max">
+                                            <img src="assets/images/icons/Sound-Wave.svg" class="w-full"
+                                                alt="soundwave">
+                                        </div>
+                                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max">
+                                            <p>{{audioService.getRecordingDuration()}}</p>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="audioBlob && showAudioPopup && !audioService.isRecording"
+                                        class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex space-x-2">
+                                        <div class="flex items-center justify-center m-2 px-2 w-max">
+                                            <!-- Audio Player to play recorded audio -->
+                                            <audio controls [src]="audioBlob"></audio>
+                                        </div>
+                                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max cursor-pointer"
+                                            (click)="removeAudio()">
+                                            <img class="w-[24px] h-[24px] rounded-full"
+                                                src="assets/images/icons/trash.png" alt="trash">
+                                        </div>
+                                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max cursor-pointer"
+                                            (click)="uploadAudio()">
+                                            <img class="w-[24px] h-[24px] rounded-full"
+                                                src="assets/images/icons/send.png" alt="trash">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div>

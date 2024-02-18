@@ -28,6 +28,7 @@
               "src/styles.css",
               "node_modules/ngx-spinner/animations/timer.css",
               "node_modules/ngx-spinner/animations/ball-clip-rotate.css",
+              "node_modules/@ctrl/ngx-emoji-mart/picker.css",
               "node_modules/angular-notifier/styles.css",
               "src/assets/css/style.css"
             ],

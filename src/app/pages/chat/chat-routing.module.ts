@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ChatComponent } from './chat.component';
 import { SearchPeopleService } from './services/search-people.service';
+import { AudioRecordService } from './services/audio-record.service';
 
 
 const routes: Routes = [
@@ -15,7 +16,8 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
     providers: [
-        SearchPeopleService
+        SearchPeopleService,
+        AudioRecordService
     ]
 })
 export class ChatRoutingModule {
