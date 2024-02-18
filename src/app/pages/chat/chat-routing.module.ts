@@ -5,6 +5,9 @@ import { SearchPeopleService } from './services/search-people.service';
 import { AudioRecordService } from './services/audio-record.service';
 import { UserService } from './services/user.service';
 import { GetAllUserResolver } from './resolvers/get-all-user.resolver';
+import { GetAllChatroomResolver } from './resolvers/get-all-chatroom.resolver';
+import { ChatroomService } from './services/chatroom.service';
+import { MessageService } from './services/message.service';
 
 
 const routes: Routes = [
@@ -12,7 +15,8 @@ const routes: Routes = [
         path: '',
         component: ChatComponent,
         resolve: {
-            users: GetAllUserResolver
+            users: GetAllUserResolver,
+            chatrooms: GetAllChatroomResolver
         }
     }
 ];
@@ -23,7 +27,9 @@ const routes: Routes = [
     providers: [
         SearchPeopleService,
         AudioRecordService,
-        UserService
+        UserService,
+        ChatroomService,
+        MessageService,
     ]
 })
 export class ChatRoutingModule {

@@ -9,6 +9,8 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { FormsModule } from '@angular/forms';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ChatRoomComponent } from './chat-room/chat-room.component';
+import { ChatWindowComponent } from './chat-window/chat-window.component';
 
 
 
@@ -16,7 +18,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   declarations: [
     ChatComponent,
     SearchPeopleComponent,
-    FavContactsSliderComponent
+    FavContactsSliderComponent,
+    ChatRoomComponent,
+    ChatWindowComponent
   ],
   imports: [
     CommonModule,

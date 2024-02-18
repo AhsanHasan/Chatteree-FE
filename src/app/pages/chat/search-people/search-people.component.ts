@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SearchPeopleService } from '../services/search-people.service';
 import { PaginationQuery, UserService } from '../services/user.service';
 import { Utils } from 'src/app/utils';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subject, debounce, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ChatroomService } from '../services/chatroom.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-people',
@@ -13,7 +15,7 @@ import { Subject, debounce, debounceTime, distinctUntilChanged } from 'rxjs';
 export class SearchPeopleComponent implements OnInit {
   @Input() users: any;
   @Input() pagination: any;
-
+  @Output() chatRoomSelected: EventEmitter<any> = new EventEmitter<any>();
   searchTerm: string = '';
   searchTermChanged = new Subject<string>();
 
@@ -22,7 +24,9 @@ export class SearchPeopleComponent implements OnInit {
   constructor(
     private searchPeopleService: SearchPeopleService,
     private userService: UserService,
-    private ngxSpinnerService: NgxSpinnerService
+    private chatroomService: ChatroomService,
+    private ngxSpinnerService: NgxSpinnerService,
+    private router: Router
   ) {
     this.searchTermChanged.pipe(
       debounceTime(500),
@@ -77,5 +81,28 @@ export class SearchPeopleComponent implements OnInit {
 
   onSearch(event: any) {
     this.searchTermChanged.next(event.target.value);
+  }
+
+  async getChatRoom(user: any): Promise<void> {
+    try {
+      this.ngxSpinnerService.show(this.spinner);
+      const query = {
+        userId: user._id
+      };
+      const response = await this.chatroomService.getChatroom(query);
+      if (response.success) {
+        // set chat room id in query params
+        this.router.navigate([], {
+          queryParams: {
+            id: response.data._id
+          }
+        });
+        this.chatRoomSelected.emit(response.data.participants);
+        this.closePopup();
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to create chat room', error);
+    }
+    this.ngxSpinnerService.hide(this.spinner);
   }
 }
