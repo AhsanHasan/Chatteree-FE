@@ -61,4 +61,8 @@ export class ChatComponent implements OnInit {
   uploadAudio(): void {
     console.log('Uploading audio...');
   }
+
+  logout(): void {
+    this.authenticationService.logout();
+  }
 }
