@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { SearchPeopleService } from './services/search-people.service';
 import { AudioRecordService } from './services/audio-record.service';
+import { User } from 'src/app/interfaces/user';
+import { ActivatedRoute } from '@angular/router';
+import { Pagination } from 'src/app/interfaces/pagination.interface';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -14,11 +17,25 @@ export class ChatComponent implements OnInit {
   showAudioPopup = false;
   audioBlob: any;
   message = '';
+  users: Array<User> = [];
+  pagination: Pagination = {
+    currentPage: 1,
+    totalPages: 1,
+    totalDocuments: 0,
+    hasNextPage: false,
+    hasPreviousPage: false
+  };
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
-    public audioService: AudioRecordService
-  ) { }
+    public audioService: AudioRecordService,
+    private route: ActivatedRoute
+  ) { 
+    this.route.data.subscribe((data: any) => {
+      this.users = data.users.data.users;
+      this.pagination = data.users.data.pagination;
+    });
+  }
 
   ngOnInit() { }
 

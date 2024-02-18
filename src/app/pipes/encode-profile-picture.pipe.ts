@@ -9,6 +9,9 @@ export class EncodeProfilePictureUrlPipe implements PipeTransform {
         const userId = this.authenticationService.auth?.user._id as string;
         const urlObject = new URL(url);
         const startIndex = urlObject.pathname.indexOf(userId);
+        if (startIndex === -1) {
+            return url;
+        }
         const encodedSubstring = encodeURIComponent(urlObject.pathname.substring(startIndex));
         return urlObject.href.replace(urlObject.pathname.substring(startIndex), encodedSubstring);
     }

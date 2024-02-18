@@ -26,26 +26,32 @@
                 <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full">
                     <img src="assets/images/icons/search.png" alt="Search" class="absolute h-6 w-6 left-3">
                     <input type="text" class="w-full pl-10 py-2 bg-[#F7F7F7] h-[48px] text-sm rounded-full focus:ring-1 focus:outline-none focus:ring-yellow-400
-                    focus:border-yellow-400" placeholder="Search for chatter or message." />
+                    focus:border-yellow-400" placeholder="Search for chatter or message." (keyup)="onSearch($event)" />
                 </div>
             </div>
             <!-- Modal body -->
-            <div class="p-4 md:p-5 space-y-4 h-[34rem] overflow-y-auto">
+            <div class="p-4 md:p-5 space-y-4 h-[24rem] overflow-y-auto" infiniteScroll [infiniteScrollDistance]="2"
+                [infiniteScrollThrottle]="500" (scrolled)="onScroll()" [scrollWindow]="false">
+                <ngx-spinner [name]="spinner" bdColor="" size="default" color="#101C26"
+                                        type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
                 <ul class="divide-y divide-gray-200">
-                    <li class="pb-3 sm:pb-4">
+                    <li class="pb-3 py-3 sm:pb-4" *ngFor="let user of users">
                         <div class="flex items-center space-x-4 rtl:space-x-reverse">
                             <div class="relative inline-block">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                                <div
+                                <img class="rounded-full" [src]="user.profilePicture ? user.profilePicture : 'assets/images/profile-default.svg'" alt="user.name" width="48" height="48">
+                                <div *ngIf="user.onlineStatus === 'online'"
                                     class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+                                </div>
+                                <div *ngIf="user.onlineStatus === 'offline'"
+                                    class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
                                 </div>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate">
-                                    Neil Sims
+                                    {{user.name}}
                                 </p>
                                 <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
+                                    {{user.username || user.email}}
                                 </p>
                             </div>
                             <div class="inline-flex items-center text-base font-semibold text-gray-900">
@@ -54,161 +60,6 @@
                                         width="24" height="24">
                                 </button>
                             </div>
-                        </div>
-                    </li>
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="relative inline-block">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                                <div
-                                    class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Bonnie Green
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Michael Gough
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Thomas Lean
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 pb-0 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Lana Byrd
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 pb-0 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Lana Byrd
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 pb-0 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Lana Byrd
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 pb-0 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Lana Byrd
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
-                        </div>
-                    </li>
-                    <li class="py-3 pb-0 sm:py-4">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="flex-shrink-0">
-                                <img class="rounded-full" src="https://placehold.co/48x48" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate">
-                                    Lana Byrd
-                                </p>
-                                <p class="text-sm text-gray-500 truncate">
-                                    email@flowbite.com
-                                </p>
-                            </div>
-                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]">
-                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
-                                    width="24" height="24">
-                            </button>
                         </div>
                     </li>
                 </ul>

@@ -3,12 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChatComponent } from './chat.component';
 import { SearchPeopleService } from './services/search-people.service';
 import { AudioRecordService } from './services/audio-record.service';
+import { UserService } from './services/user.service';
+import { GetAllUserResolver } from './resolvers/get-all-user.resolver';
 
 
 const routes: Routes = [
     {
         path: '',
-        component: ChatComponent
+        component: ChatComponent,
+        resolve: {
+            users: GetAllUserResolver
+        }
     }
 ];
 
@@ -17,7 +22,8 @@ const routes: Routes = [
     exports: [RouterModule],
     providers: [
         SearchPeopleService,
-        AudioRecordService
+        AudioRecordService,
+        UserService
     ]
 })
 export class ChatRoutingModule {

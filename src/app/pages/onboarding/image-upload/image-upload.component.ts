@@ -56,13 +56,18 @@ export class ImageUploadComponent implements OnInit, AfterViewInit {
       if (!this.uploadedFile && (!this.imageUrl || this.imageUrl === '')) {
         throw new Error('Please upload a file');
       }
-      this.loaderService.updateValue('Uploading profile picture...')
-      this.ngxSpinnerService.show();
-      // Upload the file to firebase storage
-      const path = `${this.authenticationService.auth?.user._id}/profile-image/${this.uploadedFile?.name}`;
-      const uploadResponse = await this.fireStorage.upload(path, this.uploadedFile as File);
-      const downloadURL = await uploadResponse.ref.getDownloadURL();
-      this.userInformation.profilePicture = downloadURL;
+      const isGoogleImage = this.imageUrl.includes('googleusercontent');
+      if (!isGoogleImage) {
+        this.loaderService.updateValue('Uploading profile picture...')
+        this.ngxSpinnerService.show();
+        // Upload the file to firebase storage
+        const path = `${this.authenticationService.auth?.user._id}/profile-image/${this.uploadedFile?.name}`;
+        const uploadResponse = await this.fireStorage.upload(path, this.uploadedFile as File);
+        const downloadURL = await uploadResponse.ref.getDownloadURL();
+        this.userInformation.profilePicture = downloadURL;
+      } else {
+        this.userInformation.profilePicture = this.imageUrl;
+      }
       this.userInformation.name = generalInfoForm.value.name;
       this.loaderService.updateValue('Saving information...')
 

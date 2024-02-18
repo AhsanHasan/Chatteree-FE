@@ -4,7 +4,6 @@ export interface User {
     name?: string;
     username?: string;
     profilePicture?: string;
-    token?: string;
     isActive?: boolean;
     onlineStatus?: 'online' | 'offline' | 'away';
 }

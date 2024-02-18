@@ -51,15 +51,15 @@
                     focus:border-yellow-400" placeholder="Search for chatter or message." />
                 </div>
 
-                <p class="py-2 px-4 mt-4 font-normal text-sm leading-5" style="color: #79838B;">Favourite chatters</p>
+                <p class="py-2 px-4 mt-4 font-normal text-sm leading-5 hidden" style="color: #79838B;">Favourite chatters</p>
 
-                <app-fav-contacts-slider> </app-fav-contacts-slider>
+                <app-fav-contacts-slider class="hidden"> </app-fav-contacts-slider>
 
 
                 <!-- Contacts -->
                 <div class="bg-grey-lighter flex-1 mt-4 overflow-auto">
                     <!-- Show when contacts are added-->
-                    <div id="contact-list">
+                    <div id="contact-list" class="hidden">
                         <div class="px-3 flex items-center bg-grey-light cursor-pointer">
                             <div>
                                 <div class="relative inline-block">
@@ -111,7 +111,7 @@
                     </div>
 
                     <!-- Show when no contacts are added-->
-                    <div id="no-contacts" class=" hidden flex flex-col items-center justify-center h-full">
+                    <div id="no-contacts" class="flex flex-col items-center justify-center h-full">
                         <img src="assets/images/icons/chat.png" alt="No Contacts" class="w-[86px] h-[86px]" />
                         <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">Your Chatteree
                             conversations live here</p>
@@ -339,4 +339,4 @@
     </div>
 </div>
 
-<app-search-people></app-search-people>
+<app-search-people [users]="users" [pagination]="pagination"></app-search-people>
