@@ -20,7 +20,7 @@ export class AudioRecordService {
             this.recordingDuration++;
         }, 1000);
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            this.mediaRecorder = new MediaRecorder(stream);
+            this.mediaRecorder = new MediaRecorder(stream, {});
             this.mediaRecorder.start();
             this.isRecording = true;
             this.mediaRecorder.addEventListener('dataavailable', (event: any) => {
@@ -36,7 +36,7 @@ export class AudioRecordService {
             this.mediaRecorder.addEventListener('stop', () => {
                 this.isRecording = false;
                 clearInterval(this.recordingTimer);
-                const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                const audioBlob = new Blob(this.audioChunks, { type: 'audio/mpeg' });
                 resolve(audioBlob);
             });
             this.mediaRecorder.stop();

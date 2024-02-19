@@ -6,6 +6,7 @@ import { GoogleAuthProvider } from 'firebase/auth';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService, UserEmail } from 'src/app/services/authentication.service';
 import { LoaderService } from 'src/app/services/loader.service';
+import { PusherService } from 'src/app/services/pusher.service';
 import { Utils } from 'src/app/utils';
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authenticationService: AuthenticationService,
     private router: Router,
     private ngxSpinner: NgxSpinnerService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private pusherService: PusherService
   ) { }
 
   ngOnInit(): void {}
@@ -30,7 +32,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   async onGoogleSignIn(): Promise<void> {
     try {
       const userCredential = await this.angularAuth.signInWithPopup(new GoogleAuthProvider()) as any;
-      console.log(userCredential);
       const body = {
         idToken: userCredential.credential?.idToken
       };
@@ -51,6 +52,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           if (this.authenticationService.auth?.user?.isActive) {
             if (this.authenticationService.auth?.user?.username) {
               if (this.authenticationService.auth?.user?.profilePicture) {
+                await this.pusherService.subscribeChatToChannel();
                 this.router.navigate(['/chat']);
               } else {
                 this.router.navigate(['/onboarding/basic-information']);
@@ -89,6 +91,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           if (this.authenticationService.auth?.user?.username) {
             // Check if user has profile picture
             if (this.authenticationService.auth?.user?.profilePicture) {
+              await this.pusherService.subscribeChatToChannel();
               // Redirect to chat
               this.router.navigate(['/chat']);
             } else {

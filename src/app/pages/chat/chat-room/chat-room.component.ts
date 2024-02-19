@@ -17,7 +17,7 @@ export class ChatRoomComponent {
   constructor(
     private route: ActivatedRoute,
     private chatroomService: ChatroomService,
-    private authenticationService: AuthenticationService,
+    public authenticationService: AuthenticationService,
     private router: Router
   ) {
     this.route.data.subscribe((data: any) => {

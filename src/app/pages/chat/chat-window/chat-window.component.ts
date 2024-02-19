@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { AudioRecordService } from '../services/audio-record.service';
@@ -8,6 +8,7 @@ import { Message } from '../interfaces/message.interface';
 import { MessageService } from '../services/message.service';
 import { Utils } from 'src/app/utils';
 import { NgxPusherService } from 'ngx-pusher';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Component({
   selector: 'app-chat-window',
@@ -17,6 +18,7 @@ import { NgxPusherService } from 'ngx-pusher';
 export class ChatWindowComponent implements OnChanges {
   @Input() selectedParticipant: any;
   @Input() selectedChatroomId: any;
+  @Output() messageReceivedSignal = new EventEmitter<any>();
   message = '';
   showAudioPopup = false;
   audioBlob: any;
@@ -24,13 +26,20 @@ export class ChatWindowComponent implements OnChanges {
   showAttachmentPopup = false;
   chatRooms: Chatroom[] = [];
   messages: Message[] = [];
+
+  uploadMediaType = '';
+  uploadedBlob: any;
+  uploadMediaFile: File | null = null;
+  uploadDocumentName = '';
+  isAttachmentSelected = false;
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
     public audioService: AudioRecordService,
     public messageService: MessageService,
     private route: ActivatedRoute,
-    private pusherService: NgxPusherService
+    private pusherService: NgxPusherService,
+    private fireStorage: AngularFireStorage
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
@@ -41,12 +50,13 @@ export class ChatWindowComponent implements OnChanges {
     if (changes['selectedChatroomId'] && changes['selectedChatroomId'].currentValue !== changes['selectedChatroomId'].previousValue) {
       if (this.selectedChatroomId) {
         this.getChatroomMessages(null);
-        const channel = this.pusherService.listen('new-message', `chat-room-${this.selectedChatroomId}`);
-        channel.subscribe((data: any) => {
-          this.getChatroomMessages(null);
-        });
       }
     }
+  }
+
+  toggleAttachmentPopup(): void {
+    this.showAttachmentPopup = !this.showAttachmentPopup;
+    this.removeAttachment();
   }
 
   openSearchPeopleModal(): void {
@@ -54,12 +64,34 @@ export class ChatWindowComponent implements OnChanges {
   }
 
   addEmoji($event: any): void {
-    console.log($event);
     this.message += $event.emoji.native;
   }
 
-  onFileSelected(event: any): void {
-    console.log(event);
+  onFileSelected(event: any, type: string): void {
+    const file = event.target.files[0];
+    this.uploadMediaFile = file;
+    this.uploadMediaType = type;
+    this.isAttachmentSelected = true;
+    // convert file to blob
+    switch (type) {
+      case 'image':
+      case 'audio':
+        const fileBlob = URL.createObjectURL(file);
+        this.uploadedBlob = fileBlob;
+        break;
+      case 'file':
+        this.uploadDocumentName = file.name;
+        break;
+      default:
+        break;
+    }
+  }
+
+  removeAttachment(): void {
+    this.uploadedBlob = null;
+    this.uploadMediaType = '';
+    this.uploadMediaFile = null;
+    this.uploadDocumentName = '';
   }
 
   async recordAudio(): Promise<void> {
@@ -91,6 +123,9 @@ export class ChatWindowComponent implements OnChanges {
 
   async getChatroomMessages(page: number | null): Promise<void> {
     try {
+      if (!this.selectedChatroomId) {
+        return;
+      }
       const query = {
         page: page ? page : 1,
         limit: 10,
@@ -102,7 +137,6 @@ export class ChatWindowComponent implements OnChanges {
         if (this.messages.length === 1 && this.messages[0].content === '') {
           this.messages = [];
         }
-
       }
     } catch (error) {
       Utils.showErrorMessage('Failed to get chat room messages', error);
@@ -123,6 +157,52 @@ export class ChatWindowComponent implements OnChanges {
       }
     } catch (error) {
       Utils.showErrorMessage('Failed to send message', error);
+    }
+  }
+
+  async sendImageMessage(): Promise<void> {
+    try {
+      const path = `chatroom/${this.selectedChatroomId}/images/${this.uploadMediaFile?.name}`;
+      const uploadResponse = await this.fireStorage.upload(path, this.uploadMediaFile as File);
+      const downloadURL = await uploadResponse.ref.getDownloadURL();
+      const body = {
+        chatroomId: this.selectedChatroomId,
+        content: downloadURL,
+        type: 'image'
+      };
+      const response = await this.messageService.sendMessage(body);
+      if (response.success) {
+        this.removeAttachment();
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to send image message', error);
+    }
+  }
+
+  async sendFileMessage(): Promise<void> {
+    try {
+      const path = `chatroom/${this.selectedChatroomId}/files/${this.uploadMediaFile?.name}?searchable=${this.uploadDocumentName}`;
+      const uploadResponse = await this.fireStorage.upload(path, this.uploadMediaFile as File);
+      const downloadURL = await uploadResponse.ref.getDownloadURL();
+      const body = {
+        chatroomId: this.selectedChatroomId,
+        content: downloadURL,
+        type: 'file'
+      };
+      const response = await this.messageService.sendMessage(body);
+      if (response.success) {
+        this.removeAttachment();
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to send file message', error);
+    }
+  }
+
+  async sendAudioMessage(): Promise<void> {
+    try {
+      throw new Error('Not implemented');
+    } catch (error) {
+      Utils.showErrorMessage('Failed to send audio message', error);
     }
   }
 

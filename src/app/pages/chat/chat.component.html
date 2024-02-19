@@ -58,13 +58,15 @@
 
 
                 <!-- Chat rooms -->
-                <app-chat-room #chatroom class="bg-grey-lighter flex-1 mt-4 overflow-auto" (participantUpdated)="participantUpdated($event)"></app-chat-room>
+                <app-chat-room #chatroom class="bg-grey-lighter flex-1 mt-4 overflow-auto"
+                    (participantUpdated)="participantUpdated($event)"></app-chat-room>
 
             </div>
 
 
             <!-- Right -->
-            <app-chat-window class="w-3/4 border flex flex-col" [selectedParticipant]="selectedParticipant" [selectedChatroomId]="selectedChatroomId"></app-chat-window>
+            <app-chat-window #chatWindow class="w-3/4 border flex flex-col" [selectedParticipant]="selectedParticipant"
+                [selectedChatroomId]="selectedChatroomId"></app-chat-window>
 
         </div>
     </div>

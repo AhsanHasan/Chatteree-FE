@@ -7,6 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Pagination } from 'src/app/interfaces/pagination.interface';
 import { Chatroom } from './interfaces/chatroom.interface';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
+import { PusherService } from 'src/app/services/pusher.service';
+import { ChatWindowComponent } from './chat-window/chat-window.component';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -14,6 +16,7 @@ import { ChatRoomComponent } from './chat-room/chat-room.component';
 })
 export class ChatComponent implements OnInit, AfterViewInit {
   @ViewChild('chatroom') chatRoom: ChatRoomComponent | undefined;
+  @ViewChild('chatWindow') chatWindow: ChatWindowComponent | undefined;
   dropdownOpen = false;
   users: Array<User> = [];
   selectedParticipant: User | null | undefined = null;
@@ -30,11 +33,16 @@ export class ChatComponent implements OnInit, AfterViewInit {
     private searchPeopleService: SearchPeopleService,
     public audioService: AudioRecordService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private pusherService: PusherService
   ) {
     this.route.data.subscribe((data: any) => {
       this.users = data.users.data.users;
       this.pagination = data.users.data.pagination;
+    });
+    this.pusherService.messageSubject.subscribe((data: any) => {
+      this.messageReceivedSignal();
+      this.chatWindow?.getChatroomMessages(null);
     });
   }
 
@@ -57,11 +65,14 @@ export class ChatComponent implements OnInit, AfterViewInit {
     await this.chatRoom?.getAllChatRooms();
     this.selectedParticipant = participants && participants.length > 1 ?
       participants.find((participant: User) => participant._id !== this.authenticationService.auth?.user._id) : null;
-    console.log('Selected participant', this.selectedParticipant);
   }
 
   participantUpdated(data: any): void {
     this.selectedParticipant = data.user;
     this.selectedChatroomId = data.chatroomId;
+  }
+
+  messageReceivedSignal(): void {
+    this.chatRoom?.getAllChatRooms();
   }
 }
