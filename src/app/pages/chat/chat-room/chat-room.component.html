@@ -19,7 +19,9 @@
             </div>
             <div class="ml-4 flex-1 py-4">
                 <div class="flex items-bottom justify-between">
-                    <p class="text-grey-darkest">
+                    <p class="text-grey-darkest" [ngClass]="{
+                        'font-medium': chatroom.unreadMessages > 0
+                    }">
                         {{chatroom.participants.name}}
                     </p>
                     <p class="text-xs text-grey-darkest" *ngIf="chatroom.lastMessage">
@@ -29,14 +31,23 @@
                 <div class="flex items-center">
                     <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="mr-1"
                         *ngIf="chatroom.lastMessage.sender._id! === authenticationService.auth?.user?._id!">
-                    <p class="text-grey-dark mt-1 text-sm"
-                        *ngIf="chatroom.lastMessage && chatroom.lastMessage.content !== ''">
-                        {{chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content : 'Attachment'}}
-                    </p>
-                    <p class="text-grey-light mt-1 text-[12px] italic"
-                        *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                        'They are waiting for your first message!'
-                    </p>
+                    <div class="flex justify-between w-full">
+                        <p class="text-grey-dark mt-1 text-sm" [ngClass]="{
+                                'font-medium': chatroom.unreadMessages > 0
+                            }" *ngIf="chatroom.lastMessage && chatroom.lastMessage.content !== ''">
+                            {{chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content : 'Attachment'}}
+                        </p>
+                        <p class="text-grey-light mt-1 text-[12px] italic"
+                            *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
+                            'They are waiting for your first message!'
+                        </p>
+                        <div class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1"
+                            *ngIf="chatroom.unreadMessages > 0">
+                            <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">{{chatroom.unreadMessages}}
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

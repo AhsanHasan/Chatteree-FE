@@ -22,13 +22,6 @@ export class ChatRoomComponent {
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
-      // this.selectedParticipant = this.chatRooms && this.chatRooms.length > 0
-      //   ? this.chatRooms[0].participants : null;
-      // // Set query params to the first chat room
-      // this.router.navigate(['.'], {
-      //   relativeTo: this.route,
-      //   queryParams: { id: this.chatRooms[0]._id }
-      // });
     });
   }
 
@@ -49,6 +42,13 @@ export class ChatRoomComponent {
 
   selectChatroom(chatroom: Chatroom): void {
     this.selectedParticipant = chatroom.participants;
-    this.participantUpdated.emit({user: chatroom.participants, chatroomId: chatroom._id});
+    // Set unreadMessages to 0 for the selected chatroom
+    this.chatRooms = this.chatRooms.map((room) => {
+      if (room._id === chatroom._id) {
+        room.unreadMessages = 0;
+      }
+      return room;
+    });
+    this.participantUpdated.emit({ user: chatroom.participants, chatroomId: chatroom._id });
   }
 }

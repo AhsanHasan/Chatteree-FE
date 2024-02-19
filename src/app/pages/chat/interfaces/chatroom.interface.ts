@@ -5,4 +5,5 @@ export interface Chatroom {
     lastMessage: Message;
     _id: string;
     participants: User;
+    unreadMessages: number;
 }
