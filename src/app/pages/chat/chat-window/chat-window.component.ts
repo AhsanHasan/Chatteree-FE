@@ -9,6 +9,7 @@ import { MessageService } from '../services/message.service';
 import { Utils } from 'src/app/utils';
 import { NgxPusherService } from 'ngx-pusher';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { AttachmentService } from '../services/attachment.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -38,8 +39,8 @@ export class ChatWindowComponent implements OnChanges {
     public audioService: AudioRecordService,
     public messageService: MessageService,
     private route: ActivatedRoute,
-    private pusherService: NgxPusherService,
-    private fireStorage: AngularFireStorage
+    private fireStorage: AngularFireStorage,
+    private attachmentService: AttachmentService
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
@@ -85,6 +86,16 @@ export class ChatWindowComponent implements OnChanges {
       default:
         break;
     }
+    this.attachmentService.attachmentData = {
+      uploadMediaType: this.uploadMediaType,
+      uploadedBlob: this.uploadedBlob,
+      uploadMediaFile: this.uploadMediaFile,
+      uploadDocumentName: this.uploadDocumentName,
+      isAttachmentSelected: this.isAttachmentSelected,
+      selectedChatroomId: this.selectedChatroomId as string
+    };
+
+    this.attachmentService.togglePopup();
   }
 
   removeAttachment(): void {
@@ -158,6 +169,10 @@ export class ChatWindowComponent implements OnChanges {
     } catch (error) {
       Utils.showErrorMessage('Failed to send message', error);
     }
+  }
+
+  getAttachedFileName(attachment: string): string {
+    return Utils.extractFilenameFromFirebasePath(attachment);
   }
 
   async sendImageMessage(): Promise<void> {

@@ -46,7 +46,7 @@
                     <img [src]="message.sender.profilePicture! | encodeProfilePicUrl" alt="Profile"
                         class="h-10 w-10 rounded-full mr-3">
                     <div class="flex-col">
-                        <div class="flex items-center rounded-full py-3 px-3 bg-[#F1F1F1]">
+                        <div class="flex items-center rounded-full py-4 px-4 bg-[#F1F1F1]">
                             <div class="">
                                 <p class="text-left text-xs text-grey-dark mt-1">
                                     {{message.createdAt | date: 'hh:mm a'}}
@@ -54,11 +54,20 @@
                                 <p class="text-sm mt-1" *ngIf="message.type === 'text'">
                                     {{message.content}}
                                 </p>
-                                <a *ngIf="message.type === 'file'" [href]="message.content" target="_blank"
-                                    class="text-blue-500 underline">Download File</a>
+                                <a *ngIf="message.type === 'audio' || message.type === 'file'" [href]="message.content" target="_blank"
+                                    class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
                             </div>
                         </div>
-                        <audio *ngIf="message.type === 'audio'" controls [src]="message.content" class="mt-2"></audio>
+                        <div class="flex justify-start">
+                            <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
+                                <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
+                            </a>
+                        </div>
+                        <div class="flex justify-start">
+                            <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
+                                <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
+                            </a>
+                        </div>
                         <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
                             class="w-20 mt-2 rounded-xl">
                     </div>
@@ -66,26 +75,35 @@
 
                 <!-- Logged in user Message -->
                 <div class="flex justify-end mb-2"
-                     *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
+                    *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
                     <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="self-end">
                     <div class="flex flex-col">
-                        <div class="rounded-full py-3 px-3 bg-[#101C26] min-w-min">
+                        <div class="rounded-full py-4 px-4 bg-[#101C26] min-w-min">
                             <p class="text-right text-xs text-grey-dark mt-1 text-white">
                                 {{message.createdAt | date: 'hh:mm a'}}
                             </p>
                             <p class="text-sm mt-1 text-white" *ngIf="message.type === 'text'">
                                 {{message.content}}
                             </p>
-                            <a *ngIf="message.type === 'file'" [href]="message.content" target="_blank"
-                               class="text-blue-500 underline">Download File</a>
+                            <a *ngIf="message.type === 'audio' || message.type === 'file'" [href]="message.content" target="_blank"
+                                class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
                         </div>
-                        <audio *ngIf="message.type === 'audio'" controls [src]="message.content" class="mt-2"></audio>
+                        <div class="flex justify-end">
+                            <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
+                                <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
+                            </a>
+                        </div>
+                        <div class="flex justify-end">
+                            <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
+                                <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
+                            </a>
+                        </div>
                         <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
-                             class="w-20 mt-2 rounded-xl">
+                            class="w-20 mt-2 rounded-xl">
                     </div>
 
                     <img [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
-                         alt="Profile" class="h-10 w-10 rounded-full mr-3">
+                        alt="Profile" class="h-10 w-10 rounded-full mr-3">
                 </div>
             </ng-container>
         </div>
@@ -123,96 +141,45 @@
                         class="w-[24px] h-[24px] cursor-pointer" (click)="toggleAttachmentPopup()">
                     <div class="absolute right-[7px] bottom-[32px] bg-white rounded-t-md shadow-lg p-4 flex space-x-2"
                         *ngIf="showAttachmentPopup">
-                        <ng-container
-                            *ngIf="!isAttachmentSelected">
-                            <div class="text-center m-2 px-2 w-max">
-                                <input type="file" #imageInput hidden (change)="onFileSelected($event, 'image')"
-                                    accept="image/*">
-                                <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
-                                    (click)="imageInput.click()">
-                                    <img class="w-6 h-6" src="assets/images/icons/image-gallery.svg" alt="gallery">
-                                </div>
-                                <p class="text-center text-sm font-normal leading-5">Image</p>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #imageInput hidden (change)="onFileSelected($event, 'image')"
+                                accept="image/*">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="imageInput.click()">
+                                <img class="w-6 h-6" src="assets/images/icons/image-gallery.svg" alt="gallery">
                             </div>
-                            <div class="text-center m-2 px-2 w-max">
-                                <input type="file" #audioInput hidden (change)="onFileSelected($event, 'audio')"
-                                    accept="audio/mpeg">
-                                <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
-                                    (click)="audioInput.click()">
-                                    <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/file-audio.svg"
-                                        alt="audio file">
-                                </div>
-                                <p class="text-center text-sm font-normal leading-5">Audio</p>
+                            <p class="text-center text-sm font-normal leading-5">Image</p>
+                        </div>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #audioInput hidden (change)="onFileSelected($event, 'audio')"
+                                accept="audio/mpeg">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="audioInput.click()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/file-audio.svg"
+                                    alt="audio file">
                             </div>
-                            <div class="text-center m-2 px-2 w-max">
-                                <input type="file" #fileInput hidden (change)="onFileSelected($event, 'file')"
-                                    accept=".pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain">
-                                <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
-                                    (click)="fileInput.click()">
-                                    <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/document.svg"
-                                        alt="document">
-                                </div>
-                                <p class="text-center text-sm font-normal leading-5">Doc</p>
+                            <p class="text-center text-sm font-normal leading-5">Audio</p>
+                        </div>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #fileInput hidden (change)="onFileSelected($event, 'file')"
+                                accept=".pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="fileInput.click()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/document.svg"
+                                    alt="document">
                             </div>
-                            <div class="text-center m-2 px-2 w-max">
-                                <input type="file" #contactInput hidden (change)="onFileSelected($event, 'contact')"
-                                    accept="text/vcard">
-                                <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
-                                    (click)="contactInput.click()">
-                                    <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/user.svg"
-                                        alt="contact">
-                                </div>
-                                <p class="text-center text-sm font-normal leading-5">Contact</p>
+                            <p class="text-center text-sm font-normal leading-5">Doc</p>
+                        </div>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #contactInput hidden (change)="onFileSelected($event, 'contact')"
+                                accept="text/vcard">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="contactInput.click()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/user.svg"
+                                    alt="contact">
                             </div>
-                        </ng-container>
-
-                        <ng-container *ngIf="uploadMediaType === 'image' && uploadedBlob">
-                            <div class="text-center m-2 px-2 w-max">
-                                <img [src]="uploadedBlob" alt="image" class="w-28">
-                                <div class="flex justify-center space-x-4">
-                                    <button class="text-white font-bold py-2 px-2 rounded" (click)="removeAttachment()">
-                                        <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/trash.png"
-                                            alt="Trash">
-                                    </button>
-                                    <button class="text-white font-bold py-2 px-2 rounded" (click)="sendImageMessage()">
-                                        <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/send.png"
-                                            alt="Send">
-                                    </button>
-                                </div>
-                            </div>
-                        </ng-container>
-
-                        <ng-container *ngIf="uploadMediaType === 'audio' && uploadedBlob">
-                            <div class="text-center m-2 px-2 w-max">
-                                <audio controls [src]="uploadedBlob"></audio>
-                                <div class="flex justify-center space-x-4">
-                                    <button class="text-white font-bold py-2 px-2 rounded" (click)="removeAttachment()">
-                                        <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/trash.png"
-                                            alt="Trash">
-                                    </button>
-                                    <button class="text-white font-bold py-2 px-2 rounded" (click)="sendAudioMessage()">
-                                        <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/send.png"
-                                            alt="Send">
-                                    </button>
-                                </div>
-                            </div>
-                        </ng-container>
-
-                        <ng-container *ngIf="uploadMediaType === 'file' && uploadDocumentName !== ''">
-                            <div class="text-center m-2 px-2 w-max">
-                                <p class="text-center text-sm font-normal leading-5">{{uploadDocumentName}}</p>
-                                <div class="flex justify-center space-x-4">
-                                    <button class="text-white font-bold py-2 px-2 rounded" (click)="removeAttachment()">
-                                        <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/trash.png"
-                                            alt="Trash">
-                                    </button>
-                                    <button class="text-white font-bold py-2 px-2 rounded" (click)="sendFileMessage()">
-                                        <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/send.png"
-                                            alt="Send">
-                                    </button>
-                                </div>
-                            </div>
-                        </ng-container>
+                            <p class="text-center text-sm font-normal leading-5">Contact</p>
+                        </div>
                     </div>
                 </div>
                 <div class="relative">
@@ -279,3 +246,6 @@
         </button>
     </div>
 </ng-container>
+
+
+<app-attachment-popup></app-attachment-popup>

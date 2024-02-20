@@ -23,4 +23,13 @@ export class Utils {
             reader.readAsArrayBuffer(file);
         });
     }
+
+    public static extractFilenameFromFirebasePath(path: string): string {
+        const pathname = new URL(path).pathname;
+        // Use the built-in 'split' method to get the last part after '/'
+        const filename = pathname.split('/').pop() as any;
+        // Decode the URI component to handle special characters
+        const decodedURI = decodeURIComponent(filename).split('/');
+        return decodedURI[decodedURI.length - 1];
+    }
 }

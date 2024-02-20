@@ -11,6 +11,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
+import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.component';
 
 
 
@@ -20,7 +21,8 @@ import { ChatWindowComponent } from './chat-window/chat-window.component';
     SearchPeopleComponent,
     FavContactsSliderComponent,
     ChatRoomComponent,
-    ChatWindowComponent
+    ChatWindowComponent,
+    AttachmentPopupComponent
   ],
   imports: [
     CommonModule,

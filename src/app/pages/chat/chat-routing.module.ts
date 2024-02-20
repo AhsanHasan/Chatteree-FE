@@ -8,6 +8,7 @@ import { GetAllUserResolver } from './resolvers/get-all-user.resolver';
 import { GetAllChatroomResolver } from './resolvers/get-all-chatroom.resolver';
 import { ChatroomService } from './services/chatroom.service';
 import { MessageService } from './services/message.service';
+import { AttachmentService } from './services/attachment.service';
 
 
 const routes: Routes = [
@@ -30,6 +31,7 @@ const routes: Routes = [
         UserService,
         ChatroomService,
         MessageService,
+        AttachmentService
     ]
 })
 export class ChatRoutingModule {
