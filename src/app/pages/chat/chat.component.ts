@@ -5,7 +5,6 @@ import { AudioRecordService } from './services/audio-record.service';
 import { User } from 'src/app/interfaces/user';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination } from 'src/app/interfaces/pagination.interface';
-import { Chatroom } from './interfaces/chatroom.interface';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { PusherService } from 'src/app/services/pusher.service';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
@@ -21,6 +20,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   users: Array<User> = [];
   selectedParticipant: User | null | undefined = null;
   selectedChatroomId: string | null = null;
+  selectedChatroom: any;
   pagination: Pagination = {
     currentPage: 1,
     totalPages: 1,
@@ -70,6 +70,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   participantUpdated(data: any): void {
     this.selectedParticipant = data.user;
     this.selectedChatroomId = data.chatroomId;
+    this.selectedChatroom = data.chatroom;
   }
 
   messageReceivedSignal(): void {

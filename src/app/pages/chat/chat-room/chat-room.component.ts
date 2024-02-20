@@ -49,6 +49,6 @@ export class ChatRoomComponent {
       }
       return room;
     });
-    this.participantUpdated.emit({ user: chatroom.participants, chatroomId: chatroom._id });
+    this.participantUpdated.emit({ user: chatroom.participants, chatroomId: chatroom._id, chatroom });
   }
 }

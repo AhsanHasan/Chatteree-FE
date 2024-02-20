@@ -9,6 +9,8 @@ import { GetAllChatroomResolver } from './resolvers/get-all-chatroom.resolver';
 import { ChatroomService } from './services/chatroom.service';
 import { MessageService } from './services/message.service';
 import { AttachmentService } from './services/attachment.service';
+import { FavoriteChatroomService } from './services/favorite-chatroom.service';
+import { GetAllFavoriteChatroomResolver } from './resolvers/get-all-favorite-chatroom.resolver';
 
 
 const routes: Routes = [
@@ -17,7 +19,8 @@ const routes: Routes = [
         component: ChatComponent,
         resolve: {
             users: GetAllUserResolver,
-            chatrooms: GetAllChatroomResolver
+            chatrooms: GetAllChatroomResolver,
+            favorites: GetAllFavoriteChatroomResolver
         }
     }
 ];
@@ -31,7 +34,8 @@ const routes: Routes = [
         UserService,
         ChatroomService,
         MessageService,
-        AttachmentService
+        AttachmentService,
+        FavoriteChatroomService
     ]
 })
 export class ChatRoutingModule {

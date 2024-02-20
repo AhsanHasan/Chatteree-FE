@@ -9,6 +9,8 @@ import { MessageService } from '../services/message.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AttachmentService } from '../services/attachment.service';
 import { Utils } from 'src/app/utils';
+import { FavoriteChatroomService } from '../services/favorite-chatroom.service';
+import { FavoriteChatroom } from '../interfaces/favorite-chatroom.interface';
 
 @Component({
   selector: 'app-chat-window',
@@ -18,6 +20,7 @@ import { Utils } from 'src/app/utils';
 export class ChatWindowComponent implements OnChanges, OnInit {
   @Input() selectedParticipant: any;
   @Input() selectedChatroomId: any;
+  @Input() selectedChatroom: any;
   @Output() messageReceivedSignal = new EventEmitter<any>();
   message = '';
   showAudioPopup = false;
@@ -35,6 +38,8 @@ export class ChatWindowComponent implements OnChanges, OnInit {
 
   isRecording = false;
   audioURL: string | null = null;
+
+  isFavoriteChatroom = false;
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
@@ -43,7 +48,8 @@ export class ChatWindowComponent implements OnChanges, OnInit {
     private route: ActivatedRoute,
     private fireStorage: AngularFireStorage,
     private attachmentService: AttachmentService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private favoriteChatroomService: FavoriteChatroomService
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
@@ -54,7 +60,6 @@ export class ChatWindowComponent implements OnChanges, OnInit {
     this.audioService.audioBlob$.subscribe((audioBlob: any) => {
       this.audioURL = window.URL.createObjectURL(audioBlob);
       this.audioBlob = audioBlob;
-      console.log('Audio Blob:', this.audioURL);
       this.cd.detectChanges();
     });
   }
@@ -137,10 +142,6 @@ export class ChatWindowComponent implements OnChanges, OnInit {
     this.showAudioPopup = false;
   }
 
-  uploadAudio(): void {
-    console.log('Uploading audio...');
-  }
-
   async getChatroomMessages(page: number | null): Promise<void> {
     try {
       if (!this.selectedChatroomId) {
@@ -202,6 +203,22 @@ export class ChatWindowComponent implements OnChanges, OnInit {
       }
     } catch (error) {
       Utils.showErrorMessage('Failed to send audio message', error);
+    }
+  }
+
+  async toggleFavoriteChatroom(chatroomId: string): Promise<void> {
+    try {
+      this.selectedChatroom.isFavorite = !this.selectedChatroom.isFavorite;
+      const body: FavoriteChatroom = {
+        chatRoomId: chatroomId,
+        userId: this.authenticationService.auth?.user._id as string
+      };
+      const response = await this.favoriteChatroomService.toggleFavoriteChatroom(body);
+      if (response.success) {
+        this.isFavoriteChatroom = !this.isFavoriteChatroom;
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to toggle favorite chatroom', error);
     }
   }
 
