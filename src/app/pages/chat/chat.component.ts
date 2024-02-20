@@ -8,6 +8,8 @@ import { Pagination } from 'src/app/interfaces/pagination.interface';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { PusherService } from 'src/app/services/pusher.service';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
+import { FavoriteChatroomService } from './services/favorite-chatroom.service';
+import { Utils } from 'src/app/utils';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -28,21 +30,25 @@ export class ChatComponent implements OnInit, AfterViewInit {
     hasNextPage: false,
     hasPreviousPage: false
   };
+  favChatrooms: any;
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
     public audioService: AudioRecordService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private pusherService: PusherService
+    private pusherService: PusherService,
+    private favoriteChatroomService: FavoriteChatroomService
   ) {
     this.route.data.subscribe((data: any) => {
       this.users = data.users.data.users;
+      this.favChatrooms = data.favorites.data;
       this.pagination = data.users.data.pagination;
     });
     this.pusherService.messageSubject.subscribe((data: any) => {
       this.messageReceivedSignal();
       this.chatWindow?.getChatroomMessages(null);
+      this.getFavorites();
     });
   }
 
@@ -71,9 +77,25 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.selectedParticipant = data.user;
     this.selectedChatroomId = data.chatroomId;
     this.selectedChatroom = data.chatroom;
+    this.chatRoom?.selectChatroom(this.selectedChatroom);
   }
 
   messageReceivedSignal(): void {
     this.chatRoom?.getAllChatRooms();
+  }
+
+  async chatroomFavoriteSignal(data: any): Promise<void> {
+    await this.getFavorites();
+  }
+
+  async getFavorites(): Promise<void> {
+    try {
+      const response = await this.favoriteChatroomService.getAllFavoriteChatrooms();
+      if (response && response.success) {
+        this.favChatrooms = response.data;
+      }
+    } catch (error) {
+      Utils.showErrorMessage('An error occurred while fetching favorites', error);
+    }
   }
 }

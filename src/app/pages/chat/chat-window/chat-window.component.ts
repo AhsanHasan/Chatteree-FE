@@ -22,6 +22,7 @@ export class ChatWindowComponent implements OnChanges, OnInit {
   @Input() selectedChatroomId: any;
   @Input() selectedChatroom: any;
   @Output() messageReceivedSignal = new EventEmitter<any>();
+  @Output() chatroomFavoriteSignal = new EventEmitter<any>();
   message = '';
   showAudioPopup = false;
   audioBlob: any;
@@ -216,6 +217,8 @@ export class ChatWindowComponent implements OnChanges, OnInit {
       const response = await this.favoriteChatroomService.toggleFavoriteChatroom(body);
       if (response.success) {
         this.isFavoriteChatroom = !this.isFavoriteChatroom;
+        // Remove chatroom from favorite chatrooms list
+        this.chatroomFavoriteSignal.emit(chatroomId);
       }
     } catch (error) {
       Utils.showErrorMessage('Failed to toggle favorite chatroom', error);

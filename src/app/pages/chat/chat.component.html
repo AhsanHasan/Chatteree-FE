@@ -51,10 +51,15 @@
                     focus:border-yellow-400" placeholder="Search for chatter or message." />
                 </div>
 
-                <p class="py-2 px-4 mt-4 font-normal text-sm leading-5 hidden" style="color: #79838B;">Favourite
-                    chatters</p>
+                <ng-container *ngIf="favChatrooms && favChatrooms.length > 0">
+                    <div class="flex justify-between items-center py-2 px-4 mt-4">
+                        <p class="font-normal text-sm leading-5" style="color: #79838B;">Favourite chatters</p>
+                        <p class="font-normal text-sm leading-5" style="color: #79838B;">{{favChatrooms.length}}</p>
+                    </div>
 
-                <app-fav-contacts-slider class="hidden"> </app-fav-contacts-slider>
+                    <app-fav-contacts-slider [favChatrooms]="favChatrooms"
+                        (selecteParticipantSignal)="participantUpdated($event)"></app-fav-contacts-slider>
+                </ng-container>
 
 
                 <!-- Chat rooms -->
@@ -66,7 +71,8 @@
 
             <!-- Right -->
             <app-chat-window #chatWindow class="w-3/4 border flex flex-col" [selectedParticipant]="selectedParticipant"
-                [selectedChatroomId]="selectedChatroomId" [selectedChatroom]="selectedChatroom"></app-chat-window>
+                [selectedChatroomId]="selectedChatroomId" [selectedChatroom]="selectedChatroom"
+                (chatroomFavoriteSignal)="chatroomFavoriteSignal($event)"></app-chat-window>
 
         </div>
     </div>

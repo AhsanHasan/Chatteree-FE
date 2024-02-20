@@ -19,7 +19,21 @@ export class AuthenticationService {
         private http: HttpClient,
         private router: Router,
         private cookieService: SsrCookieService
-    ) { }
+    ) { 
+        const d = new Date();
+        const expDate = d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
+        // Setup blank cookie
+        if (!this.cookieService.get(environment.versionControl.env + environment.versionControl.v + 'SessionAuth')) {
+            this.cookieService.set(
+                environment.versionControl.env + environment.versionControl.v + 'SessionAuth',
+                'undefined',
+                expDate,
+                '/',
+                environment.cookieDomain,
+                true
+            );
+        }
+    }
 
     get auth() {
         return this.authFromCookie;
