@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { AudioRecordService } from '../services/audio-record.service';
@@ -6,17 +6,16 @@ import { SearchPeopleService } from '../services/search-people.service';
 import { Chatroom } from '../interfaces/chatroom.interface';
 import { Message } from '../interfaces/message.interface';
 import { MessageService } from '../services/message.service';
-import { Utils } from 'src/app/utils';
-import { NgxPusherService } from 'ngx-pusher';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AttachmentService } from '../services/attachment.service';
+import { Utils } from 'src/app/utils';
 
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
-export class ChatWindowComponent implements OnChanges {
+export class ChatWindowComponent implements OnChanges, OnInit {
   @Input() selectedParticipant: any;
   @Input() selectedChatroomId: any;
   @Output() messageReceivedSignal = new EventEmitter<any>();
@@ -33,6 +32,9 @@ export class ChatWindowComponent implements OnChanges {
   uploadMediaFile: File | null = null;
   uploadDocumentName = '';
   isAttachmentSelected = false;
+
+  isRecording = false;
+  audioURL: string | null = null;
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
@@ -40,10 +42,20 @@ export class ChatWindowComponent implements OnChanges {
     public messageService: MessageService,
     private route: ActivatedRoute,
     private fireStorage: AngularFireStorage,
-    private attachmentService: AttachmentService
+    private attachmentService: AttachmentService,
+    private cd: ChangeDetectorRef
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
+    });
+  }
+
+  ngOnInit(): void {
+    this.audioService.audioBlob$.subscribe((audioBlob: any) => {
+      this.audioURL = window.URL.createObjectURL(audioBlob);
+      this.audioBlob = audioBlob;
+      console.log('Audio Blob:', this.audioURL);
+      this.cd.detectChanges();
     });
   }
 
@@ -106,17 +118,14 @@ export class ChatWindowComponent implements OnChanges {
   }
 
   async recordAudio(): Promise<void> {
-    if (!this.audioService.isRecording) {
-      this.showAudioPopup = true;
-      this.audioService.startRecording();
-    }
+    this.showAudioPopup = true
+    this.isRecording = true;
+    this.audioService.startRecording();
   }
 
   async stopRecordingAudio(): Promise<void> {
-    if (this.audioService.isRecording) {
-      const audioBlob = await this.audioService.stopRecording();
-      this.audioBlob = this.getRecordingUrl(audioBlob);
-    }
+    this.isRecording = false;
+    this.audioService.stopRecording();
   }
 
   getRecordingUrl(audioBlob: any): string {
@@ -175,47 +184,22 @@ export class ChatWindowComponent implements OnChanges {
     return Utils.extractFilenameFromFirebasePath(attachment);
   }
 
-  async sendImageMessage(): Promise<void> {
-    try {
-      const path = `chatroom/${this.selectedChatroomId}/images/${this.uploadMediaFile?.name}`;
-      const uploadResponse = await this.fireStorage.upload(path, this.uploadMediaFile as File);
-      const downloadURL = await uploadResponse.ref.getDownloadURL();
-      const body = {
-        chatroomId: this.selectedChatroomId,
-        content: downloadURL,
-        type: 'image'
-      };
-      const response = await this.messageService.sendMessage(body);
-      if (response.success) {
-        this.removeAttachment();
-      }
-    } catch (error) {
-      Utils.showErrorMessage('Failed to send image message', error);
-    }
-  }
-
-  async sendFileMessage(): Promise<void> {
-    try {
-      const path = `chatroom/${this.selectedChatroomId}/files/${this.uploadMediaFile?.name}?searchable=${this.uploadDocumentName}`;
-      const uploadResponse = await this.fireStorage.upload(path, this.uploadMediaFile as File);
-      const downloadURL = await uploadResponse.ref.getDownloadURL();
-      const body = {
-        chatroomId: this.selectedChatroomId,
-        content: downloadURL,
-        type: 'file'
-      };
-      const response = await this.messageService.sendMessage(body);
-      if (response.success) {
-        this.removeAttachment();
-      }
-    } catch (error) {
-      Utils.showErrorMessage('Failed to send file message', error);
-    }
-  }
-
   async sendAudioMessage(): Promise<void> {
     try {
-      throw new Error('Not implemented');
+      // Create file from object URL
+      const filename = `${Date.now()}.mp3`;
+      const path = `chatroom/${this.selectedChatroomId}/voice-note/${filename}`;
+      const uploadResponse = await this.fireStorage.upload(path, this.audioBlob as Blob);
+      const downloadURL = await uploadResponse.ref.getDownloadURL();
+      const body = {
+        chatroomId: this.selectedChatroomId,
+        content: downloadURL,
+        type: 'voice-note'
+      };
+      const response = await this.messageService.sendMessage(body);
+      if (response.success) {
+        this.removeAudio();
+      }
     } catch (error) {
       Utils.showErrorMessage('Failed to send audio message', error);
     }
