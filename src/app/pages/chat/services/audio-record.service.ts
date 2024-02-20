@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Utils } from 'src/app/utils';
 
@@ -12,45 +13,17 @@ export class AudioRecordService {
     recordingTimer: any;
 
     private chunks: any[] = [];
-    private audioContext: AudioContext = new AudioContext();
+    private audioContext!: AudioContext;
     private audioBlobSubject = new Subject<Blob>();
 
     audioBlob$ = this.audioBlobSubject.asObservable();
 
-
-
-    constructor() { }
-
-    // Start recording
-    _startRecording(): void {
-        this.audioChunks = [];
-        this.recordingStartTime = Date.now();
-        this.recordingDuration = 0;
-        this.recordingTimer = setInterval(() => {
-            this.recordingDuration++;
-        }, 1000);
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            this.mediaRecorder = new MediaRecorder(stream, {});
-            this.mediaRecorder.start();
-            this.isRecording = true;
-            this.mediaRecorder.addEventListener('dataavailable', (event: any) => {
-                console.log(event.data);
-                this.audioChunks.push(event.data);
-            });
-        });
-    }
-
-    // Stop recording
-    _stopRecording(): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.mediaRecorder.addEventListener('stop', () => {
-                this.isRecording = false;
-                clearInterval(this.recordingTimer);
-                const audioBlob = new Blob(this.audioChunks, { type: 'audio/mpeg' });
-                resolve(audioBlob);
-            });
-            this.mediaRecorder.stop();
-        });
+    constructor(
+        @Inject(PLATFORM_ID) private platformId: Object
+    ) {
+        if (isPlatformBrowser(this.platformId)) {
+            this.audioContext = new AudioContext();
+        }
     }
 
     // Get recording duration
@@ -61,6 +34,10 @@ export class AudioRecordService {
     }
 
     async startRecording() {
+        this.recordingStartTime = Date.now();
+        this.recordingTimer = setInterval(() => {
+            this.recordingDuration++;
+        }, 1000);
         if (this.audioContext.state === 'suspended') {
             await this.audioContext.resume();
         }
@@ -79,7 +56,7 @@ export class AudioRecordService {
                 this.audioBlobSubject.next(wavBlob);
                 this.chunks = [];
             };
-
+            clearInterval(this.recordingTimer);
             this.mediaRecorder.stop();
         }
     }

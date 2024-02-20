@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, PLATFORM_ID, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { AudioRecordService } from '../services/audio-record.service';
@@ -11,13 +11,14 @@ import { AttachmentService } from '../services/attachment.service';
 import { Utils } from 'src/app/utils';
 import { FavoriteChatroomService } from '../services/favorite-chatroom.service';
 import { FavoriteChatroom } from '../interfaces/favorite-chatroom.interface';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
-export class ChatWindowComponent implements OnChanges, OnInit {
+export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
   @Input() selectedParticipant: any;
   @Input() selectedChatroomId: any;
   @Input() selectedChatroom: any;
@@ -41,6 +42,8 @@ export class ChatWindowComponent implements OnChanges, OnInit {
   audioURL: string | null = null;
 
   isFavoriteChatroom = false;
+
+  public IS_BROWSER: any = false;
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
@@ -50,8 +53,10 @@ export class ChatWindowComponent implements OnChanges, OnInit {
     private fireStorage: AngularFireStorage,
     private attachmentService: AttachmentService,
     private cd: ChangeDetectorRef,
-    private favoriteChatroomService: FavoriteChatroomService
+    private favoriteChatroomService: FavoriteChatroomService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {
+    this.IS_BROWSER = isPlatformBrowser(platformId);
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
     });
@@ -63,6 +68,13 @@ export class ChatWindowComponent implements OnChanges, OnInit {
       this.audioBlob = audioBlob;
       this.cd.detectChanges();
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.IS_BROWSER) {
+      console.log('scrolling to bottom: ', document.body.scrollHeight);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

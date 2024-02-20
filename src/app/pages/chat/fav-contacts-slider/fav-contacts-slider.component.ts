@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-fav-contacts-slider',
@@ -9,36 +9,33 @@ export class FavContactsSliderComponent implements OnChanges {
   @ViewChild('carouselItems') carouselItems: ElementRef | undefined;
   @Input() favChatrooms: any;
   @Output() selecteParticipantSignal = new EventEmitter<any>();
+
   constructor() { }
 
   ngOnChanges(): void {
   }
 
-  scrollLeft() {
-    // this.carouselItems!.nativeElement.scrollLeft -= this.carouselItems!.nativeElement.clientWidth / 3;
+  scrollLeft(): void {
     this.carouselItems!.nativeElement.scrollTo({
       left: this.carouselItems!.nativeElement.scrollLeft - this.carouselItems!.nativeElement.clientWidth / 3,
       behavior: 'smooth'
     });
   }
 
-  scrollRight() {
-    // Scroll by 1/3 of the width to show the next item partially and make it smooth
+  scrollRight(): void {
     this.carouselItems!.nativeElement.scrollTo({
       left: this.carouselItems!.nativeElement.scrollLeft + this.carouselItems!.nativeElement.clientWidth / 3,
       behavior: 'smooth'
     });
   }
 
-  selectParticipant(chatroom: any) {
-    debugger;
-
+  selectParticipant(chatroom: any): void {
     this.favChatrooms = this.favChatrooms.map((room: any) => {
       if (room.chatRoom._id === chatroom._id) {
         room.unreadMessages = 0;
       }
       return room;
     });
-    this.selecteParticipantSignal.emit({user: chatroom.participants, chatroom, chatroomId: chatroom._id});
+    this.selecteParticipantSignal.emit({ user: chatroom.participants, chatroom, chatroomId: chatroom._id });
   }
 }
