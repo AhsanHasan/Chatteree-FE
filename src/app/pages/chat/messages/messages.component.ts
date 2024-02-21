@@ -143,6 +143,7 @@ export class MessagesComponent implements AfterViewInit {
     this.uploadMediaFile = file;
     this.uploadMediaType = type;
     this.isAttachmentSelected = true;
+    this.showAttachmentPopup = false;
     // convert file to blob
     switch (type) {
       case 'image':
