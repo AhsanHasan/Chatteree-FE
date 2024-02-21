@@ -63,11 +63,13 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.audioService.audioBlob$.subscribe((audioBlob: any) => {
-      this.audioURL = window.URL.createObjectURL(audioBlob);
-      this.audioBlob = audioBlob;
-      this.cd.detectChanges();
-    });
+    if (this.IS_BROWSER) {
+      this.audioService.audioBlob$.subscribe((audioBlob: any) => {
+        this.audioURL = window.URL.createObjectURL(audioBlob);
+        this.audioBlob = audioBlob;
+        this.cd.detectChanges();
+      });
+    }
   }
 
   ngAfterViewInit(): void {

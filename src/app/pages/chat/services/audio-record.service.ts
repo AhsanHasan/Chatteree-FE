@@ -13,16 +13,16 @@ export class AudioRecordService {
     recordingTimer: any;
 
     private chunks: any[] = [];
-    private audioContext!: AudioContext;
+    private audioContext: any;
     private audioBlobSubject = new Subject<Blob>();
 
     audioBlob$ = this.audioBlobSubject.asObservable();
 
     constructor(
-        @Inject(PLATFORM_ID) private platformId: Object
-    ) {
+        @Inject(PLATFORM_ID) private platformId: object
+    ) { 
         if (isPlatformBrowser(this.platformId)) {
-            this.audioContext = new AudioContext();
+            this.audioContext = new window.AudioContext();
         }
     }
 

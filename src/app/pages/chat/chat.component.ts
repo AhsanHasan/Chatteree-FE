@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { SearchPeopleService } from './services/search-people.service';
-import { AudioRecordService } from './services/audio-record.service';
 import { User } from 'src/app/interfaces/user';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination } from 'src/app/interfaces/pagination.interface';
@@ -34,7 +33,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
-    public audioService: AudioRecordService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private pusherService: PusherService,
