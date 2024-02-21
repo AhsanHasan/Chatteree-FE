@@ -33,6 +33,7 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
   showAttachmentPopup = false;
   chatRooms: Chatroom[] = [];
   messages: Message[] = [];
+  pagination: any;
 
   uploadMediaType = '';
   uploadedBlob: any;
@@ -169,12 +170,13 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
       }
       const query = {
         page: page ? page : 1,
-        limit: 10,
+        limit: 200,
         chatroomId: this.selectedChatroomId
       };
       const response = await this.messageService.getChatroomMessages(query);
       if (response.success) {
-        this.messages = response.data;
+        this.messages = response.data.messages;
+        this.pagination = response.data.pagination;
         if (this.messages.length === 1 && this.messages[0].content === '') {
           this.messages = [];
         }
@@ -186,6 +188,9 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
 
   async sendMessage(): Promise<void> {
     try {
+      if (!this.message || this.message.trim() === ''){
+        return;
+      }
       const body = {
         chatroomId: this.selectedChatroomId,
         content: this.message,
@@ -248,18 +253,13 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
     this.backButtonSignal.emit(true);
   }
 
-  onScroll(): void {
-    console.log('scrolling');
+  async onScroll(): Promise<void> {
+    this.pagination.page = 2;
+    // await this.getChatroomMessages(this.pagination.page);
   }
 
-  onScrolledUp(): void {
-    console.log('scrolled up');
-  }
-
-  async loadMoreMessages(): Promise<void> {
-    try {
-    } catch (error) {
-      Utils.showErrorMessage('Failed to load more messages', error);
-    }
+  async onScrolledUp(): Promise<void> {
+    this.pagination.page += 1;
+    // await this.getChatroomMessages(this.pagination.page);
   }
 }
