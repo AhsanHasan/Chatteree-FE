@@ -81,10 +81,11 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes['selectedChatroomId'] && changes['selectedChatroomId'].currentValue !== changes['selectedChatroomId'].previousValue) {
       if (this.selectedChatroomId) {
-        this.getChatroomMessages(null);
+        await this.getChatroomMessages(null);
+        console.log(this.messages);
       }
     }
   }
@@ -247,4 +248,18 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
     this.backButtonSignal.emit(true);
   }
 
+  onScroll(): void {
+    console.log('scrolling');
+  }
+
+  onScrolledUp(): void {
+    console.log('scrolled up');
+  }
+
+  async loadMoreMessages(): Promise<void> {
+    try {
+    } catch (error) {
+      Utils.showErrorMessage('Failed to load more messages', error);
+    }
+  }
 }

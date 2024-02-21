@@ -37,16 +37,17 @@
     </div>
 
     <!-- Messages -->
-    <div class="flex-1 overflow-auto" *ngIf="messages && messages.length > 0">
+    <div class="flex-1 overflow-auto" *ngIf="messages && messages.length > 0" infiniteScroll [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="500" (scrolled)="onScroll()" (scrolledUp)="onScrolledUp()" [scrollWindow]="false">
         <div class="py-2 px-3">
 
-            <div class="flex justify-center mb-2">
+            <!-- <div class="flex justify-center mb-2">
                 <div class="rounded py-2 px-4" style="background-color: #B5BDC5">
                     <p class="text-sm uppercase">
                         February 20, 2018
                     </p>
                 </div>
-            </div>
+            </div> -->
 
             <ng-container *ngFor="let message of messages">
                 <!-- Other user Message -->
