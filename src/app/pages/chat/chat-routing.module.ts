@@ -21,7 +21,13 @@ const routes: Routes = [
             users: GetAllUserResolver,
             chatrooms: GetAllChatroomResolver,
             favorites: GetAllFavoriteChatroomResolver
-        }
+        },
+        children: [
+            {
+                path: ':id',
+                loadChildren: () => import('./messages/messages.module').then(m => m.MessagesModule)
+            }
+        ]
     }
 ];
 

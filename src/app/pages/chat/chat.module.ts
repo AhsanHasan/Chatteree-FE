@@ -21,8 +21,7 @@ import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.co
     SearchPeopleComponent,
     FavContactsSliderComponent,
     ChatRoomComponent,
-    ChatWindowComponent,
-    AttachmentPopupComponent
+    ChatWindowComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +31,7 @@ import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.co
     FormsModule,
     InfiniteScrollModule,
     NgxSpinnerModule
-  ]
+  ],
+  exports: []
 })
 export class ChatModule { }

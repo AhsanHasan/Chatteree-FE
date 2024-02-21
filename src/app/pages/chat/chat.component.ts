@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { SearchPeopleService } from './services/search-people.service';
 import { User } from 'src/app/interfaces/user';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Pagination } from 'src/app/interfaces/pagination.interface';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { PusherService } from 'src/app/services/pusher.service';
@@ -36,16 +36,28 @@ export class ChatComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private pusherService: PusherService,
-    private favoriteChatroomService: FavoriteChatroomService
+    private favoriteChatroomService: FavoriteChatroomService,
+    private router: Router
   ) {
     this.route.data.subscribe((data: any) => {
       this.users = data.users.data.users;
       this.favChatrooms = data.favorites.data;
       this.pagination = data.users.data.pagination;
     });
+    if (this.route.children && this.route.children.length > 0) {
+      this.route.children[0].params.subscribe((params: any) => {
+        if (params.id) {
+          this.selectedChatroomId = params.id;
+        }
+      });
+    }
     this.pusherService.messageSubject.subscribe((data: any) => {
       this.messageReceivedSignal();
       this.chatWindow?.getChatroomMessages(null);
+      this.getFavorites();
+    });
+
+    this.favoriteChatroomService.favorite$.subscribe((data: any) => {
       this.getFavorites();
     });
   }
@@ -76,7 +88,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.selectedParticipant = data.user;
       this.selectedChatroomId = data.chatroomId;
       this.selectedChatroom = data.chatroom;
-      this.chatRoom?.selectChatroom(this.selectedChatroom);
+      this.router.navigate(['/chat', data.chatroomId]);
+      // this.chatRoom?.selectChatroom(this.selectedChatroom);
     }
   }
 

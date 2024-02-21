@@ -6,4 +6,5 @@ export interface Chatroom {
     _id: string;
     participants: User;
     unreadMessages: number;
+    isFavorite?: boolean;
 }

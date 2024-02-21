@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
+import { Subject, lastValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environments';
 
 @Injectable()
@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environments';
 export class FavoriteChatroomService {
     private GET_FAV_CHATROOM_ENDPOINT = '/favorite-chatroom';
     private TOGGLE_FAV_CHATROOM_ENDPOINT = '/favorite-chatroom';
-
+    public favorite$: Subject<any> = new Subject<any>();
     constructor(
         private http: HttpClient
     ) { }
