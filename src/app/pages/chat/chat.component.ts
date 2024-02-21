@@ -98,4 +98,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
       Utils.showErrorMessage('An error occurred while fetching favorites', error);
     }
   }
+
+  backButtonSignal(data: boolean): void {
+    if (data) {
+      this.selectedChatroomId = null;
+      this.selectedParticipant = null;
+      this.selectedChatroom = null;
+      this.chatRoom?.getAllChatRooms();
+    }
+  }
 }

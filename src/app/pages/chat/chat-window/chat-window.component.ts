@@ -24,8 +24,10 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
   @Input() selectedChatroom: any;
   @Output() messageReceivedSignal = new EventEmitter<any>();
   @Output() chatroomFavoriteSignal = new EventEmitter<any>();
+  @Output() backButtonSignal = new EventEmitter<any>();
   message = '';
   showAudioPopup = false;
+  showPlayerPopup = false;
   audioBlob: any;
   showEmojiPopup = false;
   showAttachmentPopup = false;
@@ -146,6 +148,7 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
   async stopRecordingAudio(): Promise<void> {
     this.isRecording = false;
     this.audioService.stopRecording();
+    this.showPlayerPopup = true;
   }
 
   getRecordingUrl(audioBlob: any): string {
@@ -155,6 +158,7 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
   removeAudio(): void {
     this.audioBlob = null;
     this.showAudioPopup = false;
+    this.showPlayerPopup = false;
   }
 
   async getChatroomMessages(page: number | null): Promise<void> {
@@ -237,6 +241,10 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
     } catch (error) {
       Utils.showErrorMessage('Failed to toggle favorite chatroom', error);
     }
+  }
+
+  goBack(): void {
+    this.backButtonSignal.emit(true);
   }
 
 }

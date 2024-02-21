@@ -3,7 +3,12 @@
         class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center border-b border-[#F1F1F1] border-solid">
         <div class="flex items-center">
             <div>
-                <img class="w-10 h-10 rounded-full" [src]="selectedParticipant.profilePicture | encodeProfilePicUrl" />
+                <div class="flex items-center">
+                    <button class="bg-[#f0f0f0] rounded-full p-1 shadow-md md:hidden" (click)="goBack()">
+                        <img src="assets/images/icons/arrow-left.png" alt="Back" />
+                    </button>
+                    <img class="w-10 h-10 rounded-full ml-2" [src]="selectedParticipant.profilePicture | encodeProfilePicUrl" />
+                </div>
             </div>
             <div class="ml-4">
                 <p class="text-grey-darkest">
@@ -20,8 +25,10 @@
 
         <div class="flex">
             <div class="cursor-pointer" (click)="toggleFavoriteChatroom(selectedChatroom._id)">
-                <img *ngIf="!selectedChatroom.isFavorite" src="assets/images/icons/empty-heart.svg" width="24" height="24" alt="fav" />
-                <img *ngIf="selectedChatroom.isFavorite" src="assets/images/icons/filled-heart.svg" width="24" height="24" alt="fav" />
+                <img *ngIf="!selectedChatroom.isFavorite" src="assets/images/icons/empty-heart.svg" width="24"
+                    height="24" alt="fav" />
+                <img *ngIf="selectedChatroom.isFavorite" src="assets/images/icons/filled-heart.svg" width="24"
+                    height="24" alt="fav" />
             </div>
             <div class="ml-4 cursor-pointer">
                 <img src="assets/images/icons/more-h.svg" width="24" height="24" alt="menu" />
@@ -152,7 +159,8 @@
                 <div class="relative">
                     <img src="assets/images/icons/paperclip.svg" alt="paperclip"
                         class="w-[24px] h-[24px] cursor-pointer" (click)="toggleAttachmentPopup()">
-                    <div class="absolute right-[7px] bottom-[32px] bg-white rounded-t-md shadow-lg p-4 flex space-x-2"
+
+                    <div class="absolute right-[7px] bottom-[32px] bg-white rounded-t-md shadow-lg p-4 flex flex-col md:flex-row space-x-2"
                         *ngIf="showAttachmentPopup">
                         <div class="text-center m-2 px-2 w-max">
                             <input type="file" #imageInput hidden (change)="onFileSelected($event, 'image')"
@@ -198,33 +206,35 @@
                 <div class="relative">
                     <img src="assets/images/icons/microphone.svg" alt="mic" class="w-[24px] h-[24px] cursor-pointer"
                         (click)="recordAudio()">
+
                     <div *ngIf="showAudioPopup"
                         class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex space-x-2">
                         <div class="flex items-center justify-center m-2 px-2 w-max">
                             <img src="assets/images/icons/stop-playing.png" alt="mic"
-                                class="w-[40px] h-[40px] cursor-pointer" (click)="stopRecordingAudio()">
+                                class="w-[24px] h-[24px] cursor-pointer" (click)="stopRecordingAudio()">
+                        </div>
+                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max hidden md:block">
+                            <img src="assets/images/icons/Sound-Wave.svg" class="w-[155px]" alt="soundwave">
                         </div>
                         <div class="flex items-center justify-center m-2 ml-0 px-2 w-max">
-                            <img src="assets/images/icons/Sound-Wave.svg" class="w-full" alt="soundwave">
-                        </div>
-                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max">
-                            <!-- <p>{{audioService.getRecordingDuration()}}</p> -->
+                            <p>{{audioService.getRecordingDuration()}}</p>
                         </div>
                     </div>
-                    <div *ngIf="audioURL && showAudioPopup"
-                        class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex space-x-2">
+                    <div *ngIf="showPlayerPopup"
+                        class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex flex-col md:flex-row space-x-2">
                         <div class="flex items-center justify-center m-2 px-2 w-max">
                             <!-- Audio Player to play recorded audio -->
-                            <audio controls [src]="audioURL"></audio>
+                            <audio controls [src]="audioURL" class="w-[170px]"></audio>
                         </div>
-                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max cursor-pointer"
-                            (click)="removeAudio()">
-                            <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/trash.png" alt="trash">
-                        </div>
-                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max cursor-pointer"
-                            (click)="sendAudioMessage()">
-                            <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/send.png"
-                                alt="send audio">
+                        <div class="flex flex-row sm:flex-col items-center justify-center">
+                            <div class="m-2 ml-0 px-2 w-max cursor-pointer" (click)="removeAudio()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/trash.png"
+                                    alt="trash">
+                            </div>
+                            <div class="m-2 ml-0 px-2 w-max cursor-pointer" (click)="sendAudioMessage()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/send.png"
+                                    alt="send audio">
+                            </div>
                         </div>
                     </div>
                 </div>

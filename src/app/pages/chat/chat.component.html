@@ -1,5 +1,5 @@
 <div class="w-full">
-    <div class="h-screen">
+    <div class="h-screen md:block hidden">
         <div class="flex border border-grey rounded shadow-lg h-full">
             <!-- Left -->
             <div class="w-1/4 border[0.5px] border-[#F7F7F7] flex flex-col">
@@ -74,6 +74,85 @@
                 [selectedChatroomId]="selectedChatroomId" [selectedChatroom]="selectedChatroom"
                 (chatroomFavoriteSignal)="chatroomFavoriteSignal($event)"></app-chat-window>
 
+        </div>
+    </div>
+
+    <!--Mobile Design-->
+    <div class="md:hidden h-screen block">
+        <div class="flex border border-grey rounded shadow-lg h-full">
+            <div class="w-full flex flex-col">
+                <!-- Contacts container -->
+                <ng-container *ngIf="!selectedParticipant">
+                    <!--Header-->
+                    <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
+                        <div class="flex items-center">
+                            <img class="rounded-full"
+                                [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
+                                width="48" height="48" />
+                            <button type="button" (click)="dropdownOpen = !dropdownOpen"
+                                class="inline-flex justify-center px-4 py-2 bg-white text-sm font-medium focus:outline-none ml-2"
+                                id="options-menu">
+                                <span
+                                    class="text-[15px] font-normal leading-6 text-[#101C26]">{{authenticationService.auth?.user?.name
+                                    ?? ''}}</span>
+                                <img src="assets/images/icons/chevron-down.png" alt="Expand Arrow"
+                                    class="w-[24px] h-[24px] ml-2">
+                            </button>
+
+                            <div class="absolute left-[11px] top-[25px] mt-4 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all ease-out duration-300 z-10"
+                                *ngIf="dropdownOpen">
+                                <div class="py-1" role="menu" aria-orientation="vertical"
+                                    aria-labelledby="options-menu">
+                                    <!-- Dropdown items here -->
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        role="menuitem">Your Profile</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        role="menuitem">Settings</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        role="menuitem" (click)="logout()">Sign out</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="ml-4">
+                                <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]"
+                                    (click)="openSearchPeopleModal()">
+                                    <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
+                                        width="24" height="24">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full">
+                        <img src="assets/images/icons/search.png" alt="Search" class="absolute h-6 w-6 left-3">
+                        <input type="text" class="w-full pl-10 py-2 bg-[#F7F7F7] h-[48px] text-sm rounded-full focus:ring-1 focus:outline-none focus:ring-yellow-400
+                    focus:border-yellow-400" placeholder="Search for chatter or message." />
+                    </div>
+
+                    <ng-container *ngIf="favChatrooms && favChatrooms.length > 0">
+                        <div class="flex justify-between items-center py-2 px-4 mt-4">
+                            <p class="font-normal text-sm leading-5" style="color: #79838B;">Favourite chatters</p>
+                            <p class="font-normal text-sm leading-5" style="color: #79838B;">{{favChatrooms.length}}</p>
+                        </div>
+
+                        <app-fav-contacts-slider [favChatrooms]="favChatrooms"
+                            (selecteParticipantSignal)="participantUpdated($event)"></app-fav-contacts-slider>
+                    </ng-container>
+
+                    <app-chat-room #chatroom class="bg-grey-lighter flex-1 mt-4 overflow-auto"
+                        (participantUpdated)="participantUpdated($event)"></app-chat-room>
+                </ng-container>
+
+                <ng-container *ngIf="selectedParticipant">
+                    <app-chat-window #chatWindow class="w-full h-full border flex flex-col"
+                        [selectedParticipant]="selectedParticipant" [selectedChatroomId]="selectedChatroomId"
+                        [selectedChatroom]="selectedChatroom"
+                        (chatroomFavoriteSignal)="chatroomFavoriteSignal($event)" (backButtonSignal)="backButtonSignal($event)"></app-chat-window>
+                </ng-container>
+            </div>
         </div>
     </div>
 </div>
