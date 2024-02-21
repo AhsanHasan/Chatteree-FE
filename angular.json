@@ -147,7 +147,13 @@
           "configurations": {
             "production": {
               "browserTarget": "chatteree-fe:build:production",
-              "serverTarget": "chatteree-fe:server:production"
+              "serverTarget": "chatteree-fe:server:production",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environments.ts",
+                  "with": "src/environments/environments.prod.ts"
+                }
+              ]
             },
             "development": {
               "browserTarget": "chatteree-fe:build:development",
