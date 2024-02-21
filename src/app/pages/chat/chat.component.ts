@@ -72,10 +72,12 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   participantUpdated(data: any): void {
-    this.selectedParticipant = data.user;
-    this.selectedChatroomId = data.chatroomId;
-    this.selectedChatroom = data.chatroom;
-    this.chatRoom?.selectChatroom(this.selectedChatroom);
+    if (this.selectedChatroomId !== data.chatroomId) {
+      this.selectedParticipant = data.user;
+      this.selectedChatroomId = data.chatroomId;
+      this.selectedChatroom = data.chatroom;
+      this.chatRoom?.selectChatroom(this.selectedChatroom);
+    }
   }
 
   messageReceivedSignal(): void {

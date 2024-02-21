@@ -32,7 +32,12 @@
               "node_modules/angular-notifier/styles.css",
               "src/assets/css/style.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "ngx-spinner",
+              "angular-notifier",
+              "puser-js"
+            ]
           },
           "configurations": {
             "production": {

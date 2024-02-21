@@ -13,7 +13,6 @@ import { HttpConfigInterceptor } from './interceptors/httpconfig.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { FormsModule } from '@angular/forms';
-import { NgxPusherModule } from 'ngx-pusher';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -69,13 +68,7 @@ const customNotifierOptions: NotifierOptions = {
     HttpClientModule,
     NgxSpinnerModule,
     NotifierModule.withConfig(customNotifierOptions),
-    FormsModule,
-    NgxPusherModule.forRoot({
-      appKey: environment.pusher.key,
-      pusherOptions: {
-        cluster: environment.pusher.cluster,
-      }
-    })
+    FormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true }
