@@ -12,6 +12,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.component';
+import { SearchableChatRoomComponent } from './searchable-chat-room/searchable-chat-room.component';
 
 
 
@@ -21,7 +22,8 @@ import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.co
     SearchPeopleComponent,
     FavContactsSliderComponent,
     ChatRoomComponent,
-    ChatWindowComponent
+    ChatWindowComponent,
+    SearchableChatRoomComponent
   ],
   imports: [
     CommonModule,

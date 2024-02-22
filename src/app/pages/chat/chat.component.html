@@ -48,7 +48,8 @@
                 <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full">
                     <img src="assets/images/icons/search.png" alt="Search" class="absolute h-6 w-6 left-3">
                     <input type="text" class="w-full pl-10 py-2 bg-[#F7F7F7] h-[48px] text-sm rounded-full focus:ring-1 focus:outline-none focus:ring-yellow-400
-                    focus:border-yellow-400" placeholder="Search for chatter or message." />
+                    focus:border-yellow-400" (keyup)="onSearchUserOrMessage($event)"
+                        placeholder="Search for chatter or message." />
                 </div>
 
                 <ng-container *ngIf="favChatrooms && favChatrooms.length > 0">
@@ -63,8 +64,10 @@
 
 
                 <!-- Chat rooms -->
-                <app-chat-room #chatroom class="bg-grey-lighter flex-1 mt-4 overflow-auto"
+                <app-chat-room #chatroom *ngIf="showInitialList" class="bg-grey-lighter flex-1 mt-4 overflow-auto"
                     (participantUpdated)="participantUpdated($event)"></app-chat-room>
+
+                <app-searchable-chat-room #chatroomSearch *ngIf="!showInitialList" class="bg-grey-lighter flex-1 mt-4 overflow-auto"></app-searchable-chat-room>
 
             </div>
 
@@ -81,12 +84,14 @@
                         <img src="assets/images/Vector.svg" alt="Above Image" class="w-[164px] max-w-none" />
                         <img src="assets/images/ill-chat.svg" alt="illustration"
                             class="absolute -top-[53px] left-[20px] max-w-none" />
-                        <img src="assets/images/Union.svg" alt="union" class="absolute top-[129px] left-[215px] max-w-none" />
+                        <img src="assets/images/Union.svg" alt="union"
+                            class="absolute top-[129px] left-[215px] max-w-none" />
                     </div>
                     <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">We hear say
                         your mouth die hmmm</p>
                     <button class="mx-auto mt-4 custom-button flex items-center" (click)="openSearchPeopleModal()">
-                        <img src="assets/images/icons/white-square-feather.svg" alt="Chat" class="w-[24px] h-[24px] mr-1" />
+                        <img src="assets/images/icons/white-square-feather.svg" alt="Chat"
+                            class="w-[24px] h-[24px] mr-1" />
                         Start chatting
                     </button>
                 </div>

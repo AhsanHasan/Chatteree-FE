@@ -9,6 +9,10 @@ import { PusherService } from 'src/app/services/pusher.service';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { FavoriteChatroomService } from './services/favorite-chatroom.service';
 import { Utils } from 'src/app/utils';
+import { debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { ChatroomService } from './services/chatroom.service';
+import { SearchableChatRoomComponent } from './searchable-chat-room/searchable-chat-room.component';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -17,6 +21,11 @@ import { Utils } from 'src/app/utils';
 export class ChatComponent implements OnInit, AfterViewInit {
   @ViewChild('chatroom') chatRoom: ChatRoomComponent | undefined;
   @ViewChild('chatWindow') chatWindow: ChatWindowComponent | undefined;
+  @ViewChild('chatroomSearch') chatroomSearch: SearchableChatRoomComponent | undefined;
+  userInput$ = new Subject<string>();
+  searchInput = '';
+  showInitialList = true;
+
   dropdownOpen = false;
   users: Array<User> = [];
   selectedParticipant: User | null | undefined = null;
@@ -30,6 +39,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
     hasPreviousPage: false
   };
   favChatrooms: any;
+
+  matchedUsers: Array<User> = [];
+  matchedMessages: Array<any> = [];
   constructor(
     public authenticationService: AuthenticationService,
     private searchPeopleService: SearchPeopleService,
@@ -37,6 +49,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private pusherService: PusherService,
     private favoriteChatroomService: FavoriteChatroomService,
+    private chatroomService: ChatroomService,
     private router: Router
   ) {
     this.route.data.subscribe((data: any) => {
@@ -44,6 +57,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.favChatrooms = data.favorites.data;
       this.pagination = data.users.data.pagination;
     });
+    // Listen to URL param changes
     if (this.route.children && this.route.children.length > 0) {
       this.route.children[0].params.subscribe((params: any) => {
         if (params.id) {
@@ -51,14 +65,19 @@ export class ChatComponent implements OnInit, AfterViewInit {
         }
       });
     }
+    // Listen to pusher service for new messages
     this.pusherService.messageSubject.subscribe((data: any) => {
       this.messageReceivedSignal();
       this.chatWindow?.getChatroomMessages(null);
       this.getFavorites();
     });
-
+    // Listen to the change in favorite chatrooms
     this.favoriteChatroomService.favorite$.subscribe((data: any) => {
       this.getFavorites();
+    });
+    // Listen to the search input
+    this.userInput$.pipe(debounceTime(500)).subscribe((input: string) => {
+      this.handleUserSearch(input);
     });
   }
 
@@ -121,4 +140,32 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.chatRoom?.getAllChatRooms();
     }
   }
+
+  async handleUserSearch(input: string): Promise<void> {
+    if (input && input.length > 0) {
+      this.showInitialList = false;
+      await this.searchChatroom(input);
+    } else {
+      this.showInitialList = true;
+    }
+  }
+
+  onSearchUserOrMessage(event: any): void {
+    this.userInput$.next(event.target.value);
+  }
+
+  async searchChatroom(input: string): Promise<void> {
+    const query = {
+      search: input
+    };
+    const response = await this.chatroomService.searchChatrooms(query) as any;
+    if (response && response.success) {
+      this.matchedMessages = response.data.matchMessages;
+      this.matchedUsers = response.data.matchUser;
+      console.log(this.matchedUsers);
+      this.chatroomSearch!.matchedMessages = this.matchedMessages;
+      this.chatroomSearch!.matchedUsers = this.matchedUsers;
+      console.log(response.data)
+    }
+  } 
 }
