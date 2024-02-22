@@ -92,12 +92,8 @@ export class SearchPeopleComponent implements OnInit {
       const response = await this.chatroomService.getChatroom(query);
       if (response.success) {
         // set chat room id in query params
-        this.router.navigate([], {
-          queryParams: {
-            id: response.data._id
-          }
-        });
-        this.chatRoomSelected.emit(response.data.participants);
+        this.chatRoomSelected.emit({ participants: response.data.participants, chatroomId: response.data._id });
+        this.router.navigate(['/chat', response.data._id]);
         this.closePopup();
       }
     } catch (error) {

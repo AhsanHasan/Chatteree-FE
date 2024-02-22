@@ -77,10 +77,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.authenticationService.logout();
   }
 
-  async chatRoomSelected(participants: any): Promise<void> {
+  async chatRoomSelected(data: any): Promise<void> {
     await this.chatRoom?.getAllChatRooms();
-    this.selectedParticipant = participants && participants.length > 1 ?
-      participants.find((participant: User) => participant._id !== this.authenticationService.auth?.user._id) : null;
+    this.selectedParticipant = data.participants && data.participants.length > 1 ?
+      data.participants.find((participant: User) => participant._id !== this.authenticationService.auth?.user._id) : null;
+    this.selectedChatroomId = data.chatroomId;
   }
 
   participantUpdated(data: any): void {
