@@ -38,86 +38,97 @@
     </div>
 
     <div #messageSection class="flex-1 h-screen overflow-y-auto" *ngIf="messages && messages.length > 0" infiniteScroll
-        [infiniteScrollDistance]="2" [infiniteScrollThrottle]="500" (scrolledUp)="onScrolledUp()"
+        [infiniteScrollDistance]="9.9" [infiniteScrollDisabled]="infiniteScrollDisabled" [infiniteScrollThrottle]="300" (scrolledUp)="onScrolledUp()"
         [scrollWindow]="false">
+        <ngx-spinner [name]="spinner" bdColor="rgba(0, 0, 0, 0.3)" size="default" color="#101C26"
+            type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
         <div class="py-2 px-3">
-            <ng-container *ngFor="let message of messages">
-                <!-- Other user Message -->
-                <div class="flex mb-2" *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
-                    <img [src]="message.sender.profilePicture! | encodeProfilePicUrl" alt="Profile"
-                        class="h-10 w-10 rounded-full mr-3">
-                    <div class="flex-col items-start">
-                        <div class="flex items-center rounded-full py-4 px-4 bg-[#F1F1F1]">
-                            <div class="">
-                                <p class="text-left text-xs text-grey-dark mt-1">
+            <ng-container *ngFor="let messageGroup of messages; let i = index">
+                <div class="flex justify-center mb-2">
+                    <div class="rounded py-2 px-4" style="background-color: #B5BDC5">
+                        <p class="text-sm uppercase">
+                            {{messageGroup._id | date: 'dd MMMM, yyyy'}}
+                        </p>
+                    </div>
+                </div>
+                <ng-container *ngFor="let message of messageGroup.messages">
+                    <!-- Other user Message -->
+                    <div class="flex mb-2" *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
+                        <img [src]="message.sender.profilePicture! | encodeProfilePicUrl" alt="Profile"
+                            class="h-10 w-10 rounded-full mr-3">
+                        <div class="flex-col items-start">
+                            <div class="flex items-center rounded-full py-4 px-4 bg-[#F1F1F1]">
+                                <div class="">
+                                    <p class="text-left text-xs text-grey-dark mt-1">
+                                        {{message.createdAt | date: 'hh:mm a'}}
+                                    </p>
+                                    <p class="text-sm mt-1" *ngIf="message.type === 'text'">
+                                        {{message.content}}
+                                    </p>
+                                    <a *ngIf="message.type === 'audio' || message.type === 'file'"
+                                        [href]="message.content" target="_blank"
+                                        class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
+                                    <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-start">
+                                <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
+                                    <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-start">
+                                <a [href]="message.content" *ngIf="message.type === 'voice-note'" target="_blank">
+                                    <audio controls [src]="message.content"></audio>
+                                </a>
+                            </div>
+                            <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
+                                class="w-20 mt-2 rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Logged in user Message -->
+                    <div class="flex justify-end mb-2"
+                        *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
+                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="self-end">
+                        <div class="flex flex-col">
+                            <div class="rounded-full py-4 px-4 bg-[#101C26] min-w-min">
+                                <p class="text-right text-xs text-grey-dark mt-1 text-white">
                                     {{message.createdAt | date: 'hh:mm a'}}
                                 </p>
-                                <p class="text-sm mt-1" *ngIf="message.type === 'text'">
+                                <p class="text-sm mt-1 text-white" *ngIf="message.type === 'text'">
                                     {{message.content}}
                                 </p>
                                 <a *ngIf="message.type === 'audio' || message.type === 'file'" [href]="message.content"
                                     target="_blank"
                                     class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
                             </div>
+                            <div class="flex justify-end">
+                                <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
+                                    <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-end">
+                                <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
+                                    <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-end">
+                                <a [href]="message.content" *ngIf="message.type === 'voice-note'" target="_blank">
+                                    <audio controls [src]="message.content"></audio>
+                                </a>
+                            </div>
+                            <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
+                                class="w-20 mt-2 rounded-xl">
                         </div>
-                        <div class="flex justify-start">
-                            <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
-                                <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
-                            </a>
-                        </div>
-                        <div class="flex justify-start">
-                            <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
-                                <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
-                            </a>
-                        </div>
-                        <div class="flex justify-start">
-                            <a [href]="message.content" *ngIf="message.type === 'voice-note'" target="_blank">
-                                <audio controls [src]="message.content"></audio>
-                            </a>
-                        </div>
-                        <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
-                            class="w-20 mt-2 rounded-xl">
-                    </div>
-                </div>
 
-                <!-- Logged in user Message -->
-                <div class="flex justify-end mb-2"
-                    *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
-                    <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="self-end">
-                    <div class="flex flex-col">
-                        <div class="rounded-full py-4 px-4 bg-[#101C26] min-w-min">
-                            <p class="text-right text-xs text-grey-dark mt-1 text-white">
-                                {{message.createdAt | date: 'hh:mm a'}}
-                            </p>
-                            <p class="text-sm mt-1 text-white" *ngIf="message.type === 'text'">
-                                {{message.content}}
-                            </p>
-                            <a *ngIf="message.type === 'audio' || message.type === 'file'" [href]="message.content"
-                                target="_blank"
-                                class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
-                        </div>
-                        <div class="flex justify-end">
-                            <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
-                                <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
-                            </a>
-                        </div>
-                        <div class="flex justify-end">
-                            <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
-                                <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
-                            </a>
-                        </div>
-                        <div class="flex justify-end">
-                            <a [href]="message.content" *ngIf="message.type === 'voice-note'" target="_blank">
-                                <audio controls [src]="message.content"></audio>
-                            </a>
-                        </div>
-                        <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
-                            class="w-20 mt-2 rounded-xl">
+                        <img [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
+                            alt="Profile" class="h-10 w-10 rounded-full mr-3">
                     </div>
-
-                    <img [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
-                        alt="Profile" class="h-10 w-10 rounded-full mr-3">
-                </div>
+                </ng-container>
             </ng-container>
         </div>
     </div>

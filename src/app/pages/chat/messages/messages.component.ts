@@ -13,6 +13,7 @@ import { AudioRecordService } from '../services/audio-record.service';
 import { isPlatformBrowser } from '@angular/common';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { PusherService } from 'src/app/services/pusher.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-messages',
@@ -21,9 +22,13 @@ import { PusherService } from 'src/app/services/pusher.service';
 })
 export class MessagesComponent implements AfterViewInit, OnChanges {
   @ViewChild('messageSection') messageSection: ElementRef | undefined;
+  spinner = 'messageSpinner';
   chatroomInformation!: Chatroom;
-  messages: Message[] = [];
-  casheMessages: Message[] = [];
+  messages: any[] = [];
+  cachedMessages: Message[] = [];
+
+  infiniteScrollDisabled = false;
+
   pagination: Pagination = {
     currentPage: 0,
     totalPages: 0,
@@ -59,6 +64,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     public audioService: AudioRecordService,
     private fireStorage: AngularFireStorage,
     private pusherService: PusherService,
+    private ngxSpinnerService: NgxSpinnerService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
     this.IS_BROWSER = isPlatformBrowser(platformId);
@@ -72,7 +78,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     });
     // Listen for changes to URL params
     this.route.params.subscribe(async (params: any) => {
-      console.log('Params', params);
       if (params.id !== this.chatroomInformation._id) {
         this.scrollToBottom();
       }
@@ -90,7 +95,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('Changes', changes);
     this.scrollToBottom();
   }
 
@@ -144,32 +148,68 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   }
 
   onScrolledUp(): void {
-    console.log('Scrolled up');
     this.pagination.currentPage += 1;
     const query = {
       page: this.pagination.currentPage,
       limit: 5,
       chatroomId: this.chatroomInformation._id
     };
+    // get current position of scroll bar before loading more messages
+    const currentScrollPosition = this.messageSection?.nativeElement.scrollTop;
+    this.ngxSpinnerService.show(this.spinner);
+    if (this.cachedMessages && this.cachedMessages[this.pagination.currentPage]) {
+      this.messages = this.organizeMessagesByDate(this.cachedMessages[this.pagination.currentPage] as any, this.messages);
+      // set scroll position to previous position
+      setTimeout(() => {
+        this.messageSection!.nativeElement.scrollTop = currentScrollPosition as number;
+      }, 200);
+      this.ngxSpinnerService.hide(this.spinner);
+      return;
+    }
+    this.infiniteScrollDisabled = true;
     this.messageService.getChatroomMessages(query).then((response: any) => {
-      this.messages = response.data.messages.concat(this.messages);
+      const newMessages = response.data.messages;
+      this.messages = this.organizeMessagesByDate(newMessages, this.messages);
       this.pagination = response.data.pagination;
+      this.infiniteScrollDisabled = false;
+      // set scroll position to previous position
+      setTimeout(() => {
+        this.messageSection!.nativeElement.scrollTop = currentScrollPosition as number;
+      }, 200);
+      this.ngxSpinnerService.hide(this.spinner);
     });
     this.prefetchNextPage();
   }
 
   prefetchNextPage(): void {
-    if (this.casheMessages[this.pagination.currentPage + 1]) return;
+    if (this.cachedMessages[this.pagination.currentPage + 1]) return;
     this.pagination.currentPage += 1;
     const query = {
       page: this.pagination.currentPage,
-      limit: 5,
+      limit: 10,
       chatroomId: this.chatroomInformation._id
     };
     this.messageService.getChatroomMessages(query).then((response: any) => {
-      this.casheMessages[this.pagination.currentPage + 1] = response.data.messages;
+      this.cachedMessages[this.pagination.currentPage + 1] = response.data.messages;
+      console.log('Cached messages', this.cachedMessages);
       this.pagination = response.data.pagination;
     });
+  }
+
+  organizeMessagesByDate(newMessages: any[], existingMessages: any[]): any[] {
+    const idMap = new Map();
+    function addToMap(arr: any[]) {
+      arr.forEach(({_id, messages}) => {
+        if (!idMap.has(_id)) {
+          idMap.set(_id, []);
+      }
+      idMap.get(_id).push(...messages);
+      });
+    }
+    addToMap(newMessages);
+    addToMap(existingMessages);
+    const result = Array.from(idMap, ([_id, messages]) => ({ _id, messages }));
+    return result;
   }
 
   getAttachedFileName(attachment: string): string {
@@ -220,6 +260,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   async stopRecordingAudio(): Promise<void> {
     this.isRecording = false;
     this.audioService.stopRecording();
+    this.showAudioPopup = false;
     this.showPlayerPopup = true;
   }
 
@@ -274,5 +315,10 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
         this.messageSection!.nativeElement.scrollTop = this.messageSection!.nativeElement.scrollHeight;
       }, 100);
     }
+  }
+
+  isFirstMessageOfDay(messageGroupIndex: number, meessageGroup: any[]): boolean {
+    console.log(`messageGroupIndex: ${messageGroupIndex} - meessageGroup: ${meessageGroup}`);
+    return messageGroupIndex === 0;
   }
 }

@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, ResolveFn, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { from } from 'rxjs';
@@ -10,6 +10,7 @@ export const GetAllUserResolver: ResolveFn<any> = (
     state: RouterStateSnapshot
 ) => {
     const userService = inject(UserService);
+    const router = inject(Router);
     const page = 1;
     const limit = 6;
     const query = {
@@ -21,6 +22,10 @@ export const GetAllUserResolver: ResolveFn<any> = (
             return response;
         }),
         catchError((error: any) => {
+            console.log('error', error);
+            if (error.error && error.error.status === 401) {
+                router.navigate(['/']);
+            }
             return throwError(() => error);
         })
     );
