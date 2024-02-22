@@ -67,7 +67,8 @@
                 <app-chat-room #chatroom *ngIf="showInitialList" class="bg-grey-lighter flex-1 mt-4 overflow-auto"
                     (participantUpdated)="participantUpdated($event)"></app-chat-room>
 
-                <app-searchable-chat-room #chatroomSearch *ngIf="!showInitialList" class="bg-grey-lighter flex-1 mt-4 overflow-auto"></app-searchable-chat-room>
+                <app-searchable-chat-room #chatroomSearch *ngIf="!showInitialList"
+                    class="bg-grey-lighter flex-1 mt-4 overflow-auto" (userActionSignal)="participantUpdated($event)"></app-searchable-chat-room>
 
             </div>
 

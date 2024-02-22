@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chatroom } from '../interfaces/chatroom.interface';
 import { Message } from '../interfaces/message.interface';
@@ -20,7 +20,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.css']
 })
-export class MessagesComponent implements AfterViewInit, OnChanges {
+export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChecked {
   @ViewChild('messageSection') messageSection: ElementRef | undefined;
   spinner = 'messageSpinner';
   chatroomInformation!: Chatroom;
@@ -54,7 +54,12 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   isRecording = false;
   showPlayerPopup = false;
 
+  shouldScrollToBottom = true;
+
   IS_BROWSER = false
+
+  currentScrollPosition: number | null = null;
+  currentScrollHeight: number | null = null;
   constructor(
     private route: ActivatedRoute,
     public authenticationService: AuthenticationService,
@@ -98,6 +103,9 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.scrollToBottom();
+  }
+
+  ngAfterViewChecked() {
   }
 
   async toggleFavoriteChatroom(chatroomId: string): Promise<void> {
@@ -156,28 +164,42 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
       limit: 5,
       chatroomId: this.chatroomInformation._id
     };
-    // get current position of scroll bar before loading more messages
-    const currentScrollPosition = this.messageSection?.nativeElement.scrollTop;
+    const lastMessageId = this.messages[0].messages[0]._id;
     this.ngxSpinnerService.show(this.spinner);
     if (this.cachedMessages && this.cachedMessages[this.pagination.currentPage]) {
       this.messages = this.organizeMessagesByDate(this.cachedMessages[this.pagination.currentPage] as any, this.messages);
-      // set scroll position to previous position
       setTimeout(() => {
-        this.messageSection!.nativeElement.scrollTop = currentScrollPosition as number;
-      }, 200);
+        const element = document.getElementById(lastMessageId);
+        if (element) {
+          this.messageSection!.nativeElement.scrollTo({
+            top: element.offsetTop,
+            behavior: 'smooth'
+          });
+        }
+      }, 0);
       this.ngxSpinnerService.hide(this.spinner);
       return;
     }
     this.infiniteScrollDisabled = true;
+    // this.updateScrollPosition(currentScrollPosition, currentScrollHeight);
+    if (!this.pagination.hasNextPage) {
+      this.ngxSpinnerService.hide(this.spinner);
+      return;
+    }
     this.messageService.getChatroomMessages(query).then((response: any) => {
       const newMessages = response.data.messages;
       this.messages = this.organizeMessagesByDate(newMessages, this.messages);
+      setTimeout(() => {
+        const element = document.getElementById(lastMessageId);
+        if (element) {
+          this.messageSection!.nativeElement.scrollTo({
+            top: element.offsetTop,
+            behavior: 'smooth'
+          });
+        }
+      }, 0);
       this.pagination = response.data.pagination;
       this.infiniteScrollDisabled = false;
-      // set scroll position to previous position
-      setTimeout(() => {
-        this.messageSection!.nativeElement.scrollTop = currentScrollPosition as number;
-      }, 200);
       this.ngxSpinnerService.hide(this.spinner);
     });
     this.prefetchNextPage();
@@ -188,12 +210,11 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     this.pagination.currentPage += 1;
     const query = {
       page: this.pagination.currentPage,
-      limit: 10,
+      limit: 5,
       chatroomId: this.chatroomInformation._id
     };
     this.messageService.getChatroomMessages(query).then((response: any) => {
       this.cachedMessages[this.pagination.currentPage + 1] = response.data.messages;
-      console.log('Cached messages', this.cachedMessages);
       this.pagination = response.data.pagination;
     });
   }
@@ -201,16 +222,17 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   organizeMessagesByDate(newMessages: any[], existingMessages: any[]): any[] {
     const idMap = new Map();
     function addToMap(arr: any[]) {
-      arr.forEach(({_id, messages}) => {
+      arr.forEach(({ _id, messages }) => {
         if (!idMap.has(_id)) {
           idMap.set(_id, []);
-      }
-      idMap.get(_id).push(...messages);
+        }
+        idMap.get(_id).push(...messages);
       });
     }
     addToMap(newMessages);
     addToMap(existingMessages);
     const result = Array.from(idMap, ([_id, messages]) => ({ _id, messages }));
+    this.shouldScrollToBottom = true;
     return result;
   }
 
@@ -314,7 +336,10 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     if (this.messageSection) {
       // Scroll to bottom of message section
       setTimeout(() => {
-        this.messageSection!.nativeElement.scrollTop = this.messageSection!.nativeElement.scrollHeight;
+        this.messageSection!.nativeElement.scrollTo({
+          top: this.messageSection!.nativeElement.scrollHeight,
+          behavior: 'smooth'
+        });
       }, 100);
     }
   }

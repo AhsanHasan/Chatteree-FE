@@ -53,7 +53,7 @@
                 </div>
                 <ng-container *ngFor="let message of messageGroup.messages">
                     <!-- Other user Message -->
-                    <div class="flex mb-2" *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
+                    <div class="flex mb-2" [id]="message._id" *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
                         <img [src]="message.sender.profilePicture! | encodeProfilePicUrl" alt="Profile"
                             class="h-10 w-10 rounded-full mr-3">
                         <div class="flex-col items-start">
@@ -91,7 +91,7 @@
                     </div>
 
                     <!-- Logged in user Message -->
-                    <div class="flex justify-end mb-2"
+                    <div class="flex justify-end mb-2" [id]="message._id"
                         *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
                         <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="self-end">
                         <div class="flex flex-col">

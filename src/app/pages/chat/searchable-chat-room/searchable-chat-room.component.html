@@ -5,7 +5,7 @@
             Chatterees
         </div>
         <div class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer"
-            *ngFor="let chatroom of matchedUsers">
+            *ngFor="let chatroom of matchedUsers" (click)="selectChatroom(chatroom)">
             <div>
                 <div class="relative inline-block">
                     <img class="h-12 w-12 rounded-full"
