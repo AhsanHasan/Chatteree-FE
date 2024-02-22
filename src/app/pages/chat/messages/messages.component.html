@@ -37,7 +37,9 @@
         </div>
     </div>
 
-    <div class="flex-1 h-screen overflow-y-auto" *ngIf="messages && messages.length > 0">
+    <div #messageSection class="flex-1 h-screen overflow-y-auto" *ngIf="messages && messages.length > 0" infiniteScroll
+        [infiniteScrollDistance]="2" [infiniteScrollThrottle]="500" (scrolledUp)="onScrolledUp()"
+        [scrollWindow]="false">
         <div class="py-2 px-3">
             <ng-container *ngFor="let message of messages">
                 <!-- Other user Message -->

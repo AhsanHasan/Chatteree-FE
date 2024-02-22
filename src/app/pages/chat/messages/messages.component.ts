@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chatroom } from '../interfaces/chatroom.interface';
 import { Message } from '../interfaces/message.interface';
@@ -12,15 +12,18 @@ import { AttachmentService } from '../services/attachment.service';
 import { AudioRecordService } from '../services/audio-record.service';
 import { isPlatformBrowser } from '@angular/common';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { PusherService } from 'src/app/services/pusher.service';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.css']
 })
-export class MessagesComponent implements AfterViewInit {
+export class MessagesComponent implements AfterViewInit, OnChanges {
+  @ViewChild('messageSection') messageSection: ElementRef | undefined;
   chatroomInformation!: Chatroom;
   messages: Message[] = [];
+  casheMessages: Message[] = [];
   pagination: Pagination = {
     currentPage: 0,
     totalPages: 0,
@@ -55,23 +58,40 @@ export class MessagesComponent implements AfterViewInit {
     private attachmentService: AttachmentService,
     public audioService: AudioRecordService,
     private fireStorage: AngularFireStorage,
+    private pusherService: PusherService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
     this.IS_BROWSER = isPlatformBrowser(platformId);
+    this.pusherService.messageSubject.subscribe(async (data: any) => {
+      await this.getMessages(1);
+    });
     this.route.data.subscribe((data: any) => {
       this.chatroomInformation = data.messages.data.chatRoom;
       this.messages = data.messages.data.messages;
       this.pagination = data.messages.data.pagination;
     });
+    // Listen for changes to URL params
+    this.route.params.subscribe(async (params: any) => {
+      console.log('Params', params);
+      if (params.id !== this.chatroomInformation._id) {
+        this.scrollToBottom();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
+    this.scrollToBottom();
     if (this.IS_BROWSER) {
       this.audioService.audioBlob$.subscribe((audioBlob: any) => {
         this.audioURL = window.URL.createObjectURL(audioBlob);
         this.audioBlob = audioBlob;
       });
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('Changes', changes);
+    this.scrollToBottom();
   }
 
   async toggleFavoriteChatroom(chatroomId: string): Promise<void> {
@@ -92,6 +112,7 @@ export class MessagesComponent implements AfterViewInit {
 
   async sendMessage(): Promise<void> {
     try {
+      if (!this.message || this.message.trim() === '') return;
       const body = {
         chatroomId: this.chatroomInformation._id,
         content: this.message,
@@ -124,10 +145,31 @@ export class MessagesComponent implements AfterViewInit {
 
   onScrolledUp(): void {
     console.log('Scrolled up');
+    this.pagination.currentPage += 1;
+    const query = {
+      page: this.pagination.currentPage,
+      limit: 5,
+      chatroomId: this.chatroomInformation._id
+    };
+    this.messageService.getChatroomMessages(query).then((response: any) => {
+      this.messages = response.data.messages.concat(this.messages);
+      this.pagination = response.data.pagination;
+    });
+    this.prefetchNextPage();
   }
 
-  onScroll(): void {
-    console.log('Scrolled');
+  prefetchNextPage(): void {
+    if (this.casheMessages[this.pagination.currentPage + 1]) return;
+    this.pagination.currentPage += 1;
+    const query = {
+      page: this.pagination.currentPage,
+      limit: 5,
+      chatroomId: this.chatroomInformation._id
+    };
+    this.messageService.getChatroomMessages(query).then((response: any) => {
+      this.casheMessages[this.pagination.currentPage + 1] = response.data.messages;
+      this.pagination = response.data.pagination;
+    });
   }
 
   getAttachedFileName(attachment: string): string {
@@ -205,6 +247,32 @@ export class MessagesComponent implements AfterViewInit {
       }
     } catch (error) {
       Utils.showErrorMessage('Failed to send audio message', error);
+    }
+  }
+
+  async getMessages(page: number): Promise<void> {
+    try {
+      const query = {
+        page: page ? page : 1,
+        limit: 10,
+        chatroomId: this.chatroomInformation._id
+      };
+      const response = await this.messageService.getChatroomMessages(query);
+      if (response.success) {
+        this.messages = response.data.messages;
+        this.pagination = response.data.pagination;
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to get messages', error);
+    }
+  }
+
+  scrollToBottom(): void {
+    if (this.messageSection) {
+      // Scroll to bottom of message section
+      setTimeout(() => {
+        this.messageSection!.nativeElement.scrollTop = this.messageSection!.nativeElement.scrollHeight;
+      }, 100);
     }
   }
 }
