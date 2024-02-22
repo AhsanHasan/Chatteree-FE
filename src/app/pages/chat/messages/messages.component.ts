@@ -91,8 +91,8 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
   }
 
   ngAfterViewInit(): void {
-    this.scrollToBottom();
     if (this.IS_BROWSER) {
+      this.scrollToBottom();
       this.audioService.audioBlob$.subscribe((audioBlob: any) => {
         this.audioURL = window.URL.createObjectURL(audioBlob);
         this.audioBlob = audioBlob;
@@ -333,14 +333,16 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
   }
 
   scrollToBottom(): void {
-    if (this.messageSection) {
-      // Scroll to bottom of message section
-      setTimeout(() => {
-        this.messageSection!.nativeElement.scrollTo({
-          top: this.messageSection!.nativeElement.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 100);
+    if (this.IS_BROWSER) {
+      if (this.messageSection) {
+        // Scroll to bottom of message section
+        setTimeout(() => {
+          this.messageSection!.nativeElement.scrollTo({
+            top: this.messageSection!.nativeElement.scrollHeight,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
     }
   }
 
