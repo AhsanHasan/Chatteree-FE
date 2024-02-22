@@ -212,9 +212,9 @@
 
                     <div *ngIf="showAudioPopup"
                         class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex space-x-2">
-                        <div class="flex items-center justify-center m-2 px-2 w-max">
+                        <div class="flex items-center justify-center m-2 px-2 w-max" (click)="stopRecordingAudio()">
                             <img src="assets/images/icons/stop-playing.png" alt="mic"
-                                class="w-[24px] h-[24px] cursor-pointer" (click)="stopRecordingAudio()">
+                                class="w-[24px] h-[24px] cursor-pointer">
                         </div>
                         <div class="flex items-center justify-center m-2 ml-0 px-2 w-max hidden md:block">
                             <img src="assets/images/icons/Sound-Wave.svg" class="w-[155px]" alt="soundwave">

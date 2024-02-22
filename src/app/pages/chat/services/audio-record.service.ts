@@ -57,6 +57,7 @@ export class AudioRecordService {
                 this.chunks = [];
             };
             clearInterval(this.recordingTimer);
+            this.recordingDuration = 0;
             this.mediaRecorder.stop();
         }
     }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chatroom } from '../interfaces/chatroom.interface';
 import { Message } from '../interfaces/message.interface';
@@ -65,6 +65,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     private fireStorage: AngularFireStorage,
     private pusherService: PusherService,
     private ngxSpinnerService: NgxSpinnerService,
+    private cd: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
     this.IS_BROWSER = isPlatformBrowser(platformId);
@@ -90,6 +91,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
       this.audioService.audioBlob$.subscribe((audioBlob: any) => {
         this.audioURL = window.URL.createObjectURL(audioBlob);
         this.audioBlob = audioBlob;
+        this.cd.detectChanges();
       });
     }
   }
@@ -254,12 +256,12 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   async recordAudio(): Promise<void> {
     this.showAudioPopup = true
     this.isRecording = true;
-    this.audioService.startRecording();
+    await this.audioService.startRecording();
   }
 
   async stopRecordingAudio(): Promise<void> {
     this.isRecording = false;
-    this.audioService.stopRecording();
+    await this.audioService.stopRecording();
     this.showAudioPopup = false;
     this.showPlayerPopup = true;
   }
