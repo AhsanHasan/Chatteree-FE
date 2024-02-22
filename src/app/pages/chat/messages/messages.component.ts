@@ -347,7 +347,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
   }
 
   isFirstMessageOfDay(messageGroupIndex: number, meessageGroup: any[]): boolean {
-    console.log(`messageGroupIndex: ${messageGroupIndex} - meessageGroup: ${meessageGroup}`);
     return messageGroupIndex === 0;
   }
 }
