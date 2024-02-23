@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChatsComponent } from './chats.component';
 import { GetAllChatroomResolver } from '../../chat/resolvers/get-all-chatroom.resolver';
 import { GetAllUserResolver } from '../../chat/resolvers/get-all-user.resolver';
+import { GetAllStatusResolver } from '../resolvers/get-status.resolver';
 
 
 const routes: Routes = [
@@ -12,6 +13,7 @@ const routes: Routes = [
         resolve: {
             users: GetAllUserResolver,
             chatrooms: GetAllChatroomResolver,
+            status: GetAllStatusResolver
         }
     }
 ];

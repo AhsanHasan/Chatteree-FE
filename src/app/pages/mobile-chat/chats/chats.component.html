@@ -84,10 +84,10 @@
                         <div class="inline-flex ml-4">
                             <ngx-slick-carousel class="carousel" #slickModal="slick-carousel" [config]="slideConfig"
                                 (init)="slickInit($event)">
-                                <div ngxSlickItem class="slide" *ngFor="let slide of slides">
-                                    <div class="flex flex-col items-center">
-                                        <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]" [src]="slide.img">
-                                        <p class="text-xs leading-4 font-normal text-center">Dexter</p>
+                                <div ngxSlickItem class="slide" *ngFor="let status of statuses">
+                                    <div class="flex flex-col items-center" (click)="viewStatus(status)">
+                                        <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]" [src]="status.profilePicture">
+                                        <p class="text-xs leading-4 font-normal text-center">{{status.name | truncate: 12}}</p>
                                     </div>
                                 </div>
                             </ngx-slick-carousel>

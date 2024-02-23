@@ -20,7 +20,7 @@ export class ChatsComponent {
   userInput$ = new Subject<string>();
   searchInput = '';
   showInitialList = true;
-  slides = [
+  /* slides = [
     { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" },
     { img: "https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png" },
     { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" },
@@ -28,7 +28,8 @@ export class ChatsComponent {
     { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" },
     { img: "https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png" },
     { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" }
-  ];
+  ]; */
+  slides: any = [];
   slideConfig = {
     'slidesToShow': 3,
     'slidesToScroll': 3,
@@ -40,6 +41,8 @@ export class ChatsComponent {
     'draggable': true,
     'adaptiveHeight': true,
   };
+
+  statuses: any = [];
 
   chatrooms: Array<Chatroom> = [];
 
@@ -70,6 +73,7 @@ export class ChatsComponent {
     this.route.data.subscribe((data: any) => {
       this.chatrooms = data.chatrooms.data.chatRooms;
       this.users = data.users.data.users;
+      this.statuses = data.status.data;
     });
 
     this.userInput$.pipe(debounceTime(500)).subscribe((input: string) => {
@@ -155,5 +159,9 @@ export class ChatsComponent {
       this.cd.detectChanges();
 
     }
+  }
+
+  viewStatus(status: any): void {
+    console.log('status', status);
   }
 }

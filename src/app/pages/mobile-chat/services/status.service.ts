@@ -14,8 +14,8 @@ export class StatusService {
         private http: HttpClient
     ) { }
 
-    async getAllStatus(query: any): Promise<any> {
-        return await lastValueFrom(this.http.get<any>(environment.apiBase + this.GET_STATUS_ENPOINT, { params: query as any }));
+    async getAllStatus(): Promise<any> {
+        return await lastValueFrom(this.http.get<any>(environment.apiBase + this.GET_STATUS_ENPOINT));
     }
 
     async createStatus(data: any): Promise<any> {
