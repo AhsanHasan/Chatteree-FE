@@ -58,6 +58,8 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   currentScrollPosition: number | null = null;
   currentScrollHeight: number | null = null;
 
+  showMenu = false;
+
   constructor(
     private route: ActivatedRoute,
     public authenticationService: AuthenticationService,
@@ -76,7 +78,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     this.route.data.subscribe((data: any) => {
       this.chatroomInformation = data.messages.data.chatRoom;
       this.messages = data.messages.data.messages;
-      console.log(this.messages);
       this.pagination = data.messages.data.pagination;
     });
     // Listen for changes to URL params

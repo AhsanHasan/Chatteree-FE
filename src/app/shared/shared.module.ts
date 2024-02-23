@@ -15,6 +15,7 @@ import { SearchPeopleService } from '../pages/chat/services/search-people.servic
 import { UserService } from '../pages/chat/services/user.service';
 import { ChatroomService } from '../pages/chat/services/chatroom.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { ChatSearchComponent } from './chat-search/chat-search.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     PopupModalComponent,
     CropperModalComponent,
     AttachmentPopupComponent,
-    UserPopupComponent
+    UserPopupComponent,
+    ChatSearchComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     PopupModalComponent,
     CropperModalComponent,
     AttachmentPopupComponent,
-    UserPopupComponent
+    UserPopupComponent,
+    ChatSearchComponent
   ],
   providers: [
     AttachmentService,

@@ -47,6 +47,10 @@ const routes: Routes = [
     loadChildren: () => import('../app/pages/error-page/error-page.module').then(m => m.ErrorPageModule),
   },
   {
+    path: 'transition',
+    loadChildren: () => import('../app/pages/transition-page/transition-page.module').then(m => m.TransitionPageModule),
+  },
+  {
     path: '**',
     redirectTo: '404'
   }

@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Injectable({
@@ -7,10 +8,14 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 export class DeviceService {
     constructor(
         private deviceService: DeviceDetectorService,
+        @Inject(PLATFORM_ID) private platformId: object
     ) { }
 
     get isMobile() {
-        return this.deviceService.isMobile();
+        if (isPlatformBrowser(this.platformId)) {
+            return this.deviceService.isMobile();
+        }
+        return false;
     }
 
 }

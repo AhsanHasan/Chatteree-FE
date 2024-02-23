@@ -24,8 +24,17 @@
             </div>
 
             <div class="flex">
-                <div class="ml-4 cursor-pointer">
-                    <img src="assets/images/icons/more-h.svg" width="24" height="24" alt="menu" />
+                <div class="relative ml-4 cursor-pointer">
+                    <img src="assets/images/icons/more-h.svg" width="24" height="24" alt="menu"
+                        (click)="showMenu = !showMenu" />
+                    <div class="absolute -left-[121px] mt-2 w-36 rounded-md shadow-lg bg-white" *ngIf="showMenu">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                role="menuitem">Details</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                                role="menuitem">Delete chat</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
