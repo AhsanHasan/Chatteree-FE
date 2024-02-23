@@ -21,6 +21,15 @@ module.exports = {
           'font-size': '15px',
           'font-weight': '400',
         },
+        '.custom-button-yellow': {
+          'border-radius': '32px',
+          'padding': '12px 24px 12px 24px',
+          'gap': '10px',
+          'background-color': '#F7E353',
+          'color': '#101C26',
+          'font-size': '15px',
+          'font-weight': '400',
+        },
         '.custom-social-button': {
           'border-radius': '32px',
           'padding': '12px 24px 12px 24px',

@@ -1,18 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SearchPeopleService } from '../services/search-people.service';
-import { PaginationQuery, UserService } from '../services/user.service';
-import { Utils } from 'src/app/utils';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { Subject, debounce, debounceTime, distinctUntilChanged } from 'rxjs';
-import { ChatroomService } from '../services/chatroom.service';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ChatroomService, PaginationQuery } from 'src/app/pages/chat/services/chatroom.service';
+import { SearchPeopleService } from 'src/app/pages/chat/services/search-people.service';
+import { UserService } from 'src/app/pages/chat/services/user.service';
+import { DeviceService } from 'src/app/services/device.service';
+import { Utils } from 'src/app/utils';
 
 @Component({
-  selector: 'app-search-people',
-  templateUrl: './search-people.component.html',
-  styleUrls: ['./search-people.component.css']
+  selector: 'app-user-popup',
+  templateUrl: './user-popup.component.html',
+  styleUrls: ['./user-popup.component.css']
 })
-export class SearchPeopleComponent implements OnInit {
+export class UserPopupComponent implements OnInit, OnChanges {
   @Input() users: any;
   @Input() pagination: any;
   @Output() chatRoomSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -20,13 +21,13 @@ export class SearchPeopleComponent implements OnInit {
   searchTermChanged = new Subject<string>();
 
   spinner = 'searchPeopleSpinner';
-
   constructor(
     private searchPeopleService: SearchPeopleService,
     private userService: UserService,
     private chatroomService: ChatroomService,
     private ngxSpinnerService: NgxSpinnerService,
-    private router: Router
+    private router: Router,
+    private deviceService: DeviceService
   ) {
     this.searchTermChanged.pipe(
       debounceTime(500),
@@ -46,6 +47,9 @@ export class SearchPeopleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
   }
 
   get poupModalVisibility$(): any {
@@ -92,12 +96,14 @@ export class SearchPeopleComponent implements OnInit {
       const response = await this.chatroomService.getChatroom(query);
       if (response.success) {
         // set chat room id in query params
-        this.router.navigate([], {
-          queryParams: {
-            id: response.data._id
-          }
-        });
-        this.chatRoomSelected.emit(response.data.participants);
+        this.chatRoomSelected.emit({ participants: response.data.participants, chatroomId: response.data._id });
+        debugger;
+        if (!this.deviceService.isMobile) {
+          this.router.navigate(['/chat', response.data._id]);
+
+        } else {
+          this.router.navigate(['/m-chat', response.data._id])
+        }
         this.closePopup();
       }
     } catch (error) {
@@ -105,4 +111,5 @@ export class SearchPeopleComponent implements OnInit {
     }
     this.ngxSpinnerService.hide(this.spinner);
   }
+
 }

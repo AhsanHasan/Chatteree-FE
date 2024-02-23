@@ -1,0 +1,254 @@
+<div class="flex flex-col w-full h-screen">
+    <div
+        class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center border-b border-[#F1F1F1] border-solid w-full sticky top-0 bg-white">
+        <div class="flex items-center">
+            <div>
+                <div class="flex items-center">
+                    <button class="bg-[#f0f0f0] rounded-full p-1 shadow-md md:hidden" (click)="goBack()">
+                        <img src="assets/images/icons/arrow-left.png" alt="Back" />
+                    </button>
+                    <img class="w-10 h-10 rounded-full ml-2"
+                        [src]="chatroomInformation.participants.profilePicture! | encodeProfilePicUrl" />
+                </div>
+            </div>
+            <div class="ml-4">
+                <p class="text-grey-darkest">
+                    {{chatroomInformation.participants.name}}
+                </p>
+                <p class="text-xs mt-1" [ngClass]="{
+                'text-green-500': chatroomInformation.participants.onlineStatus === 'online',
+                'text-gray-500': chatroomInformation.participants.onlineStatus === 'offline'
+            }">
+                    {{chatroomInformation.participants.onlineStatus | titlecase}}
+                </p>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="cursor-pointer" (click)="toggleFavoriteChatroom(chatroomInformation._id)">
+                <img *ngIf="!chatroomInformation.isFavorite" src="assets/images/icons/empty-heart.svg" width="24"
+                    height="24" alt="fav" />
+                <img *ngIf="chatroomInformation.isFavorite" src="assets/images/icons/filled-heart.svg" width="24"
+                    height="24" alt="fav" />
+            </div>
+            <div class="ml-4 cursor-pointer">
+                <img src="assets/images/icons/more-h.svg" width="24" height="24" alt="menu" />
+            </div>
+        </div>
+    </div>
+
+    <div #messageSection class="flex-1 h-screen overflow-y-auto" *ngIf="messages && messages.length > 0" infiniteScroll
+        [infiniteScrollDistance]="9.9" [infiniteScrollDisabled]="infiniteScrollDisabled" [infiniteScrollThrottle]="300" (scrolledUp)="onScrolledUp()"
+        [scrollWindow]="false">
+        <ngx-spinner [name]="spinner" bdColor="rgba(0, 0, 0, 0.3)" size="default" color="#101C26"
+            type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
+        <div class="py-2 px-3">
+            <ng-container *ngFor="let messageGroup of messages; let i = index">
+                <div class="flex justify-center mb-2">
+                    <div class="rounded py-2 px-4" style="background-color: #B5BDC5">
+                        <p class="text-sm uppercase">
+                            {{messageGroup._id | date: 'dd MMMM, yyyy'}}
+                        </p>
+                    </div>
+                </div>
+                <ng-container *ngFor="let message of messageGroup.messages">
+                    <!-- Other user Message -->
+                    <div class="flex mb-2" [id]="message._id" *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
+                        <img [src]="message.sender.profilePicture! | encodeProfilePicUrl" alt="Profile"
+                            class="h-10 w-10 rounded-full mr-3">
+                        <div class="flex-col items-start">
+                            <div class="flex items-center rounded-full py-4 px-4 bg-[#F1F1F1]">
+                                <div class="">
+                                    <p class="text-left text-xs text-grey-dark mt-1">
+                                        {{message.createdAt | date: 'hh:mm a'}}
+                                    </p>
+                                    <p class="text-sm mt-1" *ngIf="message.type === 'text'">
+                                        {{message.content}}
+                                    </p>
+                                    <a *ngIf="message.type === 'audio' || message.type === 'file'"
+                                        [href]="message.content" target="_blank"
+                                        class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
+                                    <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-start">
+                                <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
+                                    <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-start">
+                                <a [href]="message.content" *ngIf="message.type === 'voice-note'" target="_blank">
+                                    <audio controls [src]="message.content"></audio>
+                                </a>
+                            </div>
+                            <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
+                                class="w-20 mt-2 rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Logged in user Message -->
+                    <div class="flex justify-end mb-2" [id]="message._id"
+                        *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
+                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="self-end">
+                        <div class="flex flex-col">
+                            <div class="rounded-full py-4 px-4 bg-[#101C26] min-w-min">
+                                <p class="text-right text-xs text-grey-dark mt-1 text-white">
+                                    {{message.createdAt | date: 'hh:mm a'}}
+                                </p>
+                                <p class="text-sm mt-1 text-white" *ngIf="message.type === 'text'">
+                                    {{message.content}}
+                                </p>
+                                <a *ngIf="message.type === 'audio' || message.type === 'file'" [href]="message.content"
+                                    target="_blank"
+                                    class="text-blue-500 underline italic">{{getAttachedFileName(message.content)}}</a>
+                            </div>
+                            <div class="flex justify-end">
+                                <a [href]="message.content" *ngIf="message.type === 'file'" target="_blank">
+                                    <img src="assets/images/documentCover.webp" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-end">
+                                <a [href]="message.content" *ngIf="message.type === 'audio'" target="_blank">
+                                    <img src="assets/images/mp3Cover.png" class="w-20 mt-2 rounded-xl">
+                                </a>
+                            </div>
+                            <div class="flex justify-end">
+                                <a [href]="message.content" *ngIf="message.type === 'voice-note'" target="_blank">
+                                    <audio controls [src]="message.content"></audio>
+                                </a>
+                            </div>
+                            <img *ngIf="message.type === 'image'" [src]="message.content" alt="image"
+                                class="w-20 mt-2 rounded-xl">
+                        </div>
+
+                        <img [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
+                            alt="Profile" class="h-10 w-10 rounded-full mr-3">
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center justify-center h-full" *ngIf="!messages || messages.length === 0">
+        <div class="relative w-[296px] h-[296px]">
+            <img src="assets/images/Vector.svg" alt="Above Image" class="w-[164px] max-w-none" />
+            <img src="assets/images/ill-chat.svg" alt="illustration"
+                class="absolute -top-[53px] left-[20px] max-w-none" />
+            <img src="assets/images/Union.svg" alt="union" class="absolute top-[129px] left-[215px] max-w-none" />
+        </div>
+        <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">They are waiting to hear from
+            you.</p>
+    </div>
+
+    <div class="bg-grey-lighter px-4 py-4 flex items-center sticky bottom-0 bg-white">
+        <div class="relative flex-1 mx-4">
+            <input class="w-full border rounded-full px-2 py-2 h-[48px] pl-3 pr-24 focus:ring-1 focus:outline-none focus:ring-yellow-400
+            focus:border-yellow-400" placeholder="Type your message" type="text" [(ngModel)]="message"
+                (keydown.enter)="sendMessage()" tabindex="0" />
+            <div class="absolute right-4 top-1/2 transform -translate-y-1/2 flex space-x-2">
+                <div class="relative">
+                    <img src="assets/images/icons/smile.svg" alt="Emoji" class="w-[24px] h-[24px] cursor-pointer"
+                        (click)="showEmojiPopup = !showEmojiPopup">
+                    <div class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2"
+                        *ngIf="showEmojiPopup">
+                        <emoji-mart (emojiClick)="addEmoji($event)" [darkMode]="false" [set]="'facebook'"
+                            [showPreview]="false"></emoji-mart>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="assets/images/icons/paperclip.svg" alt="paperclip"
+                        class="w-[24px] h-[24px] cursor-pointer" (click)="toggleAttachmentPopup()">
+
+                    <div class="absolute right-[7px] bottom-[32px] bg-white rounded-t-md shadow-lg p-4 flex flex-col md:flex-row space-x-2"
+                        *ngIf="showAttachmentPopup">
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #imageInput hidden (change)="onFileSelected($event, 'image')"
+                                accept="image/*">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="imageInput.click()">
+                                <img class="w-6 h-6" src="assets/images/icons/image-gallery.svg" alt="gallery">
+                            </div>
+                            <p class="text-center text-sm font-normal leading-5">Image</p>
+                        </div>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #audioInput hidden (change)="onFileSelected($event, 'audio')"
+                                accept="audio/mpeg">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="audioInput.click()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/file-audio.svg"
+                                    alt="audio file">
+                            </div>
+                            <p class="text-center text-sm font-normal leading-5">Audio</p>
+                        </div>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #fileInput hidden (change)="onFileSelected($event, 'file')"
+                                accept=".pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="fileInput.click()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/document.svg"
+                                    alt="document">
+                            </div>
+                            <p class="text-center text-sm font-normal leading-5">Doc</p>
+                        </div>
+                        <div class="text-center m-2 px-2 w-max">
+                            <input type="file" #contactInput hidden (change)="onFileSelected($event, 'contact')"
+                                accept="text/vcard">
+                            <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
+                                (click)="contactInput.click()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/user.svg"
+                                    alt="contact">
+                            </div>
+                            <p class="text-center text-sm font-normal leading-5">Contact</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="assets/images/icons/microphone.svg" alt="mic" class="w-[24px] h-[24px] cursor-pointer"
+                        (click)="recordAudio()">
+
+                    <div *ngIf="showAudioPopup"
+                        class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex space-x-2">
+                        <div class="flex items-center justify-center m-2 px-2 w-max" (click)="stopRecordingAudio()">
+                            <img src="assets/images/icons/stop-playing.png" alt="mic"
+                                class="w-[24px] h-[24px] cursor-pointer">
+                        </div>
+                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max hidden md:block">
+                            <img src="assets/images/icons/Sound-Wave.svg" class="w-[155px]" alt="soundwave">
+                        </div>
+                        <div class="flex items-center justify-center m-2 ml-0 px-2 w-max">
+                            <p>{{audioService.getRecordingDuration()}}</p>
+                        </div>
+                    </div>
+                    <div *ngIf="showPlayerPopup"
+                        class="absolute right-[7px] bottom-[32px] bg-white rounded shadow-lg p-2 flex flex-col md:flex-row space-x-2">
+                        <div class="flex items-center justify-center m-2 px-2 w-max">
+                            <!-- Audio Player to play recorded audio -->
+                            <audio controls [src]="audioURL" class="w-[170px]"></audio>
+                        </div>
+                        <div class="flex flex-row sm:flex-col items-center justify-center">
+                            <div class="m-2 ml-0 px-2 w-max cursor-pointer" (click)="removeAudio()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/trash.png"
+                                    alt="trash">
+                            </div>
+                            <div class="m-2 ml-0 px-2 w-max cursor-pointer" (click)="sendAudioMessage()">
+                                <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/send.png"
+                                    alt="send audio">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]" (click)="sendMessage()">
+                <img src="assets/images/icons/send.svg" alt="edit square feather" width="24" height="24">
+            </button>
+        </div>
+    </div>
+</div>
+
+<app-attachment-popup></app-attachment-popup>

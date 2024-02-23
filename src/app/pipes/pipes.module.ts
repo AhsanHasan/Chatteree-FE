@@ -2,20 +2,23 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EncodeProfilePictureUrlPipe } from './encode-profile-picture.pipe';
 import { TruncatePipe } from './truncate.pipe';
+import { GroupByPipe } from './groupby.pipe';
 
 
 
 @NgModule({
   declarations: [
     EncodeProfilePictureUrlPipe,
-    TruncatePipe
+    TruncatePipe,
+    GroupByPipe
   ],
   imports: [
     CommonModule
   ],
   exports: [
     EncodeProfilePictureUrlPipe,
-    TruncatePipe
+    TruncatePipe,
+    GroupByPipe
   ]
 })
 export class PipesModule { }

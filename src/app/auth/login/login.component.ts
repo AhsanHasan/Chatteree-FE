@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService, UserEmail } from 'src/app/services/authentication.service';
+import { DeviceService } from 'src/app/services/device.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { PusherService } from 'src/app/services/pusher.service';
 import { Utils } from 'src/app/utils';
@@ -21,10 +22,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private router: Router,
     private ngxSpinner: NgxSpinnerService,
     private loaderService: LoaderService,
-    private pusherService: PusherService
+    private pusherService: PusherService,
+    private deviceService: DeviceService
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngAfterViewInit(): void {
   }
@@ -53,7 +55,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
             if (this.authenticationService.auth?.user?.username) {
               if (this.authenticationService.auth?.user?.profilePicture) {
                 await this.pusherService.subscribeChatToChannel();
-                this.router.navigate(['/chat']);
+                if (!this.deviceService.isMobile) {
+                  this.router.navigate(['/chat']);
+                } else {
+                  this.router.navigate(['/m-chat']);
+                }
               } else {
                 this.router.navigate(['/onboarding/basic-information']);
               }
@@ -93,7 +99,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
             if (this.authenticationService.auth?.user?.profilePicture) {
               await this.pusherService.subscribeChatToChannel();
               // Redirect to chat
-              this.router.navigate(['/chat']);
+              if (!this.deviceService.isMobile) {
+                this.router.navigate(['/chat']);
+              } else {
+                this.router.navigate(['/m-chat']);
+              }
             } else {
               // Redirect to image upload
               this.router.navigate(['/onboarding/basic-information']);

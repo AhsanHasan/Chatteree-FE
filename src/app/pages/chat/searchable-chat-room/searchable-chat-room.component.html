@@ -1,0 +1,106 @@
+<!-- Show when contacts are added-->
+<div id="contact-list">
+    <ng-container *ngIf="matchedUsers && matchedUsers.length > 0">
+        <div class="px-3 py-1 text-sm text-gray-400">
+            Chatterees
+        </div>
+        <div class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer"
+            *ngFor="let chatroom of matchedUsers" (click)="selectChatroom(chatroom)">
+            <div>
+                <div class="relative inline-block">
+                    <img class="h-12 w-12 rounded-full"
+                        [src]="chatroom.participants.profilePicture || '' | encodeProfilePicUrl" />
+                    <div *ngIf="chatroom.participants.onlineStatus === 'online'"
+                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+                    </div>
+                    <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
+                        class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
+                    </div>
+                </div>
+            </div>
+            <div class="ml-4 flex-1 py-4">
+                <div class="flex items-bottom justify-between">
+                    <p class="text-grey-darkest" [ngClass]="{
+                        'font-medium': chatroom.unreadMessages > 0
+                    }">
+                        {{chatroom.participants.name}}
+                    </p>
+                    <p class="text-xs text-grey-darkest" *ngIf="chatroom.lastMessage">
+                        {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}}
+                    </p>
+                </div>
+                <div class="flex items-center">
+                    <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="mr-1"
+                        *ngIf="chatroom.lastMessage.sender._id! === authenticationService.auth?.user?._id!">
+                    <div class="flex justify-between w-full">
+                        <p class="text-grey-dark mt-1 text-sm" [ngClass]="{
+                                'font-medium': chatroom.unreadMessages > 0
+                            }" *ngIf="chatroom.lastMessage && chatroom.lastMessage.content !== ''">
+                            {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content : 'Attachment') |
+                            truncate: 30 }}
+                        </p>
+                        <p class="text-grey-light mt-1 text-[12px] italic"
+                            *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
+                            'They are waiting for your first message!'
+                        </p>
+                        <div class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1"
+                            *ngIf="chatroom.unreadMessages > 0">
+                            <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">{{chatroom.unreadMessages}}
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="matchedMessages && matchedMessages.length > 0">
+        <div class="px-3 py-1 text-sm text-gray-400">
+            Messages
+        </div>
+        <div class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer"
+            *ngFor="let chatroom of matchedMessages">
+            <div>
+                <div class="relative inline-block">
+                    <img class="h-12 w-12 rounded-full"
+                        [src]="chatroom.participants.profilePicture || '' | encodeProfilePicUrl" />
+                    <div *ngIf="chatroom.participants.onlineStatus === 'online'"
+                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+                    </div>
+                    <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
+                        class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
+                    </div>
+                </div>
+            </div>
+            <div class="ml-4 flex-1 py-4">
+                <div class="flex items-bottom justify-between">
+                    <p class="text-grey-darkest">
+                        {{chatroom.participants.name}}
+                    </p>
+                    <p class="text-xs text-grey-darkest">
+                        {{chatroom.messages.createdAt | date: 'hh:mm a'}}
+                    </p>
+                </div>
+                <div class="flex items-center">
+                    <img *ngIf="chatroom.messages.sender._id === authenticationService.auth?.user?._id"
+                        src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="mr-1">
+                    <div class="flex justify-between w-full">
+                        <p class="text-grey-dark mt-1 text-sm">
+                            {{ chatroom.messages.content | truncate: 30 }}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<!-- Show when no contacts are added-->
+<div id="no-contacts" class="flex flex-col items-center justify-center h-full"
+    *ngIf="(!matchedUsers || matchedUsers.length === 0) && (!matchedMessages || matchedMessages.length === 0)">
+    <img src="assets/images/icons/chat.png" alt="No Contacts" class="w-[86px] h-[86px]" />
+    <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">No chats, contacts or messages
+        found</p>
+</div>

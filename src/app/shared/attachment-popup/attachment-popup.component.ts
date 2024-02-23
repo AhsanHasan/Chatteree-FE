@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { AttachmentService } from '../services/attachment.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Utils } from 'src/app/utils';
-import { MessageService } from '../services/message.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { AttachmentService } from 'src/app/pages/chat/services/attachment.service';
+import { MessageService } from 'src/app/pages/chat/services/message.service';
 
 @Component({
   selector: 'app-attachment-popup',

@@ -1,0 +1,173 @@
+<div class="w-full">
+    <div class="h-screen">
+        <div class="flex border border-grey rounded shadow-lg h-full">
+            <div class="w-full border[0.5px] border-[#F7F7F7] flex flex-col">
+                <!-- Header -->
+                <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
+                    <div class="flex items-center">
+                        <img class="rounded-full"
+                            [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
+                            width="48" height="48" />
+                        <h3 class="px-2 font-semibold text-2xl leading-8">Chats</h3>
+                        <!-- <button type="button" (click)="dropdownOpen = !dropdownOpen"
+                            class="inline-flex justify-center px-4 py-2 bg-white text-sm font-medium focus:outline-none ml-2"
+                            id="options-menu">
+                            <span
+                                class="text-[15px] font-normal leading-6 text-[#101C26]">{{authenticationService.auth?.user?.name
+                                ?? ''}}</span>
+                            <img src="assets/images/icons/chevron-down.png" alt="Expand Arrow"
+                                class="w-[24px] h-[24px] ml-2">
+                        </button> -->
+
+                        <!-- <div class="absolute left-[11px] top-[25px] mt-4 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all ease-out duration-300 z-10"
+                            *ngIf="dropdownOpen">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    role="menuitem">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    role="menuitem">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    role="menuitem" (click)="logout()">Sign out</a>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <div class="flex">
+                        <div class="ml-4">
+                            <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]"
+                                (click)="openSearchPeopleModal()">
+                                <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
+                                    width="24" height="24">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Show When No Chatrooms are present -->
+                <div class="flex flex-col items-center justify-center h-full"
+                    *ngIf="!chatrooms || chatrooms.length === 0">
+                    <div class="relative w-[296px] h-[296px]">
+                        <img src="assets/images/Vector.svg" alt="Above Image" class="w-[164px] max-w-none" />
+                        <img src="assets/images/ill-chat.svg" alt="illustration"
+                            class="absolute -top-[53px] left-[20px] max-w-none" />
+                    </div>
+                    <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">We hear say
+                        your mouth die hmmm</p>
+                    <button class="mx-auto mt-4 custom-button-yellow flex items-center">
+                        <img src="assets/images/icons/edit-square-feather-black.svg" alt="Chat"
+                            class="w-[24px] h-[24px] mr-1" />
+                        Start chatting
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full">
+                    <img src="assets/images/icons/search.png" alt="Search" class="absolute h-6 w-6 left-3">
+                    <input type="text" class="w-full pl-10 py-2 bg-[#F7F7F7] h-[48px] text-sm rounded-full focus:ring-1 focus:outline-none focus:ring-yellow-400
+                focus:border-yellow-400" placeholder="Search for chatter or message."
+                        (keyup)="onSearchUserOrMessage($event)" />
+                </div>
+
+                <!-- Image Status Section -->
+
+                <div class="flex py-2 px-2 ">
+                    <div class="flex items-center">
+                        <div class="flex-col">
+                            <div class="w-[64px] h-[64px] bg-[#F1F1F1] rounded-full flex items-center justify-center"
+                                (click)="fileInput.click()">
+                                <img class="w-[19px] h-[19px]" src="assets/images/icons/add-media.svg">
+                                <input type="file" #fileInput style="display: none;" accept="video/*"
+                                    (change)="handleFileInput($event)">
+                            </div>
+                            <p class="text-xs leading-4 font-normal text-center">Add film</p>
+                        </div>
+                        <div class="inline-flex ml-4">
+                            <ngx-slick-carousel class="carousel" #slickModal="slick-carousel" [config]="slideConfig"
+                                (init)="slickInit($event)">
+                                <div ngxSlickItem class="slide" *ngFor="let status of statuses">
+                                    <div class="flex flex-col items-center" (click)="viewStatus(status)">
+                                        <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]" [src]="status.profilePicture">
+                                        <p class="text-xs leading-4 font-normal text-center">{{status.name | truncate: 12}}</p>
+                                    </div>
+                                </div>
+                            </ngx-slick-carousel>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Status Section -->
+
+                <!-- Chatrooms -->
+                <div *ngIf="showInitialList" class="bg-grey-lighter flex-1 mt-4 overflow-auto">
+                    <div id="contact-list">
+                        <ng-container *ngFor="let chatroom of chatrooms">
+                            <div class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer"
+                                (click)="selectChatroom(chatroom)">
+                                <div>
+                                    <div class="relative inline-block">
+                                        <img class="h-12 w-12 rounded-full"
+                                            [src]="chatroom?.participants?.profilePicture! | encodeProfilePicUrl" />
+                                        <div *ngIf="chatroom.participants.onlineStatus === 'online'"
+                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
+                                        </div>
+                                        <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
+                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex-1 py-4">
+                                    <div class="flex items-bottom justify-between">
+                                        <p class="text-grey-darkest">
+                                            {{chatroom.participants.name}}
+                                        </p>
+                                        <p class="text-xs text-grey-darkest">
+                                            {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}}
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
+                                            class="mr-1"
+                                            *ngIf="chatroom.lastMessage.sender._id! === authenticationService.auth?.user?._id!">
+                                        <div class="flex justify-between w-full">
+                                            <p class="text-grey-dark mt-1 text-sm" [ngClass]="{
+                                                    'font-medium': chatroom.unreadMessages > 0
+                                                }" *ngIf="chatroom.lastMessage && chatroom.lastMessage.content !== ''">
+                                                {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content
+                                                : 'Attachment') | truncate: 15 }}
+                                            </p>
+                                            <p class="text-grey-light mt-1 text-[12px] italic"
+                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
+                                                'They are waiting for your first message!'
+                                            </p>
+                                            <div class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1"
+                                                *ngIf="chatroom.unreadMessages > 0">
+                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
+                                                    {{chatroom.unreadMessages}}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <!-- Chatrooms-->
+
+                <!-- Search component -->
+                <app-chat-search #chatroomSearch *ngIf="!showInitialList"
+                    class="bg-grey-lighter flex-1 mt-4 overflow-auto"
+                    (userActionSignal)="participantUpdated($event)"></app-chat-search>
+                <!-- End of search component-->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-user-popup [users]="users" [pagination]="pagination"
+    (chatRoomSelected)="chatRoomSelected($event)"></app-user-popup>
+
+
+<app-preview-video></app-preview-video>

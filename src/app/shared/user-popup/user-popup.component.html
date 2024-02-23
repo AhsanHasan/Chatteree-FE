@@ -32,13 +32,15 @@
             <!-- Modal body -->
             <div class="p-4 md:p-5 space-y-4 h-[24rem] overflow-y-auto" infiniteScroll [infiniteScrollDistance]="2"
                 [infiniteScrollThrottle]="500" (scrolled)="onScroll()" [scrollWindow]="false">
-                <ngx-spinner [name]="spinner" bdColor="" size="default" color="#101C26"
-                                        type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
+                <ngx-spinner [name]="spinner" bdColor="" size="default" color="#101C26" type="ball-clip-rotate"
+                    [fullScreen]="false"></ngx-spinner>
                 <ul class="divide-y divide-gray-200">
                     <li class="pb-3 py-3 sm:pb-4" *ngFor="let user of users">
                         <div class="flex items-center space-x-4 rtl:space-x-reverse">
                             <div class="relative inline-block">
-                                <img class="rounded-full" [src]="user.profilePicture ? user.profilePicture : 'assets/images/profile-default.svg'" alt="user.name" width="48" height="48">
+                                <img class="rounded-full"
+                                    [src]="user.profilePicture ? user.profilePicture : 'assets/images/profile-default.svg'"
+                                    alt="user.name" width="48" height="48">
                                 <div *ngIf="user.onlineStatus === 'online'"
                                     class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
                                 </div>
@@ -55,7 +57,8 @@
                                 </p>
                             </div>
                             <div class="inline-flex items-center text-base font-semibold text-gray-900">
-                                <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]" (click)="getChatRoom(user)">
+                                <button class="text-white py-2 px-4 rounded-3xl w-[48px] h-[48px] bg-[#101C26]"
+                                    (click)="getChatRoom(user)">
                                     <img src="assets/images/icons/edit-square-feather.png" alt="edit square feather"
                                         width="24" height="24">
                                 </button>
