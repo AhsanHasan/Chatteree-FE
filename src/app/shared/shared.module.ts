@@ -10,6 +10,11 @@ import { DirectivesModule } from '../directives/directives.module';
 import { PipesModule } from '../pipes/pipes.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.component';
+import { UserPopupComponent } from './user-popup/user-popup.component';
+import { SearchPeopleService } from '../pages/chat/services/search-people.service';
+import { UserService } from '../pages/chat/services/user.service';
+import { ChatroomService } from '../pages/chat/services/chatroom.service';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 @NgModule({
@@ -17,24 +22,30 @@ import { AttachmentPopupComponent } from './attachment-popup/attachment-popup.co
     ImageCropperComponent,
     PopupModalComponent,
     CropperModalComponent,
-    AttachmentPopupComponent
+    AttachmentPopupComponent,
+    UserPopupComponent
   ],
   imports: [
     CommonModule,
     ImageCropperModule,
     PipesModule,
     DirectivesModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    InfiniteScrollModule
   ],
   exports: [
     ImageCropperComponent,
     PopupModalComponent,
     CropperModalComponent,
-    AttachmentPopupComponent
+    AttachmentPopupComponent,
+    UserPopupComponent
   ],
   providers: [
     AttachmentService,
-    MessageService
+    MessageService,
+    SearchPeopleService,
+    UserService,
+    ChatroomService
   ]
 })
 export class SharedModule { }

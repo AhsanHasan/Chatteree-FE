@@ -100,14 +100,11 @@
             <div class="w-3/4 border flex flex-col" *ngIf="selectedChatroomId">
                 <router-outlet></router-outlet>
             </div>
-            <!-- <app-chat-window #chatWindow class="w-3/4 border flex flex-col" [selectedParticipant]="selectedParticipant"
-                [selectedChatroomId]="selectedChatroomId" [selectedChatroom]="selectedChatroom"
-                (chatroomFavoriteSignal)="chatroomFavoriteSignal($event)"></app-chat-window> -->
 
         </div>
     </div>
 
 </div>
 
-<app-search-people [users]="users" [pagination]="pagination"
-    (chatRoomSelected)="chatRoomSelected($event)"></app-search-people>
+<app-user-popup [users]="users" [pagination]="pagination"
+    (chatRoomSelected)="chatRoomSelected($event)"></app-user-popup>

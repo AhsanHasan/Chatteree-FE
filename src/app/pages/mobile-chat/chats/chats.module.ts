@@ -12,6 +12,7 @@ import { FavoriteChatroomService } from '../../chat/services/favorite-chatroom.s
 import { MessageService } from '../../chat/services/message.service';
 import { SearchPeopleService } from '../../chat/services/search-people.service';
 import { UserService } from '../../chat/services/user.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -24,7 +25,8 @@ import { UserService } from '../../chat/services/user.service';
     ChatRoutingModule,
     SlickCarouselModule,
     PipesModule,
-    DirectivesModule
+    DirectivesModule,
+    SharedModule
   ],
   providers: [
     SearchPeopleService,
