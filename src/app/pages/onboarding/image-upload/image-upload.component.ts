@@ -9,6 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LoaderService } from 'src/app/services/loader.service';
 import { GeneralInformationService } from './services/general-information.service';
 import { Router } from '@angular/router';
+import { DeviceService } from 'src/app/services/device.service';
 @Component({
   selector: 'app-image-upload',
   templateUrl: './image-upload.component.html',
@@ -34,7 +35,8 @@ export class ImageUploadComponent implements OnInit, AfterViewInit {
     private ngxSpinnerService: NgxSpinnerService,
     private loaderService: LoaderService,
     private generalInformationService: GeneralInformationService,
-    private router: Router
+    private router: Router,
+    private deviceService: DeviceService
   ) {}
 
   ngOnInit() {
@@ -84,7 +86,11 @@ export class ImageUploadComponent implements OnInit, AfterViewInit {
           isActive: true,
           onlineStatus: 'online'
         });
-        this.router.navigate(['/chat']);
+        if (!this.deviceService.isMobile) {
+          this.router.navigate(['/chat']);
+        } else {
+          this.router.navigate(['/m-chat']);
+        }
       }
 
     } catch (error) {

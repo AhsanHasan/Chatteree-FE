@@ -30,9 +30,14 @@
               "node_modules/ngx-spinner/animations/ball-clip-rotate.css",
               "node_modules/@ctrl/ngx-emoji-mart/picker.css",
               "node_modules/angular-notifier/styles.css",
-              "src/assets/css/style.css"
+              "src/assets/css/style.css",
+              "node_modules/slick-carousel/slick/slick.scss",
+              "node_modules/slick-carousel/slick/slick-theme.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/slick-carousel/slick/slick.min.js"
+            ],
             "allowedCommonJsDependencies": [
               "ngx-spinner",
               "angular-notifier",

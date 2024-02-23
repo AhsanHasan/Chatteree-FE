@@ -13,6 +13,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ChatroomService } from './services/chatroom.service';
 import { SearchableChatRoomComponent } from './searchable-chat-room/searchable-chat-room.component';
+import { DeviceService } from 'src/app/services/device.service';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -81,7 +82,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+  }
 
   ngAfterViewInit() {
     this.selectedParticipant = this.chatRoom?.selectedParticipant;
@@ -162,10 +164,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
     if (response && response.success) {
       this.matchedMessages = response.data.matchMessages;
       this.matchedUsers = response.data.matchUser;
-      console.log(this.matchedUsers);
       this.chatroomSearch!.matchedMessages = this.matchedMessages;
       this.chatroomSearch!.matchedUsers = this.matchedUsers;
-      console.log(response.data)
     }
   } 
 }

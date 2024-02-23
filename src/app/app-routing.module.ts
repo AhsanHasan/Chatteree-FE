@@ -3,6 +3,8 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
 import { IsActiveGuard } from './guards/isActive.guard';
+import { MobileDeviceGuard } from './guards/mobile-device.guard';
+import { DesktopDeviceGuard } from './guards/desktop-device.guard';
 
 const routes: Routes = [
   {
@@ -32,8 +34,13 @@ const routes: Routes = [
   },
   {
     path: 'chat',
-    canActivate: [AuthGuard, IsActiveGuard],
+    canActivate: [MobileDeviceGuard, AuthGuard, IsActiveGuard],
     loadChildren: () => import('../app/pages/chat/chat.module').then(m => m.ChatModule),
+  },
+  {
+    path: 'm-chat',
+    canActivate: [DesktopDeviceGuard, AuthGuard, IsActiveGuard],
+    loadChildren: () => import('../app/pages/mobile-chat/mobile-chat.module').then(m => m.MobileChatModule),
   },
   {
     path: '404',

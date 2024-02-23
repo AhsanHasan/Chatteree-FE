@@ -14,6 +14,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { PusherService } from 'src/app/services/pusher.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DeviceService } from 'src/app/services/device.service';
 
 @Component({
   selector: 'app-messages',
@@ -71,6 +72,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
     private pusherService: PusherService,
     private ngxSpinnerService: NgxSpinnerService,
     private cd: ChangeDetectorRef,
+    private deviceService: DeviceService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
     this.IS_BROWSER = isPlatformBrowser(platformId);
@@ -92,6 +94,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
 
   ngAfterViewInit(): void {
     if (this.IS_BROWSER) {
+      console.log('Device: ', this.deviceService.isMobile);
       this.scrollToBottom();
       this.audioService.audioBlob$.subscribe((audioBlob: any) => {
         this.audioURL = window.URL.createObjectURL(audioBlob);
