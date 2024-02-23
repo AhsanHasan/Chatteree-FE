@@ -16,6 +16,8 @@ import { UserService } from '../pages/chat/services/user.service';
 import { ChatroomService } from '../pages/chat/services/chatroom.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ChatSearchComponent } from './chat-search/chat-search.component';
+import { PreviewVideoComponent } from './preview-video/preview-video.component';
+import { StatusService } from '../pages/mobile-chat/services/status.service';
 
 
 @NgModule({
@@ -25,7 +27,8 @@ import { ChatSearchComponent } from './chat-search/chat-search.component';
     CropperModalComponent,
     AttachmentPopupComponent,
     UserPopupComponent,
-    ChatSearchComponent
+    ChatSearchComponent,
+    PreviewVideoComponent
   ],
   imports: [
     CommonModule,
@@ -41,14 +44,16 @@ import { ChatSearchComponent } from './chat-search/chat-search.component';
     CropperModalComponent,
     AttachmentPopupComponent,
     UserPopupComponent,
-    ChatSearchComponent
+    ChatSearchComponent,
+    PreviewVideoComponent
   ],
   providers: [
     AttachmentService,
     MessageService,
     SearchPeopleService,
     UserService,
-    ChatroomService
+    ChatroomService,
+    StatusService
   ]
 })
 export class SharedModule { }

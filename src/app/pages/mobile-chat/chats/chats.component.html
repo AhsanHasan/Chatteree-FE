@@ -64,7 +64,8 @@
                 <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full">
                     <img src="assets/images/icons/search.png" alt="Search" class="absolute h-6 w-6 left-3">
                     <input type="text" class="w-full pl-10 py-2 bg-[#F7F7F7] h-[48px] text-sm rounded-full focus:ring-1 focus:outline-none focus:ring-yellow-400
-                focus:border-yellow-400" placeholder="Search for chatter or message." (keyup)="onSearchUserOrMessage($event)" />
+                focus:border-yellow-400" placeholder="Search for chatter or message."
+                        (keyup)="onSearchUserOrMessage($event)" />
                 </div>
 
                 <!-- Image Status Section -->
@@ -72,8 +73,11 @@
                 <div class="flex py-2 px-2 ">
                     <div class="flex items-center">
                         <div class="flex-col">
-                            <div class="w-[64px] h-[64px] bg-[#F1F1F1] rounded-full flex items-center justify-center">
+                            <div class="w-[64px] h-[64px] bg-[#F1F1F1] rounded-full flex items-center justify-center"
+                                (click)="fileInput.click()">
                                 <img class="w-[19px] h-[19px]" src="assets/images/icons/add-media.svg">
+                                <input type="file" #fileInput style="display: none;" accept="video/*"
+                                    (change)="handleFileInput($event)">
                             </div>
                             <p class="text-xs leading-4 font-normal text-center">Add film</p>
                         </div>
@@ -164,3 +168,6 @@
 
 <app-user-popup [users]="users" [pagination]="pagination"
     (chatRoomSelected)="chatRoomSelected($event)"></app-user-popup>
+
+
+<app-preview-video></app-preview-video>

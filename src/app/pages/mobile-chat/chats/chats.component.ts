@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Chatroom } from '../../chat/interfaces/chatroom.interface';
@@ -8,6 +8,7 @@ import { ChatroomService, PaginationQuery } from '../../chat/services/chatroom.s
 import { SearchPeopleService } from '../../chat/services/search-people.service';
 import { ChatSearchComponent } from 'src/app/shared/chat-search/chat-search.component';
 import { Subject, debounceTime } from 'rxjs';
+import { VideoPreviewModalService } from 'src/app/shared/preview-video/preview-video.service';
 
 @Component({
   selector: 'app-chats',
@@ -62,7 +63,9 @@ export class ChatsComponent {
     private route: ActivatedRoute,
     private chatroomService: ChatroomService,
     private router: Router,
-    private searchPeopleService: SearchPeopleService
+    private searchPeopleService: SearchPeopleService,
+    private videoPreviewModalService: VideoPreviewModalService,
+    private cd: ChangeDetectorRef
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatrooms = data.chatrooms.data.chatRooms;
@@ -135,5 +138,22 @@ export class ChatsComponent {
   }
   participantUpdated(data: any): void {
     this.router.navigate(['/m-chat', data.chatroomId]);
+  }
+
+  handleFileInput(event: any): void {
+    if (event.target.files && event.target.files[0]) {
+      if (event.target.files[0].size > 5242880) {
+        alert('File size should not exceed 5MB');
+        return;
+      }
+      // Convert video file to ObjectURL
+      const blob = new Blob([event.target.files[0]], { type: event.target.files[0].type });
+      const videoUrl = URL.createObjectURL(blob);
+      this.videoPreviewModalService.setVideoURL(videoUrl);
+      this.videoPreviewModalService.filename = event.target.files[0].name;
+      this.videoPreviewModalService.togglePopup();
+      this.cd.detectChanges();
+
+    }
   }
 }
