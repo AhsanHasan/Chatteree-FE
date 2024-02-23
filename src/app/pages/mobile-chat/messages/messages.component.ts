@@ -1,27 +1,26 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Chatroom } from '../interfaces/chatroom.interface';
-import { Message } from '../interfaces/message.interface';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
+import { Chatroom } from '../../chat/interfaces/chatroom.interface';
+import { Message } from '../../chat/interfaces/message.interface';
 import { Pagination } from 'src/app/interfaces/pagination.interface';
-import { Utils } from 'src/app/utils';
-import { FavoriteChatroom } from '../interfaces/favorite-chatroom.interface';
+import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { FavoriteChatroomService } from '../services/favorite-chatroom.service';
-import { MessageService } from '../services/message.service';
-import { AttachmentService } from '../services/attachment.service';
-import { AudioRecordService } from '../services/audio-record.service';
-import { isPlatformBrowser } from '@angular/common';
+import { FavoriteChatroomService } from '../../chat/services/favorite-chatroom.service';
+import { MessageService } from '../../chat/services/message.service';
+import { AttachmentService } from '../../chat/services/attachment.service';
+import { AudioRecordService } from '../../chat/services/audio-record.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { PusherService } from 'src/app/services/pusher.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DeviceService } from 'src/app/services/device.service';
+import { Utils } from 'src/app/utils';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.css']
 })
-export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChecked {
+export class MessagesComponent implements AfterViewInit, OnChanges {
   @ViewChild('messageSection') messageSection: ElementRef | undefined;
   spinner = 'messageSpinner';
   chatroomInformation!: Chatroom;
@@ -61,6 +60,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
 
   currentScrollPosition: number | null = null;
   currentScrollHeight: number | null = null;
+
   constructor(
     private route: ActivatedRoute,
     public authenticationService: AuthenticationService,
@@ -74,7 +74,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
     private cd: ChangeDetectorRef,
     private deviceService: DeviceService,
     @Inject(PLATFORM_ID) private platformId: object,
-  ) {
+  ) { 
     this.IS_BROWSER = isPlatformBrowser(platformId);
     this.pusherService.messageSubject.subscribe(async (data: any) => {
       await this.getMessages(1);
@@ -82,6 +82,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
     this.route.data.subscribe((data: any) => {
       this.chatroomInformation = data.messages.data.chatRoom;
       this.messages = data.messages.data.messages;
+      console.log(this.messages);
       this.pagination = data.messages.data.pagination;
     });
     // Listen for changes to URL params
@@ -105,25 +106,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
 
   ngOnChanges(changes: SimpleChanges): void {
     this.scrollToBottom();
-  }
-
-  ngAfterViewChecked() {
-  }
-
-  async toggleFavoriteChatroom(chatroomId: string): Promise<void> {
-    try {
-      this.chatroomInformation.isFavorite = !this.chatroomInformation.isFavorite;
-      const body: FavoriteChatroom = {
-        chatRoomId: chatroomId,
-        userId: this.authenticationService.auth?.user._id as string
-      };
-      const response = await this.favoriteChatroomService.toggleFavoriteChatroom(body);
-      if (response.success) {
-        this.favoriteChatroomService.favorite$.next(response.data);
-      }
-    } catch (error) {
-      Utils.showErrorMessage('Failed to toggle favorite chatroom', error);
-    }
   }
 
   async sendMessage(): Promise<void> {
@@ -326,6 +308,8 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
       };
       const response = await this.messageService.getChatroomMessages(query);
       if (response.success) {
+        console.log(this.messages);
+        console.log(response.data.messages);
         this.messages = response.data.messages;
         this.pagination = response.data.pagination;
       }

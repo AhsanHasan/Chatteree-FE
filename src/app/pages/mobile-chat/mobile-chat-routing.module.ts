@@ -12,6 +12,10 @@ const routes: Routes = [
     {
         path: 'chats',
         loadChildren: () => import('./chats/chats.module').then(m => m.ChatsModule)
+    },
+    {
+        path: ':id',
+        loadChildren: () => import('./messages/messages.module').then(m => m.MessagesModule)
     }
 ];
 

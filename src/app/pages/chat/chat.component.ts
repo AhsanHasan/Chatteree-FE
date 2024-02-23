@@ -13,7 +13,6 @@ import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ChatroomService } from './services/chatroom.service';
 import { SearchableChatRoomComponent } from './searchable-chat-room/searchable-chat-room.component';
-import { DeviceService } from 'src/app/services/device.service';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',

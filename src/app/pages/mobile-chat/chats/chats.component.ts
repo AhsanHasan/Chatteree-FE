@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { Chatroom } from '../../chat/interfaces/chatroom.interface';
 
 @Component({
   selector: 'app-chats',
@@ -22,28 +25,24 @@ export class ChatsComponent {
     'variableWidth': true
   };
 
+  chatrooms: Array<Chatroom> = [];
 
-  addSlide() {
-    this.slides.push({ img: "http://placehold.it/350x150/777777" })
-  }
-
-  removeSlide() {
-    this.slides.length = this.slides.length - 1;
+  constructor(
+    public authenticationService: AuthenticationService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { 
+    this.route.data.subscribe((data: any) => {
+      console.log(data);
+      this.chatrooms = data.chatrooms.data.chatRooms;
+    });
   }
 
   slickInit(e: any) {
     console.log('slick initialized');
   }
 
-  breakpoint(e: any) {
-    console.log('breakpoint');
-  }
-
-  afterChange(e: any) {
-    console.log('afterChange');
-  }
-
-  beforeChange(e: any) {
-    console.log('beforeChange');
+  selectChatroom(chatroom: Chatroom): void {
+    this.router.navigate([`/m-chat/${chatroom._id}`]);
   }
 }

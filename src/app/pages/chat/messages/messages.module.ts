@@ -26,6 +26,9 @@ import { FormsModule } from '@angular/forms';
     NgxSpinnerModule,
     PickerComponent,
     FormsModule
+  ],
+  exports: [
+    AttachmentPopupComponent
   ]
 })
 export class MessagesModule { }

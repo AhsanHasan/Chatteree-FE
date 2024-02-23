@@ -6,8 +6,8 @@
                 <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
                     <div class="flex items-center">
                         <img class="rounded-full"
-                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" width="48"
-                            height="48" />
+                            [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
+                            width="48" height="48" />
                         <h3 class="px-2 font-semibold text-2xl leading-8">Chats</h3>
                         <!-- <button type="button" (click)="dropdownOpen = !dropdownOpen"
                             class="inline-flex justify-center px-4 py-2 bg-white text-sm font-medium focus:outline-none ml-2"
@@ -43,7 +43,8 @@
                 </div>
 
                 <!-- Show When No Chatrooms are present -->
-                <div class="hidden flex flex-col items-center justify-center h-full">
+                <div class="flex flex-col items-center justify-center h-full"
+                    *ngIf="!chatrooms || chatrooms.length === 0">
                     <div class="relative w-[296px] h-[296px]">
                         <img src="assets/images/Vector.svg" alt="Above Image" class="w-[164px] max-w-none" />
                         <img src="assets/images/ill-chat.svg" alt="illustration"
@@ -77,8 +78,7 @@
                         </div>
                         <div class="inline-flex ml-4">
                             <ngx-slick-carousel class="carousel" #slickModal="slick-carousel" [config]="slideConfig"
-                                (init)="slickInit($event)" (breakpoint)="breakpoint($event)"
-                                (afterChange)="afterChange($event)" (beforeChange)="beforeChange($event)">
+                                (init)="slickInit($event)">
                                 <div ngxSlickItem class="slide" *ngFor="let slide of slides">
                                     <div class="flex flex-col items-center">
                                         <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]" [src]="slide.img">
@@ -95,455 +95,49 @@
                 <!-- Chatrooms -->
                 <div class="bg-grey-lighter flex-1 mt-4 overflow-auto">
                     <div id="contact-list">
-                        <ng-container>
+                        <ng-container *ngFor="let chatroom of chatrooms">
                             <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
+                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer" (click)="selectChatroom(chatroom)">
                                 <div>
                                     <div class="relative inline-block">
                                         <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
+                                            [src]="chatroom?.participants?.profilePicture! | encodeProfilePicUrl" />
+                                        <div *ngIf="chatroom.participants.onlineStatus === 'online'"
                                             class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
                                         </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
+                                        <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
                                             class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="ml-4 flex-1 py-4">
                                     <div class="flex items-bottom justify-between">
                                         <p class="text-grey-darkest">
-                                            Mullah
+                                            {{chatroom.participants.name}}
                                         </p>
                                         <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
+                                            {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}}
                                         </p>
                                     </div>
                                     <div class="flex items-center">
                                         <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
+                                            class="mr-1"
+                                            *ngIf="chatroom.lastMessage.sender._id! === authenticationService.auth?.user?._id!">
                                         <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
+                                            <p class="text-grey-dark mt-1 text-sm" [ngClass]="{
+                                                    'font-medium': chatroom.unreadMessages > 0
+                                                }" *ngIf="chatroom.lastMessage && chatroom.lastMessage.content !== ''">
+                                                {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content
+                                                : 'Attachment') | truncate: 15 }}
                                             </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
+                                            <p class="text-grey-light mt-1 text-[12px] italic"
                                                 *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
                                                 'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
                                             </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
+                                            <div class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1"
+                                                *ngIf="chatroom.unreadMessages > 0">
                                                 <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div
-                                class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer">
-                                <div>
-                                    <div class="relative inline-block">
-                                        <img class="h-12 w-12 rounded-full"
-                                            [src]="'https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png'" />
-                                        <div
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white">
-                                        </div>
-                                        <!-- <div *ngIf="chatroom.participants.onlineStatus === 'offline'"
-                                            class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 rounded-full border-2 border-white">
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex-1 py-4">
-                                    <div class="flex items-bottom justify-between">
-                                        <p class="text-grey-darkest">
-                                            Mullah
-                                        </p>
-                                        <p class="text-xs text-grey-darkest">
-                                            <!-- {{chatroom.lastMessage.createdAt | date: 'hh:mm a'}} -->
-                                            11:00 PM
-                                        </p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow"
-                                            class="mr-1">
-                                        <div class="flex justify-between w-full">
-                                            <p class="text-grey-dark mt-1 text-sm">
-                                                <!-- {{ (chatroom.lastMessage.type === 'text' ? chatroom.lastMessage.content :
-                                                'Attachment') | truncate: 30 }} -->
-                                                Hello
-                                            </p>
-                                            <!-- <p class="text-grey-light mt-1 text-[12px] italic"
-                                                *ngIf="!chatroom.lastMessage || chatroom.lastMessage.content === ''">
-                                                'They are waiting for your first message!'
-                                            </p> -->
-                                            <div
-                                                class="bg-[#F7E353] rounded-full w-[24px] h-[24px] flex items-center justify-center mt-1">
-                                                <p class="text-[12px] leading-[16px] font-normal text-[#101C26]">
-                                                    <!-- {{chatroom.unreadMessages}} -->
-                                                    2
+                                                    {{chatroom.unreadMessages}}
                                                 </p>
                                             </div>
                                         </div>
