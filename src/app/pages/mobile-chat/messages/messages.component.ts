@@ -4,14 +4,11 @@ import { Message } from '../../chat/interfaces/message.interface';
 import { Pagination } from 'src/app/interfaces/pagination.interface';
 import { ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { FavoriteChatroomService } from '../../chat/services/favorite-chatroom.service';
 import { MessageService } from '../../chat/services/message.service';
 import { AttachmentService } from '../../chat/services/attachment.service';
-import { AudioRecordService } from '../../chat/services/audio-record.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { PusherService } from 'src/app/services/pusher.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { DeviceService } from 'src/app/services/device.service';
 import { Utils } from 'src/app/utils';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -64,15 +61,12 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   constructor(
     private route: ActivatedRoute,
     public authenticationService: AuthenticationService,
-    private favoriteChatroomService: FavoriteChatroomService,
     private messageService: MessageService,
     private attachmentService: AttachmentService,
-    public audioService: AudioRecordService,
     private fireStorage: AngularFireStorage,
     private pusherService: PusherService,
     private ngxSpinnerService: NgxSpinnerService,
     private cd: ChangeDetectorRef,
-    private deviceService: DeviceService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) { 
     this.IS_BROWSER = isPlatformBrowser(platformId);
@@ -96,11 +90,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
     if (this.IS_BROWSER) {
       this.scrollToBottom();
-      this.audioService.audioBlob$.subscribe((audioBlob: any) => {
-        this.audioURL = window.URL.createObjectURL(audioBlob);
-        this.audioBlob = audioBlob;
-        this.cd.detectChanges();
-      });
     }
   }
 
@@ -259,46 +248,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
     this.attachmentService.togglePopup();
   }
 
-  async recordAudio(): Promise<void> {
-    this.showAudioPopup = true
-    this.isRecording = true;
-    await this.audioService.startRecording();
-  }
-
-  async stopRecordingAudio(): Promise<void> {
-    this.isRecording = false;
-    await this.audioService.stopRecording();
-    this.showAudioPopup = false;
-    this.showPlayerPopup = true;
-  }
-
-  removeAudio(): void {
-    this.audioBlob = null;
-    this.showAudioPopup = false;
-    this.showPlayerPopup = false;
-  }
-
-  async sendAudioMessage(): Promise<void> {
-    try {
-      // Create file from object URL
-      const filename = `${Date.now()}.mp3`;
-      const path = `chatroom/${this.chatroomInformation._id}/voice-note/${filename}`;
-      const uploadResponse = await this.fireStorage.upload(path, this.audioBlob as Blob);
-      const downloadURL = await uploadResponse.ref.getDownloadURL();
-      const body = {
-        chatroomId: this.chatroomInformation._id,
-        content: downloadURL,
-        type: 'voice-note'
-      };
-      const response = await this.messageService.sendMessage(body);
-      if (response.success) {
-        this.removeAudio();
-      }
-    } catch (error) {
-      Utils.showErrorMessage('Failed to send audio message', error);
-    }
-  }
-
   async getMessages(page: number): Promise<void> {
     try {
       const query = {
@@ -308,8 +257,6 @@ export class MessagesComponent implements AfterViewInit, OnChanges {
       };
       const response = await this.messageService.getChatroomMessages(query);
       if (response.success) {
-        console.log(this.messages);
-        console.log(response.data.messages);
         this.messages = response.data.messages;
         this.pagination = response.data.pagination;
       }

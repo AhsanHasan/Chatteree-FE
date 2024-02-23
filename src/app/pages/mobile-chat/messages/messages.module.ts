@@ -12,7 +12,7 @@ import { AttachmentService } from '../../chat/services/attachment.service';
 import { AudioRecordService } from '../../chat/services/audio-record.service';
 import { MessageService } from '../../chat/services/message.service';
 import { FavoriteChatroomService } from '../../chat/services/favorite-chatroom.service';
-import { AttachmentPopupComponent } from '../../chat/attachment-popup/attachment-popup.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -28,7 +28,8 @@ import { AttachmentPopupComponent } from '../../chat/attachment-popup/attachment
     InfiniteScrollModule,
     NgxSpinnerModule,
     PickerComponent,
-    FormsModule
+    FormsModule,
+    SharedModule
   ],
   providers: [
     AttachmentService,

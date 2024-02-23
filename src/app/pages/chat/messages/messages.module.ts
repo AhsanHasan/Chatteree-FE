@@ -7,16 +7,14 @@ import { DirectivesModule } from 'src/app/directives/directives.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
-import { AttachmentPopupComponent } from '../attachment-popup/attachment-popup.component';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
 @NgModule({
   declarations: [
-    MessagesComponent,
-    AttachmentPopupComponent
-  ],
+    MessagesComponent],
   imports: [
     CommonModule,
     MessagesRoutingModule,
@@ -25,10 +23,10 @@ import { FormsModule } from '@angular/forms';
     InfiniteScrollModule,
     NgxSpinnerModule,
     PickerComponent,
-    FormsModule
+    FormsModule,
+    SharedModule
   ],
   exports: [
-    AttachmentPopupComponent
   ]
 })
 export class MessagesModule { }
