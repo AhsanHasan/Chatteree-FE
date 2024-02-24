@@ -39,7 +39,7 @@ export class UserPopupComponent implements OnInit, OnChanges {
           limit: 6,
           search: searchTerm
         } as PaginationQuery;
-        await this.getAllUsers(query);
+        await this.getSearchedUsers(query);
       } catch (error) {
         Utils.showErrorMessage('Failed to search users', error);
       }
@@ -70,6 +70,19 @@ export class UserPopupComponent implements OnInit, OnChanges {
   }
 
   async getAllUsers(query: PaginationQuery | null): Promise<void> {
+    try {
+      this.ngxSpinnerService.show(this.spinner);
+      const response = await this.userService.getAllUsers(query as PaginationQuery);
+      if (response) {
+        this.users = this.users.concat(response.data.users);
+        this.pagination = response.data.pagination;
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to get users', error);
+    }
+    this.ngxSpinnerService.hide(this.spinner);
+  }
+  async getSearchedUsers(query: PaginationQuery | null): Promise<void> {
     try {
       this.ngxSpinnerService.show(this.spinner);
       const response = await this.userService.getAllUsers(query as PaginationQuery);

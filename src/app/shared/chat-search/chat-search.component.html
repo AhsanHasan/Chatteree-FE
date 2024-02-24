@@ -60,7 +60,7 @@
             Messages
         </div>
         <div class="px-3 flex items-center bg-grey-light border-b border-grey-lighter cursor-pointer"
-            *ngFor="let chatroom of matchedMessages">
+            *ngFor="let chatroom of matchedMessages" (click)="selectChat(chatroom)">
             <div>
                 <div class="relative inline-block">
                     <img class="h-12 w-12 rounded-full"

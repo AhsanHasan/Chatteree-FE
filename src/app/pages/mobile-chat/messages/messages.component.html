@@ -134,6 +134,10 @@
                         </div>
                     </ng-container>
                 </ng-container>
+                <button *ngIf="showScrollToTop" (click)="loadNewMessages()"
+                    class="fixed left-[58%] transform -translate-x-1/2 bottom-[90px] bg-[#101C26] text-white rounded-full p-2 bg-opacity-75">
+                    Load new messages
+                </button>
             </div>
         </div>
         <!-- End of Chat Section -->

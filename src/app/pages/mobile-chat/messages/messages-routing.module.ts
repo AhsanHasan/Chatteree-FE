@@ -8,6 +8,7 @@ const routes: Routes = [
     {
         path: '',
         component: MessagesComponent,
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
         resolve: {
             messages: GetAllMessageResolver
         }
