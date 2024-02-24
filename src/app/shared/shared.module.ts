@@ -18,6 +18,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ChatSearchComponent } from './chat-search/chat-search.component';
 import { PreviewVideoComponent } from './preview-video/preview-video.component';
 import { StatusService } from '../pages/mobile-chat/services/status.service';
+import { ViewStatusPopupComponent } from './view-status-popup/view-status-popup.component';
+import { SafePipe } from '../pipes/safe.pipe';
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import { StatusService } from '../pages/mobile-chat/services/status.service';
     AttachmentPopupComponent,
     UserPopupComponent,
     ChatSearchComponent,
-    PreviewVideoComponent
+    PreviewVideoComponent,
+    ViewStatusPopupComponent
   ],
   imports: [
     CommonModule,
@@ -45,7 +48,8 @@ import { StatusService } from '../pages/mobile-chat/services/status.service';
     AttachmentPopupComponent,
     UserPopupComponent,
     ChatSearchComponent,
-    PreviewVideoComponent
+    PreviewVideoComponent,
+    ViewStatusPopupComponent,
   ],
   providers: [
     AttachmentService,

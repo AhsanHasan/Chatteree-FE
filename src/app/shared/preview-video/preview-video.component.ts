@@ -54,8 +54,10 @@ export class PreviewVideoComponent implements OnInit {
   async videoUpload(): Promise<void> {
     try {
       this.ngxSpinner.show(this.spinner);
+      // convert blob to file
+      const file = this.videoPreviewModalService.file;
       const path = `status/${this.authenticationService.auth?.user._id}/${this.videoPreviewModalService.filename}`;
-      const uploadResponse = await this.fireStorage.upload(path, this.videoURL as any);
+      const uploadResponse = await this.fireStorage.upload(path, file as File);
       const downloadURL = await uploadResponse.ref.getDownloadURL();
       const body = {
         url: downloadURL,

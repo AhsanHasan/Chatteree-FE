@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EncodeProfilePictureUrlPipe } from './encode-profile-picture.pipe';
 import { TruncatePipe } from './truncate.pipe';
 import { GroupByPipe } from './groupby.pipe';
+import { SafePipe } from './safe.pipe';
 
 
 
@@ -10,7 +11,8 @@ import { GroupByPipe } from './groupby.pipe';
   declarations: [
     EncodeProfilePictureUrlPipe,
     TruncatePipe,
-    GroupByPipe
+    GroupByPipe,
+    SafePipe
   ],
   imports: [
     CommonModule
@@ -18,7 +20,8 @@ import { GroupByPipe } from './groupby.pipe';
   exports: [
     EncodeProfilePictureUrlPipe,
     TruncatePipe,
-    GroupByPipe
+    GroupByPipe,
+    SafePipe
   ]
 })
 export class PipesModule { }

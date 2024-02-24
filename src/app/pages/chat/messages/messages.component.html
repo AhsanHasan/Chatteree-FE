@@ -38,8 +38,8 @@
     </div>
 
     <div #messageSection class="flex-1 h-screen overflow-y-auto" *ngIf="messages && messages.length > 0" infiniteScroll
-        [infiniteScrollDistance]="9.9" [infiniteScrollDisabled]="infiniteScrollDisabled" [infiniteScrollThrottle]="300" (scrolledUp)="onScrolledUp()"
-        [scrollWindow]="false">
+        [infiniteScrollDistance]="9.9" [infiniteScrollDisabled]="infiniteScrollDisabled" [infiniteScrollThrottle]="3000"
+        (scrolledUp)="onScrolledUp()" [scrollWindow]="false">
         <ngx-spinner [name]="spinner" bdColor="rgba(0, 0, 0, 0.3)" size="default" color="#101C26"
             type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
         <div class="py-2 px-3">
@@ -53,7 +53,8 @@
                 </div>
                 <ng-container *ngFor="let message of messageGroup.messages">
                     <!-- Other user Message -->
-                    <div class="flex mb-2" [id]="message._id" *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
+                    <div class="flex mb-2" [id]="message._id"
+                        *ngIf="message.sender?._id !== authenticationService.auth?.user?._id">
                         <img [src]="message.sender.profilePicture! | encodeProfilePicUrl" alt="Profile"
                             class="h-10 w-10 rounded-full mr-3">
                         <div class="flex-col items-start">
@@ -130,6 +131,10 @@
                     </div>
                 </ng-container>
             </ng-container>
+            <button *ngIf="showScrollToTop" (click)="loadNewMessages()"
+                class="fixed left-[58%] transform -translate-x-1/2 bottom-[90px] bg-[#101C26] text-white rounded-full p-2 bg-opacity-75">
+                Load new messages
+            </button>
         </div>
     </div>
 

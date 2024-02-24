@@ -69,7 +69,7 @@
                 </div>
 
                 <!-- Image Status Section -->
-
+                
                 <div class="flex py-2 px-2 ">
                     <div class="flex items-center">
                         <div class="flex-col">
@@ -81,14 +81,15 @@
                             </div>
                             <p class="text-xs leading-4 font-normal text-center">Add film</p>
                         </div>
-                        <div class="inline-flex ml-4">
-                            <ngx-slick-carousel class="carousel" #slickModal="slick-carousel" [config]="slideConfig"
+                        <div class="inline-flex ml-4" style="max-width: 100%;">
+                            <ngx-slick-carousel class="carousel w-full max-w-full" #slickModal="slick-carousel" [config]="slideConfig"
                                 (init)="slickInit($event)">
-                                <div ngxSlickItem class="slide" *ngFor="let status of statuses">
-                                    <div class="flex flex-col items-center" (click)="viewStatus(status)">
-                                        <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]" [src]="status.profilePicture">
-                                        <p class="text-xs leading-4 font-normal text-center">{{status.name | truncate: 12}}</p>
-                                    </div>
+                                <div ngxSlickItem class="slide flex-shrink-0 flex" *ngFor="let status of statuses"
+                                    (click)="viewStatus(status)">
+                                    <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]"
+                                        [src]="status.profilePicture">
+                                    <p class="text-xs leading-4 font-normal text-center">{{status.name | truncate: 12}}
+                                    </p>
                                 </div>
                             </ngx-slick-carousel>
                         </div>
@@ -171,3 +172,5 @@
 
 
 <app-preview-video></app-preview-video>
+
+<app-view-status-popup></app-view-status-popup>

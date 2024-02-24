@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
@@ -12,13 +13,24 @@ export class SearchableChatRoomComponent implements OnChanges {
   matchedUsers: Array<any> = [];
 
   constructor(
-    public authenticationService: AuthenticationService
+    public authenticationService: AuthenticationService,
+    private router: Router
   ) { }
 
   ngOnChanges(): void {}
 
   selectChatroom(chatroom: any): void {
     this.userActionSignal.emit({ user: chatroom.participants, chatroomId: chatroom._id, chatroom });
+  }
+
+  selectChat(chatroom: any): void {
+    console.log('chatroom', chatroom);
+    this.userActionSignal.emit({ user: chatroom.participants, chatroomId: chatroom._id, chatroom });
+    this.router.navigate(['/chat', chatroom._id], {
+      queryParams: {
+        search: chatroom.messages._id
+      }
+    });
   }
 
 }

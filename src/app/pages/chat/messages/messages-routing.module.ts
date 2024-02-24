@@ -11,8 +11,9 @@ const routes: Routes = [
     {
         path: '',
         component: MessagesComponent,
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange', // 'always' | 'paramsOrQueryParamsChange' | 'paramsChange' | 'pathParamsChange' | 'pathParamsOrQueryParamsChange' | 'paramsOrQueryParamsChange' | 'paramsChange' | 'pathParamsChange' | 'pathParamsOrQueryParamsChange' | 'always
         resolve: {
-            messages: GetAllMessageResolver
+            messages: GetAllMessageResolver,
         }
     }
 ];

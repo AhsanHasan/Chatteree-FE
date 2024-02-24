@@ -9,6 +9,7 @@ import { SearchPeopleService } from '../../chat/services/search-people.service';
 import { ChatSearchComponent } from 'src/app/shared/chat-search/chat-search.component';
 import { Subject, debounceTime } from 'rxjs';
 import { VideoPreviewModalService } from 'src/app/shared/preview-video/preview-video.service';
+import { ViewStatusPopupService } from 'src/app/shared/view-status-popup/view-status-popup.service';
 
 @Component({
   selector: 'app-chats',
@@ -20,15 +21,6 @@ export class ChatsComponent {
   userInput$ = new Subject<string>();
   searchInput = '';
   showInitialList = true;
-  /* slides = [
-    { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" },
-    { img: "https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png" },
-    { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" },
-    { img: "https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png" },
-    { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" },
-    { img: "https://cdn.pixabay.com/photo/2014/04/02/17/07/user-307993_640.png" },
-    { img: "https://cdn.pixabay.com/photo/2014/03/25/16/24/female-296989_640.png" }
-  ]; */
   slides: any = [];
   slideConfig = {
     'slidesToShow': 3,
@@ -53,6 +45,8 @@ export class ChatsComponent {
 
   matchedUsers: Array<User> = [];
   matchedMessages: Array<any> = [];
+
+  selectedStatus: any;
   pagination: Pagination = {
     currentPage: 1,
     totalPages: 1,
@@ -68,6 +62,7 @@ export class ChatsComponent {
     private router: Router,
     private searchPeopleService: SearchPeopleService,
     private videoPreviewModalService: VideoPreviewModalService,
+    private viewStatusPopupService: ViewStatusPopupService,
     private cd: ChangeDetectorRef
   ) {
     this.route.data.subscribe((data: any) => {
@@ -153,6 +148,7 @@ export class ChatsComponent {
       // Convert video file to ObjectURL
       const blob = new Blob([event.target.files[0]], { type: event.target.files[0].type });
       const videoUrl = URL.createObjectURL(blob);
+      this.videoPreviewModalService.file = event.target.files[0];
       this.videoPreviewModalService.setVideoURL(videoUrl);
       this.videoPreviewModalService.filename = event.target.files[0].name;
       this.videoPreviewModalService.togglePopup();
@@ -162,6 +158,16 @@ export class ChatsComponent {
   }
 
   viewStatus(status: any): void {
-    console.log('status', status);
+    let statusMedia = status.statuses;
+    // Iterate status media and check if the status is viewed by the user, if not, push it at the beginning of the array
+    statusMedia = statusMedia.map((media: any) => {
+      if (media.viewed) {
+        return media;
+      }
+      return media;
+    });
+    status.statuses = statusMedia;
+    this.viewStatusPopupService.setStatus(status);
+    this.viewStatusPopupService.togglePopup();
   }
 }

@@ -14,6 +14,7 @@ export class VideoPreviewModalService {
 
     videoURL = '';
     filename = '';
+    file: File | null = null;
 
     togglePopup(): void {
         this.vidModalVisibilitySubject.next(!this.vidModalVisibilitySubject.value);

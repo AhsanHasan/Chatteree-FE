@@ -10,14 +10,18 @@ export const GetAllMessageResolver: ResolveFn<any> = (
     state: RouterStateSnapshot
 ) => {
     const messageService = inject(MessageService);
-    const page = 1;
-    const limit = 10;
     const chatroomId = route.params['id'];
-    const query = {
-        page,
-        limit,
-        chatroomId
+    const isSearchQuery = route.queryParams['search'] ? true : false;
+    const messageId = route.queryParams['search'] ? route.queryParams['search'] : null;
+    const query: any = {
+        chatroomId,
+        messageType: 'old',
+        limit: isSearchQuery ? 20 : 10
     };
+    if (isSearchQuery) {
+        query['messageId'] = messageId;
+        query['isSearchQuery'] = isSearchQuery;
+    }
     return from(messageService.getChatroomMessages(query)).pipe(
         map((response: any) => {
             return response;

@@ -155,7 +155,7 @@
               "serverTarget": "chatteree-fe:server:production",
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environments.ts",
+                  "replace": "src/environments/environment.ts",
                   "with": "src/environments/environments.prod.ts"
                 }
               ]
