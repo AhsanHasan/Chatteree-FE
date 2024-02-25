@@ -21,6 +21,7 @@ import { StatusService } from '../pages/mobile-chat/services/status.service';
 import { ViewStatusPopupComponent } from './view-status-popup/view-status-popup.component';
 import { SafePipe } from '../pipes/safe.pipe';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { UserDetailsComponent } from './user-details/user-details.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
     UserPopupComponent,
     ChatSearchComponent,
     PreviewModalComponent,
-    ViewStatusPopupComponent
+    ViewStatusPopupComponent,
+    UserDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -52,6 +54,7 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
     ChatSearchComponent,
     PreviewModalComponent,
     ViewStatusPopupComponent,
+    UserDetailsComponent
   ],
   providers: [
     AttachmentService,

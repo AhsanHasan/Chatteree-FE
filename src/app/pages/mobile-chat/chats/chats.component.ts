@@ -39,7 +39,7 @@ export class ChatsComponent {
   statuses: any = [];
 
   chatrooms: Array<Chatroom> = [];
-
+  dropdownOpen = false;
   users: Array<User> = [];
   selectedParticipant: User | null | undefined = null;
   selectedChatroomId: string | null = null;
@@ -188,6 +188,14 @@ export class ChatsComponent {
       }
     } catch (error) {
       Utils.showErrorMessage('Error getting status', error);
+    }
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await this.authenticationService.logout();
+    } catch (error) {
+      console.error('Failed to logout', error);
     }
   }
 }

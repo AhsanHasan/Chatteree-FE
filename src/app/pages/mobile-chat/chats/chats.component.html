@@ -5,9 +5,20 @@
                 <!-- Header -->
                 <div class="py-2 px-3 bg-grey-lighter flex flex-row justify-between items-center">
                     <div class="flex items-center">
-                        <img class="rounded-full"
-                            [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
-                            width="48" height="48" />
+                        <div class="relative">
+                            <img class="rounded-full cursor-pointer" (click)="dropdownOpen = !dropdownOpen"
+                                [src]="(authenticationService.auth?.user?.profilePicture ?? '') | encodeProfilePicUrl"
+                                width="48" height="48" />
+
+                            <div class="absolute left-[11px] top-[25px] mt-4 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all ease-out duration-300 z-10"
+                                *ngIf="dropdownOpen">
+                                <div class="py-1" role="menu" aria-orientation="vertical"
+                                    aria-labelledby="options-menu">
+                                    <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-gray-100"
+                                        role="menuitem" (click)="logout()">Sign out</a>
+                                </div>
+                            </div>
+                        </div>
                         <h3 class="px-2 font-semibold text-2xl leading-8">Chats</h3>
                         <!-- <button type="button" (click)="dropdownOpen = !dropdownOpen"
                             class="inline-flex justify-center px-4 py-2 bg-white text-sm font-medium focus:outline-none ml-2"

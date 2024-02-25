@@ -14,12 +14,13 @@ export class AuthenticationService {
     private AUTHENTICATE_WITH_GOOGLE_ENDPOINT = '/authenticate/google';
     private VERIFY_GOOGLE_TOKEN_ENDPOINT = '/authenticate/google/token/verify';
     private GET_USER_ENDPOINT = '/user';
+    private LOGOUT_ENDPOINT = '/authenticate/logout';
 
     constructor(
         private http: HttpClient,
         private router: Router,
         private cookieService: SsrCookieService
-    ) { 
+    ) {
         const d = new Date();
         const expDate = d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
         // Setup blank cookie
@@ -188,14 +189,32 @@ export class AuthenticationService {
         )
     }
 
-    logout(): void {
-        this.cookieService.delete(
-            environment.versionControl.env + environment.versionControl.v + 'SessionAuth',
-            '/',
-            environment.cookieDomain,
-            true
-        );
-        this.router.navigate(['/']);
+    async logout(): Promise<void> {
+        try {
+            await lastValueFrom(this.http.post<any>(environment.apiBase + this.LOGOUT_ENDPOINT, {}));
+        } catch (error) {
+            console.error('Error logging out:', error);
+            throw error; // re-throw the error if you want it to be caught by calling code
+        }
+
+        try {
+            this.cookieService.delete(
+                environment.versionControl.env + environment.versionControl.v + 'SessionAuth',
+                '/',
+                environment.cookieDomain,
+                true
+            );
+        } catch (error) {
+            console.error('Error deleting cookie:', error);
+            throw error; // re-throw the error if you want it to be caught by calling code
+        }
+
+        try {
+            this.router.navigate(['/']);
+        } catch (error) {
+            console.error('Error navigating:', error);
+            throw error; // re-throw the error if you want it to be caught by calling code
+        }
     }
 }
 

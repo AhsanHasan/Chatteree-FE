@@ -13,6 +13,7 @@ import { AudioRecordService } from '../../chat/services/audio-record.service';
 import { MessageService } from '../../chat/services/message.service';
 import { FavoriteChatroomService } from '../../chat/services/favorite-chatroom.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ChatroomService } from '../../chat/services/chatroom.service';
 
 
 
@@ -35,7 +36,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     AttachmentService,
     AudioRecordService,
     MessageService,
-    FavoriteChatroomService
+    FavoriteChatroomService,
+    ChatroomService
   ]
 })
 export class MessagesModule { }

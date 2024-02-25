@@ -11,7 +11,10 @@ import { PusherService } from 'src/app/services/pusher.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Utils } from 'src/app/utils';
 import { isPlatformBrowser } from '@angular/common';
-
+import Swal from 'sweetalert2'
+import { ChatroomService } from '../../chat/services/chatroom.service';
+import { UserDetailsComponent } from 'src/app/shared/user-details/user-details.component';
+import { UserDetailsModalService } from 'src/app/shared/user-details/user-details.service';
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
@@ -19,6 +22,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class MessagesComponent implements AfterViewInit {
   @ViewChild('messageSection') messageSection: ElementRef | undefined;
+  @ViewChild('userInformation') userInformation: UserDetailsComponent | undefined;
   spinner = 'messageSpinner';
   chatroomInformation!: Chatroom;
   messages: any[] = [];
@@ -68,11 +72,12 @@ export class MessagesComponent implements AfterViewInit {
     public authenticationService: AuthenticationService,
     private messageService: MessageService,
     private attachmentService: AttachmentService,
-    private fireStorage: AngularFireStorage,
     private pusherService: PusherService,
     private ngxSpinnerService: NgxSpinnerService,
     private cd: ChangeDetectorRef,
     private router: Router,
+    private chatroomService: ChatroomService,
+    private userDetailsService: UserDetailsModalService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {
     this.IS_BROWSER = isPlatformBrowser(platformId);
@@ -284,5 +289,38 @@ export class MessagesComponent implements AfterViewInit {
 
   isFirstMessageOfDay(messageGroupIndex: number, meessageGroup: any[]): boolean {
     return messageGroupIndex === 0;
+  }
+
+  async deleteChatroom(e: any): Promise<void> {
+    e.preventDefault();
+    try {
+      this.showMenu = false;
+      const swalResponse = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this chat!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        confirmButtonColor: '#dc3545',
+        cancelButtonText: 'No, keep it'
+      });
+      if (swalResponse.isConfirmed) {
+        const query = {
+          chatroomId: this.chatroomInformation._id
+        };
+        const response = await this.chatroomService.deleteChatroom(query);
+        if (response.success) {
+          this.router.navigate(['/m-chat']);
+        }
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Failed to delete chatroom', error);
+    }
+  }
+
+  async viewUserProfile(): Promise<void> {
+    this.userInformation!.user = this.chatroomInformation.participants;
+    this.userDetailsService.togglePopup();
+    this.showMenu = false;
   }
 }
