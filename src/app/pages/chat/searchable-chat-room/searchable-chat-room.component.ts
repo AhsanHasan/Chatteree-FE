@@ -24,7 +24,6 @@ export class SearchableChatRoomComponent implements OnChanges {
   }
 
   selectChat(chatroom: any): void {
-    console.log('chatroom', chatroom);
     this.userActionSignal.emit({ user: chatroom.participants, chatroomId: chatroom._id, chatroom });
     this.router.navigate(['/chat', chatroom._id], {
       queryParams: {

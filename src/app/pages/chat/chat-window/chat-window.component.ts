@@ -77,7 +77,6 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.IS_BROWSER) {
-      console.log('scrolling to bottom: ', document.body.scrollHeight);
       window.scrollTo(0, document.body.scrollHeight);
     }
   }
@@ -86,7 +85,6 @@ export class ChatWindowComponent implements OnChanges, OnInit, AfterViewInit {
     if (changes['selectedChatroomId'] && changes['selectedChatroomId'].currentValue !== changes['selectedChatroomId'].previousValue) {
       if (this.selectedChatroomId) {
         await this.getChatroomMessages(null);
-        console.log(this.messages);
       }
     }
   }

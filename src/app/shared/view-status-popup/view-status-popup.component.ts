@@ -48,11 +48,9 @@ export class ViewStatusPopupComponent implements OnInit, OnChanges {
   async closePopup(): Promise<void> {
     // Update view status on modal close
     await this.viewStatus();
-    this.closePopupEvent.emit(true);
-    this.viewStatusPopupService.togglePopup();
   }
 
-  async viewStatus(): Promise<void> { 
+  async viewStatus(): Promise<void> {
     try {
       const body = {
         statusIds: this.viewedStatus,
@@ -60,7 +58,8 @@ export class ViewStatusPopupComponent implements OnInit, OnChanges {
       };
       const response = await this.statusService.viewStatus(body);
       if (response && response.success) {
-        console.log('Status viewed');
+        this.closePopupEvent.emit(true);
+        this.viewStatusPopupService.togglePopup();
       }
     } catch (error) {
       Utils.showErrorMessage('Error viewing status', error);

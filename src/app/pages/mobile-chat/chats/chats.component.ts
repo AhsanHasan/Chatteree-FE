@@ -183,7 +183,6 @@ export class ChatsComponent {
     try {
       let response = await this.statusService.getAllStatus();
       if (response && response.success) {
-        console.log('Statuses', response.data);
         this.statuses = response.data;
       }
     } catch (error) {

@@ -110,7 +110,6 @@ export class UserPopupComponent implements OnInit, OnChanges {
       if (response.success) {
         // set chat room id in query params
         this.chatRoomSelected.emit({ participants: response.data.participants, chatroomId: response.data._id });
-        debugger;
         if (!this.deviceService.isMobile) {
           this.router.navigate(['/chat', response.data._id]);
 

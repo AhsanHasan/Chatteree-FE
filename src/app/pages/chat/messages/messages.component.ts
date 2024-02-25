@@ -259,7 +259,7 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
   }
 
   goBack(): void {
-    console.log('Go back');
+    // console.log('Go back');
   }
 
   onFileSelected(event: any, type: string): void {
