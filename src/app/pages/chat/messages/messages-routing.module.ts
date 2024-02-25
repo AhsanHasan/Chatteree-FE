@@ -5,13 +5,14 @@ import { AudioRecordService } from '../services/audio-record.service';
 import { MessageService } from '../services/message.service';
 import { AttachmentService } from '../services/attachment.service';
 import { GetAllMessageResolver } from '../resolvers/get-chatroom-messages.resolver';
+import { ChatroomService } from '../services/chatroom.service';
 
 
 const routes: Routes = [
     {
         path: '',
         component: MessagesComponent,
-        runGuardsAndResolvers: 'paramsOrQueryParamsChange', // 'always' | 'paramsOrQueryParamsChange' | 'paramsChange' | 'pathParamsChange' | 'pathParamsOrQueryParamsChange' | 'paramsOrQueryParamsChange' | 'paramsChange' | 'pathParamsChange' | 'pathParamsOrQueryParamsChange' | 'always
+        runGuardsAndResolvers: 'paramsOrQueryParamsChange',
         resolve: {
             messages: GetAllMessageResolver,
         }
@@ -24,7 +25,8 @@ const routes: Routes = [
     providers: [
         AudioRecordService,
         MessageService,
-        AttachmentService
+        AttachmentService,
+        ChatroomService
     ]
 })
 export class MessagesRoutingModule {

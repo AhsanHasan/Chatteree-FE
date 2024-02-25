@@ -20,27 +20,6 @@
                             </div>
                         </div>
                         <h3 class="px-2 font-semibold text-2xl leading-8">Chats</h3>
-                        <!-- <button type="button" (click)="dropdownOpen = !dropdownOpen"
-                            class="inline-flex justify-center px-4 py-2 bg-white text-sm font-medium focus:outline-none ml-2"
-                            id="options-menu">
-                            <span
-                                class="text-[15px] font-normal leading-6 text-[#101C26]">{{authenticationService.auth?.user?.name
-                                ?? ''}}</span>
-                            <img src="assets/images/icons/chevron-down.png" alt="Expand Arrow"
-                                class="w-[24px] h-[24px] ml-2">
-                        </button> -->
-
-                        <!-- <div class="absolute left-[11px] top-[25px] mt-4 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all ease-out duration-300 z-10"
-                            *ngIf="dropdownOpen">
-                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem">Your Profile</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem">Settings</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem" (click)="logout()">Sign out</a>
-                            </div>
-                        </div> -->
                     </div>
 
                     <div class="flex">
@@ -64,7 +43,8 @@
                     </div>
                     <p class="mt-2 text-center text-[#B5BDC5] text-[15px] leading-[24px] font-normal">We hear say
                         your mouth die hmmm</p>
-                    <button class="mx-auto mt-4 custom-button-yellow flex items-center">
+                    <button class="mx-auto mt-4 custom-button-yellow flex items-center"
+                        (click)="openSearchPeopleModal()">
                         <img src="assets/images/icons/edit-square-feather-black.svg" alt="Chat"
                             class="w-[24px] h-[24px] mr-1" />
                         Start chatting
@@ -72,7 +52,8 @@
                 </div>
 
                 <!-- Search -->
-                <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full">
+                <div class="relative py-2 px-2 bg-grey-lightest flex items-center rounded-full"
+                    *ngIf="chatrooms && chatrooms.length > 0">
                     <img src="assets/images/icons/search.png" alt="Search" class="absolute h-6 w-6 left-3">
                     <input type="text" class="w-full pl-10 py-2 bg-[#F7F7F7] h-[48px] text-sm rounded-full focus:ring-1 focus:outline-none focus:ring-yellow-400
                 focus:border-yellow-400" placeholder="Search for chatter or message."
@@ -81,8 +62,8 @@
 
                 <!-- Image Status Section -->
 
-                <div class="flex py-2 px-2 ">
-                    <div class="flex items-center">
+                <div class="flex py-2 px-2 " *ngIf="chatrooms && chatrooms.length > 0">
+                    <div class="flex items-center max-w-full">
                         <div class="flex-col">
                             <div class="w-[64px] h-[64px] bg-[#F1F1F1] rounded-full flex items-center justify-center"
                                 (click)="fileInput.click()">
@@ -92,7 +73,7 @@
                             </div>
                             <p class="text-xs leading-4 font-normal text-center">Add status</p>
                         </div>
-                        <div class="inline-flex ml-4" style="max-width: 100%;">
+                        <div class="inline-flex ml-4 overflow-x-auto" style="max-width: 100%;">
                             <ngx-slick-carousel class="carousel w-full max-w-full" #slickModal="slick-carousel"
                                 [config]="slideConfig" (init)="slickInit($event)">
                                 <div ngxSlickItem class="slide flex-shrink-0 flex" *ngFor="let status of statuses"

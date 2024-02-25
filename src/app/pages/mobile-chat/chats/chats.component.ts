@@ -26,12 +26,12 @@ export class ChatsComponent {
   slides: any = [];
   slideConfig = {
     'slidesToShow': 3,
-    'slidesToScroll': 3,
+    'slidesToScroll': 1,
     'arrows': false,
     'variableWidth': true,
     'infinite': true,
     'centerMode': false,
-    'autoplay': true,
+    'autoplay': false,
     'draggable': true,
     'adaptiveHeight': true,
   };
