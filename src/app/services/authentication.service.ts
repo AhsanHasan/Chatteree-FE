@@ -189,6 +189,33 @@ export class AuthenticationService {
         )
     }
 
+    async storeDeviceInformation(isMobileDevice: boolean): Promise<void> {
+        // Store device information in the cookies
+        const encodeString = JSON.stringify({
+            isMobile: isMobileDevice
+        })
+        // Store cookie for 30 days
+        const currentDate = new Date();
+        const expDate = currentDate.setTime(currentDate.getTime() + (30 * 24 * 60 * 60 * 1000));
+        this.cookieService.set(
+            `${environment.versionControl.env}${environment.versionControl.v}Device`,
+            encodeString.toString(),
+            expDate,
+            '/',
+            environment.cookieDomain,
+            true
+        )
+    }
+
+    getDeviceInformation(): any {
+        // Get device information from the cookies
+        const deviceInformation = this.cookieService.get(`${environment.versionControl.env}${environment.versionControl.v}Device`);
+        if (deviceInformation) {
+            return JSON.parse(decodeURIComponent(deviceInformation));
+        }
+        return undefined;
+    }
+
     async logout(): Promise<void> {
         try {
             await lastValueFrom(this.http.post<any>(environment.apiBase + this.LOGOUT_ENDPOINT, {}));

@@ -72,7 +72,6 @@ export class ChatsComponent {
       this.chatrooms = data.chatrooms.data.chatRooms;
       this.users = data.users.data.users;
       this.statuses = data.status.data;
-      console.log('Statuses', this.statuses);
     });
 
     this.userInput$.pipe(debounceTime(500)).subscribe((input: string) => {

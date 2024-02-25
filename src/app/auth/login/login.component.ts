@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GoogleAuthProvider } from 'firebase/auth';
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService, UserEmail } from 'src/app/services/authentication.service';
 import { DeviceService } from 'src/app/services/device.service';
@@ -23,7 +24,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private ngxSpinner: NgxSpinnerService,
     private loaderService: LoaderService,
     private pusherService: PusherService,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private deviceDetectorService: DeviceDetectorService
   ) { }
 
   ngOnInit(): void { }
@@ -91,6 +93,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       if (response && response.success) {
         // Store session in cookie
         await this.authenticationService.storeSession(response.data);
+        await this.authenticationService.storeDeviceInformation(this.deviceDetectorService.isMobile());
         // Check if user is verified
         if (this.authenticationService.auth?.user?.isActive) {
           // Check if user has name
