@@ -14,7 +14,7 @@ export class AuthenticationService {
     private AUTHENTICATE_WITH_GOOGLE_ENDPOINT = '/authenticate/google';
     private VERIFY_GOOGLE_TOKEN_ENDPOINT = '/authenticate/google/token/verify';
     private GET_USER_ENDPOINT = '/user';
-    private LOGOUT_ENDPOINT = '/authenticate/logout';
+    private UPDATE_USER_ONLINE_STATUS_ENDPOINT = '/user/online-status';
 
     constructor(
         private http: HttpClient,
@@ -218,31 +218,14 @@ export class AuthenticationService {
     }
 
     async logout(): Promise<void> {
-        try {
-            await lastValueFrom(this.http.post<any>(environment.apiBase + this.LOGOUT_ENDPOINT, {}));
-        } catch (error) {
-            console.error('Error logging out:', error);
-            throw error; // re-throw the error if you want it to be caught by calling code
-        }
+        this.cookieService.delete(
+            `${environment.versionControl.env}${environment.versionControl.v}SessionAuth`,
+        );
+        this.router.navigate(['/']);
+    }
 
-        try {
-            this.cookieService.delete(
-                environment.versionControl.env + environment.versionControl.v + 'SessionAuth',
-                '/',
-                environment.cookieDomain,
-                true
-            );
-        } catch (error) {
-            console.error('Error deleting cookie:', error);
-            throw error; // re-throw the error if you want it to be caught by calling code
-        }
-
-        try {
-            this.router.navigate(['/']);
-        } catch (error) {
-            console.error('Error navigating:', error);
-            throw error; // re-throw the error if you want it to be caught by calling code
-        }
+    async updateUserOnlineStatus(): Promise<void> {
+        return await lastValueFrom(this.http.put<any>(environment.apiBase + this.UPDATE_USER_ONLINE_STATUS_ENDPOINT, null));
     }
 }
 

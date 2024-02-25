@@ -96,7 +96,7 @@
 
                         <!-- Logged in user Message -->
                         <div class="flex justify-end mb-2" [id]="message._id"
-                            *ngIf="message.sender?._id === authenticationService.auth?.user?._id">
+                            *ngIf="message.sender?._id === authenticationService.auth?.user?._id && message.content !== ''">
                             <img src="assets/images/icons/arrow-top-left.svg" alt="top left arrow" class="self-end">
                             <div class="flex flex-col items-end">
                                 <div class="rounded-full py-4 px-4 bg-[#101C26] min-w-min">
@@ -204,16 +204,6 @@
                                         alt="document">
                                 </div>
                                 <p class="text-center text-sm font-normal leading-5">Doc</p>
-                            </div>
-                            <div class="text-center m-2 px-2 w-max">
-                                <input type="file" #contactInput hidden (change)="onFileSelected($event, 'contact')"
-                                    accept="text/vcard">
-                                <div class="w-12 h-12 rounded-full bg-[#F1F1F1] flex items-center justify-center cursor-pointer"
-                                    (click)="contactInput.click()">
-                                    <img class="w-[24px] h-[24px] rounded-full" src="assets/images/icons/user.svg"
-                                        alt="contact">
-                                </div>
-                                <p class="text-center text-sm font-normal leading-5">Contact</p>
                             </div>
                         </div>
                     </div>

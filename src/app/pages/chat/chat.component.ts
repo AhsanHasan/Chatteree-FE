@@ -62,6 +62,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.route.children[0].params.subscribe((params: any) => {
         if (params.id) {
           this.selectedChatroomId = params.id;
+        } else {
+          this.selectedChatroomId = null;
         }
       });
     }
@@ -81,7 +83,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() { 
+  ngOnInit() {
   }
 
   ngAfterViewInit() {
@@ -93,8 +95,15 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.searchPeopleService.togglePopup();
   }
 
-  logout(): void {
-    this.authenticationService.logout();
+  async logout(): Promise<void> {
+    try {
+      const response = await this.authenticationService.updateUserOnlineStatus() as any;
+      if (response && response.success) {
+        this.authenticationService.logout();
+      }
+    } catch (error) {
+      Utils.showErrorMessage('An error occurred while logging out', error);
+    }
   }
 
   async chatRoomSelected(data: any): Promise<void> {
@@ -105,13 +114,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   participantUpdated(data: any): void {
-    if (this.selectedChatroomId !== data.chatroomId) {
-      this.selectedParticipant = data.user;
-      this.selectedChatroomId = data.chatroomId;
-      this.selectedChatroom = data.chatroom;
-      this.router.navigate(['/chat', data.chatroomId]);
-      // this.chatRoom?.selectChatroom(this.selectedChatroom);
-    }
+    this.selectedParticipant = data.user;
+    this.selectedChatroomId = data.chatroomId;
+    this.selectedChatroom = data.chatroom;
+    this.router.navigate(['/chat', data.chatroomId]);
+    // this.chatRoom?.selectChatroom(this.selectedChatroom);
   }
 
   messageReceivedSignal(): void {
@@ -166,5 +173,5 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.chatroomSearch!.matchedMessages = this.matchedMessages;
       this.chatroomSearch!.matchedUsers = this.matchedUsers;
     }
-  } 
+  }
 }

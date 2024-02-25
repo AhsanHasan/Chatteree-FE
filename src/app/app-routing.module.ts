@@ -5,6 +5,7 @@ import { GuestGuard } from './guards/guest.guard';
 import { IsActiveGuard } from './guards/isActive.guard';
 import { MobileDeviceGuard } from './guards/mobile-device.guard';
 import { DesktopDeviceGuard } from './guards/desktop-device.guard';
+import { IsCompletedProfileGuard } from './guards/is-profile-complete.guard';
 
 const routes: Routes = [
   {
@@ -22,12 +23,12 @@ const routes: Routes = [
       },
       {
         path: 'set-username',
-        canActivate: [IsActiveGuard],
+        canActivate: [IsActiveGuard, IsCompletedProfileGuard],
         loadChildren: () => import('../app/pages/onboarding/set-username/set-username.module').then(m => m.SetUsernameModule)
       },
       {
         path: 'basic-information',
-        canActivate: [IsActiveGuard],
+        canActivate: [IsActiveGuard, IsCompletedProfileGuard],
         loadChildren: () => import('../app/pages/onboarding/image-upload/image-upload.module').then(m => m.ImageUploadModule)
       }
     ]

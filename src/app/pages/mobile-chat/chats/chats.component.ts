@@ -197,9 +197,12 @@ export class ChatsComponent {
 
   async logout(): Promise<void> {
     try {
-      await this.authenticationService.logout();
+      const response = await this.authenticationService.updateUserOnlineStatus() as any;
+      if (response && response.success) {
+        this.authenticationService.logout();
+      }
     } catch (error) {
-      console.error('Failed to logout', error);
+      Utils.showErrorMessage('An error occurred while logging out', error);
     }
   }
 }

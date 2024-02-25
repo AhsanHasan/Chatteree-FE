@@ -2,7 +2,7 @@ export const environment = {
     production: true,
     apiBase: 'http://159.89.1.194:3001/api',
     googleClientId: '864601846719-repk30g6m4m26oe69n7tkckgaulpknt0.apps.googleusercontent.com',
-    cookieDomain: '159.89.1.194',
+    cookieDomain: 'localhost',
     versionControl: {
         env: 'local',
         v: '1.0.0'
