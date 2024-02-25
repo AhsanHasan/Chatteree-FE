@@ -124,14 +124,15 @@ export class AuthenticationService {
                 }
             });
             const currentDate = new Date();
-            const expDate = currentDate.setTime(currentDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+            // Calculate expiration date by adding milliseconds equivalent to 1 day
+            const expDate = new Date(currentDate.getTime() + (1 * 24 * 60 * 60 * 1000));
             this.cookieService.set(
                 `${environment.versionControl.env}${environment.versionControl.v}SessionAuth`,
                 encodeString.toString(),
                 expDate,
                 '/',
                 environment.cookieDomain,
-                true
+                false
             )
         } else {
             this.logout();
