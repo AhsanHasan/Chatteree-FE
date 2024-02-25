@@ -186,7 +186,7 @@ export class AuthenticationService {
             expDate,
             '/',
             environment.cookieDomain,
-            true
+            false
         )
     }
 
