@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { VideoPreviewModalService } from './preview-video.service';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { PreviewModalService } from './preview-modal.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
@@ -9,16 +9,17 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
-  selector: 'app-preview-video',
-  templateUrl: './preview-video.component.html',
-  styleUrls: ['./preview-video.component.css']
+  selector: 'app-preview-modal',
+  templateUrl: './preview-modal.component.html',
+  styleUrls: ['./preview-modal.component.css']
 })
-export class PreviewVideoComponent implements OnInit {
+export class PreviewModalComponent implements OnInit {
+  @Output() statusUploadSignal: EventEmitter<any> = new EventEmitter();
   spinner = 'videoSpinner';
-  public videoURL = '';
+  public imageURL = '';
   private videoURLSubscription?: Subscription;
   constructor(
-    public videoPreviewModalService: VideoPreviewModalService,
+    public previewModalService: PreviewModalService,
     private sanitizer: DomSanitizer,
     private cd: ChangeDetectorRef,
     private fireStorage: AngularFireStorage,
@@ -27,8 +28,8 @@ export class PreviewVideoComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) { }
   ngOnInit() {
-    this.videoURLSubscription = this.videoPreviewModalService.videoURLObservable.subscribe(url => {
-      this.videoURL = url as any;
+    this.videoURLSubscription = this.previewModalService.previewURLObservable.subscribe(url => {
+      this.imageURL = url as any;
       this.cd.detectChanges();
     });
   }
@@ -38,34 +39,35 @@ export class PreviewVideoComponent implements OnInit {
   }
 
   get poupModalVisibility$(): any {
-    return this.videoPreviewModalService.modalVisibility$;
+    return this.previewModalService.modalVisibility$;
   }
 
   closePopup(): void {
-    this.videoURL = '';
-    this.videoPreviewModalService.filename = '';
-    this.videoPreviewModalService.togglePopup();
+    this.imageURL = '';
+    this.previewModalService.filename = '';
+    this.previewModalService.togglePopup();
   }
 
-  get sanitizedVideoURL() {
-    return this.videoURL ? this.sanitizer.bypassSecurityTrustUrl(this.videoURL) : null;
+  get sanitizedImageURL() {
+    return this.imageURL ? this.sanitizer.bypassSecurityTrustUrl(this.imageURL) : null;
   }
 
   async videoUpload(): Promise<void> {
     try {
       this.ngxSpinner.show(this.spinner);
       // convert blob to file
-      const file = this.videoPreviewModalService.file;
-      const path = `status/${this.authenticationService.auth?.user._id}/${this.videoPreviewModalService.filename}`;
+      const file = this.previewModalService.file;
+      const path = `status/${this.authenticationService.auth?.user._id}/${this.previewModalService.filename}`;
       const uploadResponse = await this.fireStorage.upload(path, file as File);
       const downloadURL = await uploadResponse.ref.getDownloadURL();
       const body = {
         url: downloadURL,
-        type: 'video'
+        type: 'image'
       };
       const response = await this.statusService.createStatus(body);
       if (response.success) {
-        this.videoPreviewModalService.togglePopup();
+        this.statusUploadSignal.emit(response.status);
+        this.previewModalService.togglePopup();
       }
     } catch (error) {
       Utils.showErrorMessage('Error uploading video', error);

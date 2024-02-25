@@ -24,10 +24,8 @@
             </div>
             <div class="flex justify-center p-4">
                 <div class="relative">
-                    <video *ngIf="sanitizedVideoURL" controls class="rounded-lg w-72">
-                        <source [src]="sanitizedVideoURL" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <img *ngIf="sanitizedImageURL" [src]="sanitizedImageURL" alt="preview image"
+                        class="rounded-lg w-72">
                 </div>
             </div>
 

@@ -69,25 +69,26 @@
                 </div>
 
                 <!-- Image Status Section -->
-                
+
                 <div class="flex py-2 px-2 ">
                     <div class="flex items-center">
                         <div class="flex-col">
                             <div class="w-[64px] h-[64px] bg-[#F1F1F1] rounded-full flex items-center justify-center"
                                 (click)="fileInput.click()">
                                 <img class="w-[19px] h-[19px]" src="assets/images/icons/add-media.svg">
-                                <input type="file" #fileInput style="display: none;" accept="video/*"
+                                <input type="file" #fileInput style="display: none;" accept="image/png, image/jpeg"
                                     (change)="handleFileInput($event)">
                             </div>
-                            <p class="text-xs leading-4 font-normal text-center">Add film</p>
+                            <p class="text-xs leading-4 font-normal text-center">Add status</p>
                         </div>
                         <div class="inline-flex ml-4" style="max-width: 100%;">
-                            <ngx-slick-carousel class="carousel w-full max-w-full" #slickModal="slick-carousel" [config]="slideConfig"
-                                (init)="slickInit($event)">
+                            <ngx-slick-carousel class="carousel w-full max-w-full" #slickModal="slick-carousel"
+                                [config]="slideConfig" (init)="slickInit($event)">
                                 <div ngxSlickItem class="slide flex-shrink-0 flex" *ngFor="let status of statuses"
                                     (click)="viewStatus(status)">
-                                    <img class="w-16 h-16 rounded-full ring-2 ring-[#F7E353]"
-                                        [src]="status.profilePicture">
+                                    <img class="w-16 h-16 rounded-full ring-2" [ngClass]="{
+                                        'ring-[#F7E353]': !status.isAllViewed && status._id !== authenticationService.auth?.user?._id
+                                    }" [src]="status.profilePicture">
                                     <p class="text-xs leading-4 font-normal text-center">{{status.name | truncate: 12}}
                                     </p>
                                 </div>
@@ -171,6 +172,6 @@
     (chatRoomSelected)="chatRoomSelected($event)"></app-user-popup>
 
 
-<app-preview-video></app-preview-video>
+<app-preview-modal (statusUploadSignal)="statusUploadSignal($event)"></app-preview-modal>
 
-<app-view-status-popup></app-view-status-popup>
+<app-view-status-popup (closePopupEvent)="statusUploadSignal($event)"></app-view-status-popup>

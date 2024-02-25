@@ -8,8 +8,10 @@ import { ChatroomService, PaginationQuery } from '../../chat/services/chatroom.s
 import { SearchPeopleService } from '../../chat/services/search-people.service';
 import { ChatSearchComponent } from 'src/app/shared/chat-search/chat-search.component';
 import { Subject, debounceTime } from 'rxjs';
-import { VideoPreviewModalService } from 'src/app/shared/preview-video/preview-video.service';
+import { PreviewModalService } from 'src/app/shared/preview-modal/preview-modal.service';
 import { ViewStatusPopupService } from 'src/app/shared/view-status-popup/view-status-popup.service';
+import { Utils } from 'src/app/utils';
+import { StatusService } from '../services/status.service';
 
 @Component({
   selector: 'app-chats',
@@ -61,14 +63,16 @@ export class ChatsComponent {
     private chatroomService: ChatroomService,
     private router: Router,
     private searchPeopleService: SearchPeopleService,
-    private videoPreviewModalService: VideoPreviewModalService,
+    private previewModalService: PreviewModalService,
     private viewStatusPopupService: ViewStatusPopupService,
+    private statusService: StatusService,
     private cd: ChangeDetectorRef
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatrooms = data.chatrooms.data.chatRooms;
       this.users = data.users.data.users;
       this.statuses = data.status.data;
+      console.log('Statuses', this.statuses);
     });
 
     this.userInput$.pipe(debounceTime(500)).subscribe((input: string) => {
@@ -77,7 +81,7 @@ export class ChatsComponent {
   }
 
   slickInit(e: any) {
-    console.log('slick initialized');
+    // console.log('slick initialized');
   }
 
   selectChatroom(chatroom: Chatroom): void {
@@ -148,10 +152,10 @@ export class ChatsComponent {
       // Convert video file to ObjectURL
       const blob = new Blob([event.target.files[0]], { type: event.target.files[0].type });
       const videoUrl = URL.createObjectURL(blob);
-      this.videoPreviewModalService.file = event.target.files[0];
-      this.videoPreviewModalService.setVideoURL(videoUrl);
-      this.videoPreviewModalService.filename = event.target.files[0].name;
-      this.videoPreviewModalService.togglePopup();
+      this.previewModalService.file = event.target.files[0];
+      this.previewModalService.setImageURL(videoUrl);
+      this.previewModalService.filename = event.target.files[0].name;
+      this.previewModalService.togglePopup();
       this.cd.detectChanges();
 
     }
@@ -169,5 +173,21 @@ export class ChatsComponent {
     status.statuses = statusMedia;
     this.viewStatusPopupService.setStatus(status);
     this.viewStatusPopupService.togglePopup();
+  }
+
+  async statusUploadSignal(data: any): Promise<void> {
+    await this.getAllStatus();
+  }
+
+  async getAllStatus(): Promise<void> {
+    try {
+      let response = await this.statusService.getAllStatus();
+      if (response && response.success) {
+        console.log('Statuses', response.data);
+        this.statuses = response.data;
+      }
+    } catch (error) {
+      Utils.showErrorMessage('Error getting status', error);
+    }
   }
 }

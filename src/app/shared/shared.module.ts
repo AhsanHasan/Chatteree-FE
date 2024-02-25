@@ -16,10 +16,11 @@ import { UserService } from '../pages/chat/services/user.service';
 import { ChatroomService } from '../pages/chat/services/chatroom.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ChatSearchComponent } from './chat-search/chat-search.component';
-import { PreviewVideoComponent } from './preview-video/preview-video.component';
+import { PreviewModalComponent } from './preview-modal/preview-modal.component';
 import { StatusService } from '../pages/mobile-chat/services/status.service';
 import { ViewStatusPopupComponent } from './view-status-popup/view-status-popup.component';
 import { SafePipe } from '../pipes/safe.pipe';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
 
 
 @NgModule({
@@ -30,7 +31,7 @@ import { SafePipe } from '../pipes/safe.pipe';
     AttachmentPopupComponent,
     UserPopupComponent,
     ChatSearchComponent,
-    PreviewVideoComponent,
+    PreviewModalComponent,
     ViewStatusPopupComponent
   ],
   imports: [
@@ -39,7 +40,8 @@ import { SafePipe } from '../pipes/safe.pipe';
     PipesModule,
     DirectivesModule,
     NgxSpinnerModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    SlickCarouselModule
   ],
   exports: [
     ImageCropperComponent,
@@ -48,7 +50,7 @@ import { SafePipe } from '../pipes/safe.pipe';
     AttachmentPopupComponent,
     UserPopupComponent,
     ChatSearchComponent,
-    PreviewVideoComponent,
+    PreviewModalComponent,
     ViewStatusPopupComponent,
   ],
   providers: [
