@@ -53,6 +53,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         const response = await this.authenticationService.authenticateWithGoogle(authBody);
         if (response && response.success) {
           await this.authenticationService.storeSession(response.data);
+          await this.authenticationService.storeDeviceInformation(this.deviceDetectorService.isMobile());
           if (this.authenticationService.auth?.user?.isActive) {
             if (this.authenticationService.auth?.user?.username) {
               if (this.authenticationService.auth?.user?.profilePicture) {
