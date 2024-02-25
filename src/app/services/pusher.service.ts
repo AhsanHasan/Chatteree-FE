@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environments';
 
 export class PusherService {
     public messageSubject = new Subject<any>();
+    public statusSubject = new Subject<any>();
     private pusherClient!: Pusher;
     constructor(
         @Inject(PLATFORM_ID) private platformId: object,
@@ -30,15 +31,7 @@ export class PusherService {
             const eventName = 'new-message';
             const channel = this.pusherClient.subscribe(channelName as any);
             channel.bind(eventName, (data: any) => { this.messageSubject.next(data); });
+            channel.bind('new-status', (data: any) => { this.statusSubject.next(data); });
         }
     }
-
-    // subscribeChatToChannel(): void {
-    //     const channelName = 'chat-room';
-    //     const eventName = 'new-message';
-    //     const channel = this.pusherService.listen(eventName, channelName);
-    //     channel.subscribe((data: any) => {
-    //         this.messageSubject.next(data);
-    //     });
-    // }
 }

@@ -14,7 +14,8 @@ export class DeviceService {
     ) { }
 
     get isMobile() {
-       return this.authenticationService.getDeviceInformation().isMobile;
+        const deviceInfo = this.authenticationService.getDeviceInformation();
+        return deviceInfo && deviceInfo.hasOwnProperty('isMobile') ? deviceInfo.isMobile : false;
     }
 
 }

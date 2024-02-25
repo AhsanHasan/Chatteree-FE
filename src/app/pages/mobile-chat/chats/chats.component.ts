@@ -12,6 +12,7 @@ import { PreviewModalService } from 'src/app/shared/preview-modal/preview-modal.
 import { ViewStatusPopupService } from 'src/app/shared/view-status-popup/view-status-popup.service';
 import { Utils } from 'src/app/utils';
 import { StatusService } from '../services/status.service';
+import { PusherService } from 'src/app/services/pusher.service';
 
 @Component({
   selector: 'app-chats',
@@ -66,6 +67,7 @@ export class ChatsComponent {
     private previewModalService: PreviewModalService,
     private viewStatusPopupService: ViewStatusPopupService,
     private statusService: StatusService,
+    private pusherService: PusherService,
     private cd: ChangeDetectorRef
   ) {
     this.route.data.subscribe((data: any) => {
@@ -76,6 +78,10 @@ export class ChatsComponent {
 
     this.userInput$.pipe(debounceTime(500)).subscribe((input: string) => {
       this.handleUserSearch(input);
+    });
+
+    this.pusherService.statusSubject.subscribe((data: any) => {
+      this.getAllStatus();
     });
   }
 
