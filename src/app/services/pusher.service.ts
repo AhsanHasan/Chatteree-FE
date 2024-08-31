@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environments';
 export class PusherService {
     public messageSubject = new Subject<any>();
     public statusSubject = new Subject<any>();
+    public onlineStatusSubject = new Subject<any>();
     private pusherClient!: Pusher;
     constructor(
         @Inject(PLATFORM_ID) private platformId: object,
@@ -32,6 +33,7 @@ export class PusherService {
             const channel = this.pusherClient.subscribe(channelName as any);
             channel.bind(eventName, (data: any) => { this.messageSubject.next(data); });
             channel.bind('new-status', (data: any) => { this.statusSubject.next(data); });
+            channel.bind('online-status', (data: any) => { this.onlineStatusSubject.next(data); });
         }
     }
 }

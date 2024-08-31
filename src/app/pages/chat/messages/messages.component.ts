@@ -92,6 +92,11 @@ export class MessagesComponent implements AfterViewInit, OnChanges, AfterViewChe
     this.pusherService.messageSubject.subscribe(async (data: any) => {
       await this.getMessages(1);
     });
+    this.pusherService.onlineStatusSubject.subscribe((data) => {
+      if (this.chatroomInformation.participants._id === data._id) {
+        this.chatroomInformation.participants.onlineStatus = data.onlineStatus;
+      }
+    })
     this.route.data.subscribe((data: any) => {
       this.chatroomInformation = data.messages.data.chatRoom;
       this.messages = data.messages.data.messages;

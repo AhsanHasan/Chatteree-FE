@@ -218,9 +218,7 @@ export class AuthenticationService {
     }
 
     async logout(): Promise<void> {
-        this.cookieService.delete(
-            `${environment.versionControl.env}${environment.versionControl.v}SessionAuth`,
-        );
+        this.cookieService.deleteAll('/', environment.cookieDomain);
         this.router.navigate(['/']);
     }
 

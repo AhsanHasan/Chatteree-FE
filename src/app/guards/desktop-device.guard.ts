@@ -12,6 +12,7 @@ export class DesktopDeviceGuard {
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        debugger;
         if (this.deviceService.isMobile) {
             return true;
         } else {

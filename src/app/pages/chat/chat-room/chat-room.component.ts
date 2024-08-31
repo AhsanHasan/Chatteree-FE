@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ChatroomService, PaginationQuery } from '../services/chatroom.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { User } from 'src/app/interfaces/user';
+import { PusherService } from 'src/app/services/pusher.service';
 
 @Component({
   selector: 'app-chat-room',
@@ -18,10 +19,19 @@ export class ChatRoomComponent {
     private route: ActivatedRoute,
     private chatroomService: ChatroomService,
     public authenticationService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private pusherService: PusherService
   ) {
     this.route.data.subscribe((data: any) => {
       this.chatRooms = data.chatrooms.data.chatRooms;
+    });
+    this.pusherService.onlineStatusSubject.subscribe((data) => {
+      this.chatRooms = this.chatRooms.map((room) => {
+        if (room.participants._id === data._id) {
+          room.participants.onlineStatus = data.onlineStatus;
+        }
+        return room;
+      });
     });
   }
 

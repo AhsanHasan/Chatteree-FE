@@ -7,4 +7,5 @@ export interface Chatroom {
     participants: User;
     unreadMessages: number;
     isFavorite?: boolean;
+    onlineStatus?: string;
 }
